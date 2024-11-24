@@ -1,0 +1,10 @@
+<div class="empty"></div>
+
+<div class="logo-box">
+    <h1>QuizHub</h1>
+</div>
+
+<div class="user-box">
+    <p-menu #menu [model]="items" [popup]="true" />
+    <p-button (click)="menu.toggle($event)" [rounded]="true"><i class="pi pi-user user-icon"></i></p-button>
+</div>

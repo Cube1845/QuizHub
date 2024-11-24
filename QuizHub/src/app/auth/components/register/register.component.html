@@ -1,0 +1,25 @@
+<p-toast position="bottom-left" [life]="3000" />
+
+<div class="container">
+    <h1>Rejestracja</h1>
+    <div class="auth-data-input-box" [formGroup]="registerFormGroup">
+        <p-floatLabel>
+            <input id="email" type="text" pInputText class="auth-data-input" formControlName="email"/>
+            <label for="email">Email</label>
+        </p-floatLabel>
+
+        <p-floatLabel>
+            <p-password id="password" [toggleMask]="true" [feedback]="false" [style]="{'width':'500px'}" [inputStyle]="{'width':'500px'}" formControlName="password"/>
+            <label for="password" class="auth-data-input">Hasło</label>
+        </p-floatLabel>
+
+        <p-floatLabel>
+            <p-password id="password" [toggleMask]="true" [feedback]="false" [style]="{'width':'500px'}" [inputStyle]="{'width':'500px'}" formControlName="confirmPassword"/>
+            <label for="password" class="auth-data-input">Powtórz hasło</label>
+        </p-floatLabel>
+
+        <p-button label="Zarejestruj się" [outlined]="true" [disabled]="registerFormGroup.invalid" [loading]="registerButttonLoading" (click)="register()"/>
+
+        <a routerLink="../login">Masz już konto? Zaloguj się</a>
+    </div>
+</div>

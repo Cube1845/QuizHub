@@ -1,0 +1,48 @@
+:host {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    .container {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .nav-bar-item {
+        margin: 0px;
+        margin-left: 16px;
+        font-size: 1.3vw;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding: 10px 25px;
+        border-radius: var(--border-radius);
+        transition: 0.2s;
+        
+        &:hover {
+            cursor: pointer;
+            background: var(--highlight-bg);
+            transition: 0.2s;
+        }
+    }
+
+    .nav-bar-items {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+    }
+
+    i {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+
+    p-divider {
+        margin: 0;
+    }
+}

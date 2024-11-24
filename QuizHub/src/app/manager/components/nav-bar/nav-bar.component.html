@@ -1,0 +1,8 @@
+<div class="container">
+    <div class="nav-bar-items">
+        @for (navBarItem of navBarItems; track $index) {
+            <div class="nav-bar-item" (click)="this.router.navigateByUrl(navBarItem.route);"><i [class]="navBarItem.icon"></i>{{ navBarItem.text }}</div>
+        }
+    </div>
+    <p-divider layout="vertical" />
+</div>
