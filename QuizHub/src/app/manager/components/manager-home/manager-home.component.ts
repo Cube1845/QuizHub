@@ -23,21 +23,29 @@ export class ManagerHomeComponent {
       text: 'Strona główna',
       icon: 'pi pi-home',
       route: 'manager/main',
+      color: null,
+      alternativeRoutes: [],
     },
     {
       text: 'Bazy Pytań',
       icon: 'pi pi-question-circle',
       route: 'manager/question-bases',
+      color: null,
+      alternativeRoutes: ['manager/question-base-edit'],
     },
     {
       text: 'Kreator testów',
       icon: 'pi pi-wrench',
       route: '',
+      color: null,
+      alternativeRoutes: [],
     },
     {
       text: 'Historia testów',
       icon: 'pi pi-address-book',
       route: '',
+      color: null,
+      alternativeRoutes: [],
     },
   ];
 }

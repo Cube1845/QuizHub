@@ -1,148 +1,241 @@
 import { Injectable } from '@angular/core';
-import { QuestionBase } from '../../common/models/questionBase';
+import { QuestionBaseData } from '../../common/models/questionBaseData';
+import { Question } from '../../common/models/question';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionBaseService {
-  getUserQuestionBases(): QuestionBase[] {
+  getUserQuestionBasesData(): QuestionBaseData[] {
     return [
       {
         name: 'Baza pytań 1',
-        questions: [
-          {
-            content: 'Pytanie 1',
-            answers: [
-              {
-                content: 'Odpowiedź a',
-                isCorrect: false,
-              },
-              {
-                content: 'Odpowiedź b',
-                isCorrect: false,
-              },
-              {
-                content: 'Odpowiedź c',
-                isCorrect: true,
-              },
-              {
-                content: 'Odpowiedź d',
-                isCorrect: false,
-              },
-            ],
-          },
-          {
-            content: 'Pytanie 2',
-            answers: [
-              {
-                content: 'O1dpowiedź a',
-                isCorrect: false,
-              },
-              {
-                content: 'O1dpowiedź b',
-                isCorrect: true,
-              },
-              {
-                content: 'O1dpowiedź c',
-                isCorrect: false,
-              },
-              {
-                content: 'O1dpowiedź d',
-                isCorrect: false,
-              },
-            ],
-          },
-          {
-            content: 'Pytanie 3',
-            answers: [
-              {
-                content: 'O2dpowiedź a',
-                isCorrect: false,
-              },
-              {
-                content: 'O2dpowiedź b',
-                isCorrect: false,
-              },
-              {
-                content: 'O2dpowiedź c',
-                isCorrect: false,
-              },
-              {
-                content: 'O2dpowiedź d',
-                isCorrect: true,
-              },
-            ],
-          },
-        ],
+        questionCount: 3,
+        id: 'fac1a691-6ae4-45d5-a4d6-797e7a3540ac',
       },
       {
         name: 'Baza pytań 2',
-        questions: [
-          {
-            content: 'Pytanie 11',
-            answers: [
-              {
-                content: '1Odpowiedź a',
-                isCorrect: false,
-              },
-              {
-                content: '1Odpowiedź b',
-                isCorrect: false,
-              },
-              {
-                content: '1Odpowiedź c',
-                isCorrect: true,
-              },
-              {
-                content: '1Odpowiedź d',
-                isCorrect: false,
-              },
-            ],
-          },
-          {
-            content: 'Pytanie 12',
-            answers: [
-              {
-                content: '1O1dpowiedź a',
-                isCorrect: false,
-              },
-              {
-                content: '1O1dpowiedź b',
-                isCorrect: true,
-              },
-              {
-                content: '1O1dpowiedź c',
-                isCorrect: false,
-              },
-              {
-                content: '1O1dpowiedź d',
-                isCorrect: false,
-              },
-            ],
-          },
-          {
-            content: 'Pytanie 13',
-            answers: [
-              {
-                content: '1O2dpowiedź a',
-                isCorrect: false,
-              },
-              {
-                content: '1O2dpowiedź b',
-                isCorrect: false,
-              },
-              {
-                content: '1O2dpowiedź c',
-                isCorrect: false,
-              },
-              {
-                content: '1O2dpowiedź d',
-                isCorrect: true,
-              },
-            ],
-          },
-        ],
+        questionCount: 5,
+        id: 'e03fdc2f-fddd-4c54-a865-ea9f3311c553',
       },
     ];
+  }
+
+  getQuestionsFromUserQuestionBase(questionBaseId: string): Question[] | null {
+    if (questionBaseId == 'fac1a691-6ae4-45d5-a4d6-797e7a3540ac') {
+      return [
+        {
+          content: 'Pytanie 1',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz a',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz b',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz c',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+          ],
+        },
+        {
+          content: 'Pytanie 2',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz a1',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz b1',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz c1',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz d1',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+          ],
+        },
+        {
+          content: 'Pytanie 3',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz a2',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz b2',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz c2',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz d2',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+          ],
+        },
+      ];
+    }
+
+    if (questionBaseId == 'e03fdc2f-fddd-4c54-a865-ea9f3311c553') {
+      return [
+        {
+          content: 'Pytanie 11',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz 1a',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1b',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1c',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1d',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+          ],
+        },
+        {
+          content: 'Pytanie 12',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz 1a1',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1b1',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1c1',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1d1',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+          ],
+        },
+        {
+          content: 'Pytanie 13',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz 1a2',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1b2',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1c2',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1d2',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+          ],
+        },
+        {
+          content: 'Pytanie 14',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz 1a3',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1b3',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1c3',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1d3',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+          ],
+        },
+        {
+          content: 'Pytanie 15',
+          id: uuidv4(),
+          answers: [
+            {
+              content: 'Odpowiedz 1a4',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1b4',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1c4',
+              isCorrect: false,
+              id: uuidv4(),
+            },
+            {
+              content: 'Odpowiedz 1d4',
+              isCorrect: true,
+              id: uuidv4(),
+            },
+          ],
+        },
+      ];
+    }
+
+    return null;
   }
 }

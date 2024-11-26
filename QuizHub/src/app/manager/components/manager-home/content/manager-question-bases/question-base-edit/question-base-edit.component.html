@@ -1,0 +1,74 @@
+<div class="container">
+    @for (question of questions; track $index) {
+        <div class="question-panel">
+            <h1>{{ question.content }}</h1>
+
+            <div class="answer-box">
+                <div class="answer-row">
+                    <div class="answer-column">
+                        <h2>Odpowiedź A:</h2>
+                        <p>
+                            @if (question.answers[0].isCorrect) {
+                                <i class="pi pi-check-circle" style="font-size: 1rem"></i>
+                            } @else {
+                                <i class="pi pi-times-circle" style="font-size: 1rem"></i>
+                            }
+                            
+                            {{ question.answers[0].content }}
+                        </p>
+                    </div>
+                    <div class="answer-column">
+                        <h2>Odpowiedź B:</h2>
+                        <p>
+                            @if (question.answers[1].isCorrect) {
+                                <i class="pi pi-check-circle" style="font-size: 1rem"></i>
+                            } @else {
+                                <i class="pi pi-times-circle" style="font-size: 1rem"></i>
+                            }
+
+                            {{ question.answers[1].content }}
+                        </p>
+                    </div>
+                </div>
+
+                @if (question.answers.length > 2) {
+                    <div class="answer-row">
+                        <div class="answer-column">
+                            <h2>Odpowiedź C:</h2>
+                            <p>
+                                @if (question.answers[2].isCorrect) {
+                                    <i class="pi pi-check-circle" style="font-size: 1rem"></i>
+                                } @else {
+                                    <i class="pi pi-times-circle" style="font-size: 1rem"></i>
+                                }
+
+                                {{ question.answers[2].content }}
+                            </p>
+                        </div>
+
+                        @if (question.answers.length > 3) {
+                            <div class="answer-column">
+                                <h2>Odpowiedź D:</h2>
+                                <p>
+                                    @if (question.answers[3].isCorrect) {
+                                        <i class="pi pi-check-circle" style="font-size: 1rem"></i>
+                                    } @else {
+                                        <i class="pi pi-times-circle" style="font-size: 1rem"></i>
+                                    }
+    
+                                    {{ question.answers[3].content }}
+                                </p>
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+</div>
+
+<p-button class="add-question-button" (click)="true">
+    <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--text-color)"></i>
+</p-button>

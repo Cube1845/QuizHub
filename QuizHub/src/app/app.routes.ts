@@ -4,6 +4,7 @@ import { RegisterComponent } from './auth/components/register/register.component
 import { ManagerHomeComponent } from './manager/components/manager-home/manager-home.component';
 import { ManagerMainPageComponent } from './manager/components/manager-home/content/manager-main-page/manager-main-page.component';
 import { ManagerQuestionBasesComponent } from './manager/components/manager-home/content/manager-question-bases/manager-question-bases.component';
+import { QuestionBaseEditComponent } from './manager/components/manager-home/content/manager-question-bases/question-base-edit/question-base-edit.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -14,6 +15,7 @@ export const routes: Routes = [
     children: [
       { path: 'main', component: ManagerMainPageComponent },
       { path: 'question-bases', component: ManagerQuestionBasesComponent },
+      { path: 'question-base-edit/:id', component: QuestionBaseEditComponent },
     ],
   },
   { path: '**', redirectTo: 'login', pathMatch: 'full' },
