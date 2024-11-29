@@ -22,6 +22,10 @@ export class QuestionBaseService {
     ];
   }
 
+  createUserQuestionBase(name: string): void {
+    return;
+  }
+
   getQuestionsFromUserQuestionBase(questionBaseId: string): Question[] | null {
     if (questionBaseId == 'fac1a691-6ae4-45d5-a4d6-797e7a3540ac') {
       return [

@@ -20,6 +20,6 @@
     </p-floatLabel>
     <div class="dialog-buttons-box">
         <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="dialogVisible = false" class="dialog-button"/>
-        <p-button label="Utwórz" severity="success" [outlined]="true" (click)="dialogVisible = false" class="dialog-button" [disabled]="nameFormControl.invalid"/>
+        <p-button label="Utwórz" severity="success" [outlined]="true" (click)="dialogVisible = false; createQuestionBase()" class="dialog-button" [disabled]="nameFormControl.invalid"/>
     </div>
 </p-dialog>

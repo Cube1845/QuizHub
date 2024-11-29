@@ -40,4 +40,12 @@ export class ManagerQuestionBasesComponent {
   constructor() {
     this.questionBases = this.questionBaseService.getUserQuestionBasesData();
   }
+
+  createQuestionBase(): void {
+    this.questionBaseService.createUserQuestionBase(
+      this.nameFormControl.value!
+    );
+
+    this.router.navigateByUrl('manager/question-base-edit/newuuid');
+  }
 }

@@ -53,10 +53,12 @@
     }
 
     .dialog-button {
-        margin-right: 10px;
+        margin-left: 10px;
     }
 
     .dialog-buttons-box {
         margin-top: 25px;
+        display: flex;
+        justify-content: end;
     }
 }

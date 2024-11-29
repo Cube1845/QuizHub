@@ -1,6 +1,6 @@
 <div class="container">
     @for (question of questions; track $index) {
-        <div class="question-panel">
+        <div class="question-panel" (click)="openQuestionEditor($index)">
             <h1>{{ question.content }}</h1>
 
             <div class="answer-box">
@@ -69,6 +69,160 @@
     }
 </div>
 
-<p-button class="add-question-button" (click)="true">
+<p-button class="add-question-button" (click)="newQuestionDialogVisible = true">
     <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--text-color)"></i>
 </p-button>
+
+<p-dialog [formGroup]="editQuestionFormGroup" header="Edytuj pytanie" [modal]="true" [visible]="editQuestionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '29rem' }">
+    <div class="question-input-box">
+        <div class="question-content-box">
+            <p-floatLabel>
+                <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90" formControlName="content"/>
+                <label for="quesiton-content">Pytanie</label>
+            </p-floatLabel>
+        </div>
+
+        <div class="question-answer-row">
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="editQuestionFormGroup.controls.answers.controls.A"/>
+                        <label for="quesiton-content">Odpowiedź A</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                                [formControl]="editQuestionFormGroup.controls.correctAnswers.controls.A"
+                                [binary]="true" 
+                                />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="editQuestionFormGroup.controls.answers.controls.B"/>
+                        <label for="quesiton-content">Odpowiedź B</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                                [formControl]="editQuestionFormGroup.controls.correctAnswers.controls.B"
+                                [binary]="true"
+                                />
+                        </p-inputGroupAddon>
+                </p-floatLabel>
+                </p-inputGroup>
+            </div>
+        </div>
+
+        <div class="question-answer-row">
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="editQuestionFormGroup.controls.answers.controls.C"/>
+                        <label for="quesiton-content">Odpowiedź C</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                                [formControl]="editQuestionFormGroup.controls.correctAnswers.controls.C"
+                                [binary]="true"
+                                />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="editQuestionFormGroup.controls.answers.controls.D"/>
+                        <label for="quesiton-content">Odpowiedź D</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                                [formControl]="editQuestionFormGroup.controls.correctAnswers.controls.D"
+                                [binary]="true"
+                                />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+        </div>
+    </div>
+    
+    <div class="question-buttons-box">
+        <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="editQuestionDialogVisible = false; editQuestionFormGroup.reset()" class="dialog-button"/>
+        <p-button label="Zapisz" severity="success" [outlined]="true" (click)="editQuestionDialogVisible = false; editQuestionFormGroup.reset()" class="dialog-button"/>
+    </div>
+</p-dialog>
+
+<p-dialog header="Dodaj pytanie" [modal]="true" [visible]="newQuestionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '29rem' }">
+    <div class="question-input-box">
+        <div class="question-content-box">
+            <p-floatLabel>
+                <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90"/>
+                <label for="quesiton-content">Pytanie</label>
+            </p-floatLabel>
+        </div>
+
+        <div class="question-answer-row">
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only"/>
+                        <label for="quesiton-content">Odpowiedź A</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                            value=0
+                            name="correctAnswers" />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only"/>
+                        <label for="quesiton-content">Odpowiedź B</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                            value=1
+                            name="correctAnswers" />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+        </div>
+
+        <div class="question-answer-row">
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only"/>
+                        <label for="quesiton-content">Odpowiedź C</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                            value=2
+                            name="correctAnswers" />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+
+            <div>
+                <p-inputGroup>
+                    <p-floatLabel [style]="{width: '100%'}">
+                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only"/>
+                        <label for="quesiton-content">Odpowiedź D</label>
+                        <p-inputGroupAddon>
+                            <p-checkbox
+                            value=3
+                            name="correctAnswers" />
+                        </p-inputGroupAddon>
+                    </p-floatLabel>
+                </p-inputGroup>
+            </div>
+        </div>
+    </div>
+    
+    <div class="question-buttons-box">
+        <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="newQuestionDialogVisible = false" class="dialog-button"/>
+        <p-button label="Utwórz" severity="success" [outlined]="true" (click)="newQuestionDialogVisible = false" class="dialog-button"/>
+    </div>
+</p-dialog>
