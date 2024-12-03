@@ -86,6 +86,14 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
+  getDialogHeader(): string {
+    if (this.currentEditedQuestionIndex >= 0) {
+      return 'Edytuj pytanie';
+    }
+
+    return 'Dodaj pytanie';
+  }
+
   openQuestionEditor(index: number) {
     var answerValues = this.questions![index].answers.map(
       (answer) => answer.content

@@ -42,21 +42,35 @@
         position: relative;
     }
 
-    .delete-icon {
-        z-index: 1000;
+    .clickable-icon {
         position: absolute;
-        right: 1rem;
-        bottom: 0.8rem;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         color: var(--text-color);
         transition: 0.1s;
+        bottom: 0.8rem;
+
+        &:hover {
+            font-size: 1.4rem;
+            transition: 0.1s;
+            bottom: 0.75rem;
+        }
+    }
+
+    .delete-icon {
+        right: 1.2rem;
 
         &:hover {
             color: var(--red-500);
-            font-size: 1.5rem;
-            transition: 0.1s;
-            right: 0.95rem;
-            bottom: 0.75rem;
+            right: 1.15rem;
+        }
+    }
+
+    .edit-icon {
+        left: 1.2rem;
+
+        &:hover {
+            color: var(--yellow-300);
+            left: 1.15rem;
         }
     }
 

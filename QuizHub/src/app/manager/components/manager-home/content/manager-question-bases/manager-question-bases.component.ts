@@ -33,6 +33,7 @@ export class ManagerQuestionBasesComponent {
   confirmationService = inject(ConfirmationService);
 
   dialogVisible: boolean = false;
+  currentEditedQuestionBaseIndex: number = -1;
 
   questionBases: QuestionBaseData[] | null = null;
 
@@ -46,6 +47,21 @@ export class ManagerQuestionBasesComponent {
     this.questionBases = this.questionBaseService.getUserQuestionBasesData();
   }
 
+  getDialogHeader(): string {
+    if (this.currentEditedQuestionBaseIndex >= 0) {
+      return 'Edytuj nazwę bazy pytań';
+    }
+
+    return 'Dodaj bazę pytań';
+  }
+
+  displayQuestionBaseNameEditDialog(event: Event, index: number): void {
+    event.stopPropagation();
+
+    this.currentEditedQuestionBaseIndex = index;
+    this.dialogVisible = true;
+  }
+
   displayQuestionBaseRemovalModal(event: Event): void {
     event.stopPropagation();
 
@@ -54,8 +70,8 @@ export class ManagerQuestionBasesComponent {
       message: 'Na pewno chcesz usunąć tę bazę pytań?',
       header: 'Potwierdzenie usunięcia',
       icon: 'pi pi-trash',
-      acceptButtonStyleClass: 'p-button-danger p-button-text',
-      rejectButtonStyleClass: 'p-button-success p-button-text',
+      acceptButtonStyleClass: 'p-button-success p-button-outlined',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined',
       acceptIcon: 'none',
       rejectIcon: 'none',
 
