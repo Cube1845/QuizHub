@@ -11,7 +11,8 @@
     flex-wrap: wrap;
     
     .question-base-panel {
-        background: var(--highlight-bg);
+        background: var(--primary-900);
+        color: var(--text-color);
         width: $panel-size;
         height: $panel-size;
         border-radius: var(--border-radius);
@@ -31,14 +32,35 @@
         }
 
         &:hover {
-            background: var(--primary-color);
+            background: var(--primary-700);
             transition: 0.2s;
             cursor: pointer;
         }
     }
 
+    .contains-delete-button {
+        position: relative;
+    }
+
+    .delete-icon {
+        z-index: 1000;
+        position: absolute;
+        right: 1rem;
+        bottom: 0.8rem;
+        font-size: 1.4rem;
+        color: var(--text-color);
+        transition: 0.1s;
+
+        &:hover {
+            color: var(--red-500);
+            font-size: 1.5rem;
+            transition: 0.1s;
+            right: 0.95rem;
+            bottom: 0.75rem;
+        }
+    }
+
     .add-question-base-button {
-        background: var(--primary-color);
         padding: 0px;
         border-radius: 100%;
         display: flex;

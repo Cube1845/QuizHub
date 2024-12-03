@@ -15,6 +15,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { requireOneSelectedAnswerValidator } from '../../../../../../common/validators/require-one-selected-answer-validator';
+import { correctAnswerSelectionValidator } from '../../../../../../common/validators/correct-answer-selection-validator';
+import { QuestionService } from '../../../../../services/question.service';
+import { Answer } from '../../../../../../common/models/answer';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -35,37 +39,43 @@ import {
 export class QuestionBaseEditComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   questionBaseService = inject(QuestionBaseService);
+  questionService = inject(QuestionService);
 
-  editQuestionDialogVisible: boolean = false;
-
-  newQuestionDialogVisible: boolean = false;
+  questionDialogVisible: boolean = false;
+  currentEditedQuestionIndex: number = -1;
 
   questions: Question[] | null = null;
 
-  editQuestionFormGroup = new FormGroup({
-    content: new FormControl<string>('', [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
-    answers: new FormGroup({
-      A: new FormControl<string>('', [
+  questionFormGroup = new FormGroup(
+    {
+      content: new FormControl<string>('', [
         Validators.required,
         Validators.minLength(3),
       ]),
-      B: new FormControl<string>('', [
-        Validators.required,
-        Validators.minLength(3),
+      answers: new FormGroup([
+        new FormControl<string>('', [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        new FormControl<string>('', [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        new FormControl<string>('', Validators.minLength(3)),
+        new FormControl<string>('', Validators.minLength(3)),
       ]),
-      C: new FormControl<string>('', [Validators.minLength(3)]),
-      D: new FormControl<string>('', [Validators.minLength(3)]),
-    }),
-    correctAnswers: new FormGroup({
-      A: new FormControl<boolean>(false),
-      B: new FormControl<boolean>(false),
-      C: new FormControl<boolean>(false),
-      D: new FormControl<boolean>(false),
-    }),
-  });
+      correctAnswers: new FormGroup(
+        [
+          new FormControl<boolean>(false),
+          new FormControl<boolean>(false),
+          new FormControl<boolean>(false),
+          new FormControl<boolean>(false),
+        ],
+        requireOneSelectedAnswerValidator()
+      ),
+    },
+    correctAnswerSelectionValidator()
+  );
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -93,21 +103,79 @@ export class QuestionBaseEditComponent implements OnInit {
       correctAnswers.push(false);
     }
 
-    this.editQuestionFormGroup.setValue({
+    this.questionFormGroup.setValue({
       content: this.questions![index].content,
-      answers: {
-        A: answerValues[0],
-        B: answerValues[1],
-        C: answerValues[2],
-        D: answerValues[3],
-      },
-      correctAnswers: {
-        A: correctAnswers[0],
-        B: correctAnswers[1],
-        C: correctAnswers[2],
-        D: correctAnswers[3],
-      },
+      answers: [
+        answerValues[0],
+        answerValues[1],
+        answerValues[2],
+        answerValues[3],
+      ],
+      correctAnswers: [
+        correctAnswers[0],
+        correctAnswers[1],
+        correctAnswers[2],
+        correctAnswers[3],
+      ],
     });
-    this.editQuestionDialogVisible = true;
+    this.questionDialogVisible = true;
+  }
+
+  saveQuestion(): void {
+    this.questionService.saveQuestion(); // to API
+
+    this.questions![this.currentEditedQuestionIndex].content =
+      this.questionFormGroup.controls.content.value!;
+
+    this.questions![this.currentEditedQuestionIndex].answers[0].content =
+      this.questionFormGroup.controls.answers.controls[0].value!;
+    this.questions![this.currentEditedQuestionIndex].answers[0].isCorrect =
+      this.questionFormGroup.controls.correctAnswers.controls[0].value!;
+
+    this.questions![this.currentEditedQuestionIndex].answers[1].content =
+      this.questionFormGroup.controls.answers.controls[1].value!;
+    this.questions![this.currentEditedQuestionIndex].answers[1].isCorrect =
+      this.questionFormGroup.controls.correctAnswers.controls[1].value!;
+
+    if (this.questions![this.currentEditedQuestionIndex].answers.length > 2) {
+      this.questions![this.currentEditedQuestionIndex].answers[2].content =
+        this.questionFormGroup.controls.answers.controls[2].value!;
+      this.questions![this.currentEditedQuestionIndex].answers[2].isCorrect =
+        this.questionFormGroup.controls.correctAnswers.controls[2].value!;
+    }
+
+    if (this.questions![this.currentEditedQuestionIndex].answers.length > 3) {
+      this.questions![this.currentEditedQuestionIndex].answers[3].content =
+        this.questionFormGroup.controls.answers.controls[3].value!;
+      this.questions![this.currentEditedQuestionIndex].answers[3].isCorrect =
+        this.questionFormGroup.controls.correctAnswers.controls[3].value!;
+    }
+  }
+
+  addQuestion(): void {
+    this.questionService.addQuestion(); // to API
+
+    var answers: Answer[] = this.questionFormGroup.controls.answers.controls
+      .filter((fc) => fc.value != '')
+      .map((fc, index) => {
+        if (fc.value! != '') {
+          return {
+            content: fc.value!,
+            isCorrect:
+              this.questionFormGroup.controls.correctAnswers.controls[index]
+                .value!,
+            id: '',
+          };
+        }
+        return null!;
+      });
+
+    var newQuestion: Question = {
+      content: this.questionFormGroup.controls.content.value!,
+      answers: answers,
+      id: '',
+    };
+
+    this.questions!.push(newQuestion);
   }
 }

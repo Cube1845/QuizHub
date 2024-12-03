@@ -8,6 +8,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { QuestionBaseData } from '../../../../../common/models/questionBaseData';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -18,14 +20,17 @@ import { Router } from '@angular/router';
     InputTextModule,
     FloatLabelModule,
     ReactiveFormsModule,
+    ConfirmDialogModule,
   ],
   templateUrl: './manager-question-bases.component.html',
   styleUrl: './manager-question-bases.component.scss',
+  providers: [ConfirmationService],
 })
 export class ManagerQuestionBasesComponent {
   questionBaseService = inject(QuestionBaseService);
   polishWordVariationService = inject(PolishWordVariationService);
   router = inject(Router);
+  confirmationService = inject(ConfirmationService);
 
   dialogVisible: boolean = false;
 
@@ -39,6 +44,24 @@ export class ManagerQuestionBasesComponent {
 
   constructor() {
     this.questionBases = this.questionBaseService.getUserQuestionBasesData();
+  }
+
+  displayQuestionBaseRemovalModal(event: Event): void {
+    event.stopPropagation();
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz usunąć tę bazę pytań?',
+      header: 'Potwierdzenie usunięcia',
+      icon: 'pi pi-trash',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-success p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+
+      accept: () => {},
+      reject: () => {},
+    });
   }
 
   createQuestionBase(): void {

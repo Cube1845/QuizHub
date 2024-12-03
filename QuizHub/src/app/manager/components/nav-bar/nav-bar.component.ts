@@ -26,7 +26,7 @@ export class NavBarComponent implements OnInit {
         plainRoute == '/' + item.route ||
         item.alternativeRoutes.some((route) => plainRoute == '/' + route)
       ) {
-        item.color = 'var(--highlight-bg)';
+        item.color = 'var(--primary-900)';
       }
     });
   }
@@ -52,6 +52,6 @@ export class NavBarComponent implements OnInit {
       item.color = null;
     });
 
-    this.navBarItems[index].color = 'var(--highlight-bg)';
+    this.navBarItems[index].color = 'var(--primary-900)';
   }
 }

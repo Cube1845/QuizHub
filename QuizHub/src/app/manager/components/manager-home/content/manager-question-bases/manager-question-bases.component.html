@@ -1,12 +1,15 @@
+<p-confirmDialog></p-confirmDialog>
 @for (questionBase of questionBases; track $index) {
-    <div class="question-base-panel" (click)="this.router.navigateByUrl('manager/question-base-edit/' + questionBase.id)">
+    <div class="question-base-panel contains-delete-button" (click)="this.router.navigateByUrl('manager/question-base-edit/' + questionBase.id)">
         <h1>{{ questionBase.name }}</h1>
         <p>{{ questionBase.questionCount }} {{ this.polishWordVariationService.getQuestionWordVariation(questionBase.questionCount) }}</p>
+
+        <i class="pi pi-trash delete-icon" (click)="displayQuestionBaseRemovalModal($event)"></i>
     </div>
 }
 
 <div class="question-base-panel" (click)="dialogVisible = true">
-    <i class="pi pi-plus" style="font-size: 6rem"></i>
+    <i class="pi pi-plus" style="font-size: 6rem;"></i>
 </div>
 
 <p-button class="add-question-base-button" (click)="dialogVisible = true">

@@ -13,7 +13,7 @@
     }
 
     .question-panel {
-        background: var(--highlight-bg);
+        background: var(--primary-900);
         margin: 30px 95px 30px 65px;
         border-radius: var(--border-radius);
         padding: 1px 40px;
@@ -23,7 +23,7 @@
         transition: 0.2s;
 
         &:hover {
-            background: var(--primary-color);
+            background: var(--primary-700);
             transition: 0.2s;
             cursor: pointer;
         }
@@ -63,7 +63,6 @@
     }
 
     .add-question-button {
-        background: var(--primary-color);
         padding: 0px;
         border-radius: 100%;
         display: flex;
