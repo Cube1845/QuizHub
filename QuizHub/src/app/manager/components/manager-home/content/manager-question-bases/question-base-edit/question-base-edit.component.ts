@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Question } from '../../../../../../common/models/question';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
 import { ButtonModule } from 'primeng/button';
@@ -46,6 +46,9 @@ export class QuestionBaseEditComponent implements OnInit {
   questionBaseService = inject(QuestionBaseService);
   questionService = inject(QuestionService);
   confirmationService = inject(ConfirmationService);
+  router = inject(Router);
+
+  id: string | null = null;
 
   questionDialogVisible: boolean = false;
   currentEditedQuestionIndex: number = -1;
@@ -86,13 +89,30 @@ export class QuestionBaseEditComponent implements OnInit {
     correctAnswerSelectionValidator()
   );
 
+  searchFormControl = new FormControl<string>('', Validators.required);
+
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
+      if (paramMap.get('id') == null) {
+        return;
+      }
+
+      this.id = paramMap.get('id');
+
       this.questions =
-        this.questionBaseService.getQuestionsFromUserQuestionBase(
-          paramMap.get('id')!
-        );
+        this.questionBaseService.getQuestionsFromUserQuestionBase(this.id!);
     });
+  }
+
+  goBack(): void {
+    this.router.navigateByUrl('manager/question-bases');
+  }
+
+  searchForQuestions(): void {
+    this.questionService.searchForQuestions(
+      this.id!,
+      this.searchFormControl.value!
+    );
   }
 
   getDialogHeader(): string {

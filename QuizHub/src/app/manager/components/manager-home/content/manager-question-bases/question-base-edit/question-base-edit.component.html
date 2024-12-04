@@ -1,5 +1,15 @@
 <p-confirmDialog></p-confirmDialog>
 <div class="container">
+    <div class="top-bar">
+        <p-button [outlined]="true" [style]="{'margin-right': '40px'}" (click)="goBack()">
+            <i class="pi pi-arrow-left"></i>
+        </p-button>
+
+        <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
+
+        <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
+    </div>
+
     @for (question of questions; track $index) {
         <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index)">
             <h1>{{ question.content }}</h1>

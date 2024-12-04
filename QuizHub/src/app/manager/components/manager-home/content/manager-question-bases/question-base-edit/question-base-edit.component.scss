@@ -12,6 +12,17 @@
         overflow: auto;
     }
 
+    .top-bar {
+        margin: 60px 95px 20px 65px;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+
+        input {
+            width: 100%;
+        }
+    }
+
     .question-panel {
         position: relative;
         background: var(--primary-900);

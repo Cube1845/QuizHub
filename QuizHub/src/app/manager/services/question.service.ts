@@ -10,4 +10,6 @@ export class QuestionService {
   editQuestion(question: Question, id: string): void {}
 
   removeQuestion(id: string): void {}
+
+  searchForQuestions(questionBaseId: string, key: string): void {}
 }
