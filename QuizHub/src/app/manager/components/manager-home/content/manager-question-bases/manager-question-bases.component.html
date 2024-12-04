@@ -1,3 +1,4 @@
+<p-toast position="bottom-left" [life]="3000" />
 <p-confirmDialog></p-confirmDialog>
 @for (questionBase of questionBases; track $index) {
     <div class="question-base-panel contains-delete-button" (click)="this.router.navigateByUrl('manager/question-base-edit/' + questionBase.id)">

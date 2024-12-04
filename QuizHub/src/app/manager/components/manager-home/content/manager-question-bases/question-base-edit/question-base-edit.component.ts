@@ -20,8 +20,9 @@ import { correctAnswerSelectionValidator } from '../../../../../../common/valida
 import { QuestionService } from '../../../../../services/question.service';
 import { Answer } from '../../../../../../common/models/answer';
 import { enforceSequentialAnswersValidator } from '../../../../../../common/validators/enforce-sequential-answers-validator';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -36,16 +37,18 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     InputGroupAddonModule,
     ReactiveFormsModule,
     ConfirmDialogModule,
+    ToastModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, MessageService],
 })
 export class QuestionBaseEditComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   questionBaseService = inject(QuestionBaseService);
   questionService = inject(QuestionService);
   confirmationService = inject(ConfirmationService);
+  messageService = inject(MessageService);
   router = inject(Router);
 
   id: string | null = null;
@@ -180,6 +183,11 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionService.removeQuestion(this.questions![index].id);
 
     this.questions!.splice(index, 1);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Usunięto pytanie',
+    });
   }
 
   private getAnswerId(questionIndex: number, answerIndex: number): string {
@@ -224,6 +232,12 @@ export class QuestionBaseEditComponent implements OnInit {
       this.questionFormGroup.controls.content.value!;
 
     this.questions![this.currentEditedQuestionIndex].answers = answers;
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Zapisano pytanie',
+    });
   }
 
   addQuestion(): void {
@@ -275,5 +289,10 @@ export class QuestionBaseEditComponent implements OnInit {
     };
 
     this.questions!.push(newQuestion);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Dodano pytanie',
+    });
   }
 }

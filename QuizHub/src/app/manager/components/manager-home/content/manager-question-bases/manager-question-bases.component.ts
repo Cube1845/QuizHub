@@ -9,7 +9,8 @@ import { QuestionBaseData } from '../../../../../common/models/questionBaseData'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -21,16 +22,18 @@ import { ConfirmationService } from 'primeng/api';
     FloatLabelModule,
     ReactiveFormsModule,
     ConfirmDialogModule,
+    ToastModule,
   ],
   templateUrl: './manager-question-bases.component.html',
   styleUrl: './manager-question-bases.component.scss',
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, MessageService],
 })
 export class ManagerQuestionBasesComponent {
   questionBaseService = inject(QuestionBaseService);
   polishWordVariationService = inject(PolishWordVariationService);
   router = inject(Router);
   confirmationService = inject(ConfirmationService);
+  messageService = inject(MessageService);
 
   dialogVisible: boolean = false;
   currentEditedQuestionBaseIndex: number = -1;
@@ -85,6 +88,11 @@ export class ManagerQuestionBasesComponent {
     this.questionBaseService.removeQuestionBase(this.questionBases![index].id);
 
     this.questionBases?.splice(index, 1);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Usunięto bazę pytań',
+    });
   }
 
   createQuestionBase(): void {
@@ -103,5 +111,10 @@ export class ManagerQuestionBasesComponent {
 
     this.questionBases![this.currentEditedQuestionBaseIndex].name =
       this.nameFormControl.value!;
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Zapisano nazwę',
+    });
   }
 }
