@@ -58,11 +58,12 @@ export class ManagerQuestionBasesComponent {
   displayQuestionBaseNameEditDialog(event: Event, index: number): void {
     event.stopPropagation();
 
+    this.nameFormControl.setValue(this.questionBases![index].name);
     this.currentEditedQuestionBaseIndex = index;
     this.dialogVisible = true;
   }
 
-  displayQuestionBaseRemovalModal(event: Event): void {
+  displayQuestionBaseRemovalModal(event: Event, index: number): void {
     event.stopPropagation();
 
     this.confirmationService.confirm({
@@ -74,10 +75,16 @@ export class ManagerQuestionBasesComponent {
       rejectButtonStyleClass: 'p-button-danger p-button-outlined',
       acceptIcon: 'none',
       rejectIcon: 'none',
+      defaultFocus: 'reject',
 
-      accept: () => {},
-      reject: () => {},
+      accept: () => this.removeQuestionBase(index),
     });
+  }
+
+  removeQuestionBase(index: number): void {
+    this.questionBaseService.removeQuestionBase(this.questionBases![index].id);
+
+    this.questionBases?.splice(index, 1);
   }
 
   createQuestionBase(): void {
@@ -86,5 +93,15 @@ export class ManagerQuestionBasesComponent {
     );
 
     this.router.navigateByUrl('manager/question-base-edit/newuuid');
+  }
+
+  saveQuestionBaseName(): void {
+    this.questionBaseService.editQuestionBaseName(
+      this.nameFormControl.value!,
+      this.questionBases![this.currentEditedQuestionBaseIndex].id
+    );
+
+    this.questionBases![this.currentEditedQuestionBaseIndex].name =
+      this.nameFormControl.value!;
   }
 }

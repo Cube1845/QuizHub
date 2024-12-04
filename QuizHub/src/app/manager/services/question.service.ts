@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Question } from '../../common/models/question';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionService {
-  addQuestion(): void {}
+  addQuestion(question: Question): void {}
 
-  saveQuestion(): void {}
+  editQuestion(question: Question, id: string): void {}
+
+  removeQuestion(id: string): void {}
 }

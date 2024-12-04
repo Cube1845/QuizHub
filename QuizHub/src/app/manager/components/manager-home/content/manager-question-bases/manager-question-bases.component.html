@@ -5,7 +5,7 @@
         <p>{{ questionBase.questionCount }} {{ this.polishWordVariationService.getQuestionWordVariation(questionBase.questionCount) }}</p>
 
         <i class="pi pi-pencil clickable-icon edit-icon" (click)="displayQuestionBaseNameEditDialog($event, $index)"></i>
-        <i class="pi pi-trash clickable-icon delete-icon" (click)="displayQuestionBaseRemovalModal($event)"></i>
+        <i class="pi pi-trash clickable-icon delete-icon" (click)="displayQuestionBaseRemovalModal($event, $index)"></i>
     </div>
 }
 
@@ -25,13 +25,13 @@
 
     @if (currentEditedQuestionBaseIndex < 0) {
         <div class="dialog-buttons-box">
-            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="dialogVisible = false" class="dialog-button"/>
-            <p-button label="Utwórz" severity="success" [outlined]="true" (click)="dialogVisible = false; createQuestionBase()" class="dialog-button" [disabled]="nameFormControl.invalid"/>
+            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="dialogVisible = false; nameFormControl.reset()" class="dialog-button"/>
+            <p-button label="Utwórz" severity="success" [outlined]="true" (click)="dialogVisible = false; createQuestionBase(); nameFormControl.reset()" class="dialog-button" [disabled]="nameFormControl.invalid"/>
         </div>
     } @else {
         <div class="dialog-buttons-box">
-            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="dialogVisible = false; currentEditedQuestionBaseIndex = -1" class="dialog-button"/>
-            <p-button label="Utwórz" severity="success" [outlined]="true" (click)="dialogVisible = false; currentEditedQuestionBaseIndex = -1" class="dialog-button" [disabled]="nameFormControl.invalid"/>
+            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="dialogVisible = false; currentEditedQuestionBaseIndex = -1; nameFormControl.reset()" class="dialog-button"/>
+            <p-button label="Zapisz" severity="success" [outlined]="true" (click)="dialogVisible = false; saveQuestionBaseName(); currentEditedQuestionBaseIndex = -1; nameFormControl.reset()" class="dialog-button" [disabled]="nameFormControl.invalid"/>
         </div>
     }
 </p-dialog>

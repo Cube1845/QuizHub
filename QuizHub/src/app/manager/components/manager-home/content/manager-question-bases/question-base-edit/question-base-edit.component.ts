@@ -19,6 +19,9 @@ import { requireOneSelectedAnswerValidator } from '../../../../../../common/vali
 import { correctAnswerSelectionValidator } from '../../../../../../common/validators/correct-answer-selection-validator';
 import { QuestionService } from '../../../../../services/question.service';
 import { Answer } from '../../../../../../common/models/answer';
+import { enforceSequentialAnswersValidator } from '../../../../../../common/validators/enforce-sequential-answers-validator';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -32,14 +35,17 @@ import { Answer } from '../../../../../../common/models/answer';
     InputGroupModule,
     InputGroupAddonModule,
     ReactiveFormsModule,
+    ConfirmDialogModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
+  providers: [ConfirmationService],
 })
 export class QuestionBaseEditComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   questionBaseService = inject(QuestionBaseService);
   questionService = inject(QuestionService);
+  confirmationService = inject(ConfirmationService);
 
   questionDialogVisible: boolean = false;
   currentEditedQuestionIndex: number = -1;
@@ -52,18 +58,21 @@ export class QuestionBaseEditComponent implements OnInit {
         Validators.required,
         Validators.minLength(3),
       ]),
-      answers: new FormGroup([
-        new FormControl<string>('', [
-          Validators.required,
-          Validators.minLength(3),
-        ]),
-        new FormControl<string>('', [
-          Validators.required,
-          Validators.minLength(3),
-        ]),
-        new FormControl<string>('', Validators.minLength(3)),
-        new FormControl<string>('', Validators.minLength(3)),
-      ]),
+      answers: new FormGroup(
+        [
+          new FormControl<string>('', [
+            Validators.required,
+            Validators.minLength(3),
+          ]),
+          new FormControl<string>('', [
+            Validators.required,
+            Validators.minLength(3),
+          ]),
+          new FormControl<string>('', Validators.minLength(3)),
+          new FormControl<string>('', Validators.minLength(3)),
+        ],
+        enforceSequentialAnswersValidator()
+      ),
       correctAnswers: new FormGroup(
         [
           new FormControl<boolean>(false),
@@ -129,39 +138,100 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionDialogVisible = true;
   }
 
+  displayQuestionRemovalModal(event: Event, index: number): void {
+    event.stopPropagation();
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz usunąć to pytanie?',
+      header: 'Potwierdzenie usunięcia',
+      icon: 'pi pi-trash',
+      acceptButtonStyleClass: 'p-button-success p-button-outlined',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      defaultFocus: 'reject',
+
+      accept: () => this.removeQuestion(index),
+    });
+  }
+
+  removeQuestion(index: number): void {
+    this.questionService.removeQuestion(this.questions![index].id);
+
+    this.questions!.splice(index, 1);
+  }
+
+  private getAnswerId(questionIndex: number, answerIndex: number): string {
+    if (this.questions![questionIndex].answers.length > answerIndex) {
+      return this.questions![questionIndex].answers[answerIndex].id;
+    }
+
+    return '';
+  }
+
   saveQuestion(): void {
-    this.questionService.saveQuestion(); // to API
+    //change that to questionDTO something \/
+
+    var answerFormControls =
+      this.questionFormGroup.controls.answers.controls.filter(
+        (fc) => fc.value != ''
+      );
+
+    var answers: Answer[] = [];
+
+    answerFormControls.forEach((fc, i) => {
+      answers.push({
+        content: fc.value!,
+        id: this.getAnswerId(this.currentEditedQuestionIndex, i),
+        isCorrect:
+          this.questionFormGroup.controls.correctAnswers.controls[i].value!,
+      });
+    });
+
+    var question: Question = {
+      content: this.questionFormGroup.controls.content.value!,
+      answers: answers,
+      id: this.questions![this.currentEditedQuestionIndex].id,
+    };
+
+    this.questionService.editQuestion(
+      question,
+      this.questions![this.currentEditedQuestionIndex].id
+    ); // to API
 
     this.questions![this.currentEditedQuestionIndex].content =
       this.questionFormGroup.controls.content.value!;
 
-    this.questions![this.currentEditedQuestionIndex].answers[0].content =
-      this.questionFormGroup.controls.answers.controls[0].value!;
-    this.questions![this.currentEditedQuestionIndex].answers[0].isCorrect =
-      this.questionFormGroup.controls.correctAnswers.controls[0].value!;
-
-    this.questions![this.currentEditedQuestionIndex].answers[1].content =
-      this.questionFormGroup.controls.answers.controls[1].value!;
-    this.questions![this.currentEditedQuestionIndex].answers[1].isCorrect =
-      this.questionFormGroup.controls.correctAnswers.controls[1].value!;
-
-    if (this.questions![this.currentEditedQuestionIndex].answers.length > 2) {
-      this.questions![this.currentEditedQuestionIndex].answers[2].content =
-        this.questionFormGroup.controls.answers.controls[2].value!;
-      this.questions![this.currentEditedQuestionIndex].answers[2].isCorrect =
-        this.questionFormGroup.controls.correctAnswers.controls[2].value!;
-    }
-
-    if (this.questions![this.currentEditedQuestionIndex].answers.length > 3) {
-      this.questions![this.currentEditedQuestionIndex].answers[3].content =
-        this.questionFormGroup.controls.answers.controls[3].value!;
-      this.questions![this.currentEditedQuestionIndex].answers[3].isCorrect =
-        this.questionFormGroup.controls.correctAnswers.controls[3].value!;
-    }
+    this.questions![this.currentEditedQuestionIndex].answers = answers;
   }
 
   addQuestion(): void {
-    this.questionService.addQuestion(); // to API
+    //change that to questionDTO something \/
+
+    var answerFormControls =
+      this.questionFormGroup.controls.answers.controls.filter(
+        (fc) => fc.value != ''
+      );
+
+    var answers: Answer[] = [];
+
+    answerFormControls.forEach((fc, i) => {
+      answers.push({
+        content: fc.value!,
+        id: '',
+        isCorrect:
+          this.questionFormGroup.controls.correctAnswers.controls[i].value!,
+      });
+    });
+
+    var question: Question = {
+      content: this.questionFormGroup.controls.content.value!,
+      answers: answers,
+      id: '',
+    };
+
+    this.questionService.addQuestion(question); // to API
 
     var answers: Answer[] = this.questionFormGroup.controls.answers.controls
       .filter((fc) => fc.value != '')

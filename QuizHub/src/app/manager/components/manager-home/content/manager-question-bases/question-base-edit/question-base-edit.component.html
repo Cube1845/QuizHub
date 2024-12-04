@@ -1,3 +1,4 @@
+<p-confirmDialog></p-confirmDialog>
 <div class="container">
     @for (question of questions; track $index) {
         <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index)">
@@ -65,6 +66,8 @@
                 }
 
             </div>
+
+            <i class="pi pi-trash delete-icon" (click)="displayQuestionRemovalModal($event, $index)"></i>
         </div>
     }
 </div>

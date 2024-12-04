@@ -13,6 +13,7 @@
     }
 
     .question-panel {
+        position: relative;
         background: var(--primary-900);
         margin: 30px 95px 30px 65px;
         border-radius: var(--border-radius);
@@ -59,6 +60,23 @@
             margin: 0;
             margin-left: 3px;
             font-size: 20px;
+        }
+    }
+
+    .delete-icon {
+        position: absolute;
+        font-size: 1.5rem;
+        color: var(--text-color);
+        transition: 0.1s;
+        bottom: 0.8rem;
+        right: 1.1rem;
+
+        &:hover {
+            color: var(--red-500);
+            right: 1.05rem;
+            font-size: 1.6rem;
+            transition: 0.1s;
+            bottom: 0.75rem;
         }
     }
 
