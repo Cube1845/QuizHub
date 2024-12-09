@@ -11,6 +11,12 @@
         <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
     </div>
 
+    @if (!questions || questions.length == 0) {
+        <div style="display: flex; justify-content: center;  margin: 0px 95px 0px 65px;">
+            <p>Brak pytań do wyświetlenia</p>
+        </div>
+    }
+
     @for (question of questions; track $index) {
         <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index)">
             <h1>{{ question.content }}</h1>
