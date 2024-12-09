@@ -14,20 +14,20 @@
     }
 
     h1 {
-        color: var(--primary-color);
+        color: var(--p-primary-color);
         margin-bottom: 60px;
         font-size: 48px;
     }
 
     a {
-        color: var(--primary-color);
+        color: var(--p-primary-color);
         margin-top: 35px;
         font-size: 18px;
         text-decoration: none;
 
         &:hover {
             text-decoration: underline;
-            color: var(--primary-400);
+            color: var(--p-primary-400);
         }
     }
 

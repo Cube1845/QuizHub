@@ -3,7 +3,7 @@
 <div class="container">
     <div class="top-bar">
         <p-button [outlined]="true" [style]="{'margin-right': '40px'}" (click)="goBack()">
-            <i class="pi pi-arrow-left"></i>
+            <i class="pi pi-arrow-left" style="font-size: 1.3rem; padding: 0.25rem"></i>
         </p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
@@ -90,10 +90,10 @@
 </div>
 
 <p-button class="add-question-button" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true">
-    <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--text-color)"></i>
+    <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--p-text-color)"></i>
 </p-button>
 
-<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '29rem' }">
+<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '31rem' }">
     <div class="question-input-box">
         <div class="question-content-box">
             <p-floatLabel>

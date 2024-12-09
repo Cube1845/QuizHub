@@ -167,12 +167,14 @@ export class QuestionBaseEditComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Na pewno chcesz usunąć to pytanie?',
-      header: 'Potwierdzenie usunięcia',
-      icon: 'pi pi-trash',
+      header: 'Potwierdzenie',
+      icon: '',
       acceptButtonStyleClass: 'p-button-success p-button-outlined',
       rejectButtonStyleClass: 'p-button-danger p-button-outlined',
-      acceptIcon: 'none',
-      rejectIcon: 'none',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
       defaultFocus: 'reject',
 
       accept: () => this.removeQuestion(index),

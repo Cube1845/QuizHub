@@ -1,9 +1,8 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { NavBarItem } from '../../models/navBarItem';
 import { DividerModule } from 'primeng/divider';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgStyle } from '@angular/common';
-import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-nav-bar',
@@ -26,7 +25,7 @@ export class NavBarComponent implements OnInit {
         plainRoute == '/' + item.route ||
         item.alternativeRoutes.some((route) => plainRoute == '/' + route)
       ) {
-        item.color = 'var(--primary-900)';
+        item.color = 'var(--p-primary-800)';
       }
     });
   }
@@ -52,6 +51,6 @@ export class NavBarComponent implements OnInit {
       item.color = null;
     });
 
-    this.navBarItems[index].color = 'var(--primary-900)';
+    this.navBarItems[index].color = 'var(--p-primary-800)';
   }
 }

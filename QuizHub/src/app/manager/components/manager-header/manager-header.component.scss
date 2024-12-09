@@ -6,10 +6,10 @@
     align-items: center;
     justify-content: center;
 
-    background-color: var(--primary-color);
+    background-color: var(--p-primary-color);
 
     h1 {
-        color: var(--text-color);
+        color: var(--p-text-color);
         font-size: 40px;
         padding: 0px;
         margin: 0;
@@ -34,6 +34,6 @@
 
     .user-icon {
         font-size: 20px;
-        color: var(--text-color);
+        color: var(--p-text-color);
     }
 }

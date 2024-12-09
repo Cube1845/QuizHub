@@ -25,9 +25,9 @@
 
     .question-panel {
         position: relative;
-        background: var(--primary-900);
+        background: var(--p-primary-900);
         margin: 30px 95px 30px 65px;
-        border-radius: var(--border-radius);
+        border-radius: var(--p-border-radius-md);
         padding: 1px 40px;
         display: flex;
         flex-direction: column;
@@ -35,7 +35,7 @@
         transition: 0.2s;
 
         &:hover {
-            background: var(--primary-700);
+            background: var(--p-primary-700);
             transition: 0.2s;
             cursor: pointer;
         }
@@ -77,13 +77,13 @@
     .delete-icon {
         position: absolute;
         font-size: 1.5rem;
-        color: var(--text-color);
+        color: var(--p-text-color);
         transition: 0.1s;
         bottom: 0.8rem;
         right: 1.1rem;
 
         &:hover {
-            color: var(--red-500);
+            color: var(--p-red-500);
             right: 1.05rem;
             font-size: 1.6rem;
             transition: 0.1s;
@@ -102,7 +102,7 @@
     }
 
     .question-input-box {
-        margin: 20px 20px 0px 20px;
+        margin: 30px 25px 0px 20px;
         
         .question-content-box {
             margin: 0px 5px 0px 5px !important;
@@ -110,7 +110,7 @@
     }
 
     .question-buttons-box {
-        margin: 60px 25px 10px 0px;
+        margin: 60px 15px 10px 0px;
         display: flex;
         justify-content: end;
 
@@ -139,6 +139,6 @@
     }
 
     .input-border-radius-left-only {
-        border-radius: var(--border-radius) 0px 0px var(--border-radius);
+        border-radius: var(--p-border-radius-sm) 0px 0px var(--p-border-radius-sm) !important;
     }
 }

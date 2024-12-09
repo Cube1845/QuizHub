@@ -13,20 +13,19 @@
     }
 
     .nav-bar-item {
-        margin: 0px;
-        margin-left: 16px;
+        margin: 0px 16px;
         font-size: 1.3vw;
         display: flex;
         align-items: center;
         justify-content: start;
         padding: 10px 25px;
-        border-radius: var(--border-radius);
+        border-radius: var(--p-border-radius-md);
         transition: 0.2s;
-        color: var(--text-color);
+        color: var(--p-text-color);
         
         &:hover {
             cursor: pointer;
-            background: var(--primary-800);
+            background: var(--p-primary-900);
             transition: 0.2s;
         }
     }
