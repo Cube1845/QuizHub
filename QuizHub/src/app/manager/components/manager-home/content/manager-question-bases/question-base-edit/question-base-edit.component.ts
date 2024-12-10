@@ -23,6 +23,8 @@ import { enforceSequentialAnswersValidator } from '../../../../../../common/vali
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { FileUpload } from 'primeng/fileupload';
+import { Image } from 'primeng/image';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -38,6 +40,8 @@ import { ToastModule } from 'primeng/toast';
     ReactiveFormsModule,
     ConfirmDialogModule,
     ToastModule,
+    FileUpload,
+    Image,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
@@ -55,6 +59,8 @@ export class QuestionBaseEditComponent implements OnInit {
 
   questionDialogVisible: boolean = false;
   currentEditedQuestionIndex: number = -1;
+
+  imagePreviewVisible: boolean = false;
 
   questions: Question[] | null = null;
 
@@ -161,6 +167,26 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionDialogVisible = true;
   }
 
+  uploadContentImage(fileUploader: any): void {
+    const files = fileUploader.files;
+    if (!files || files.length === 0) {
+      console.error('No file selected to upload!');
+      return;
+    }
+
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = reader.result as string;
+      this.questions![this.currentEditedQuestionIndex].imageId = base64String;
+    };
+    reader.onerror = (error) => {
+      console.error('Error reading file:', error);
+    };
+
+    reader.readAsDataURL(file);
+  }
+
   displayQuestionRemovalModal(event: Event, index: number): void {
     event.stopPropagation();
 
@@ -222,6 +248,7 @@ export class QuestionBaseEditComponent implements OnInit {
     var question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
+      imageId: null,
       id: this.questions![this.currentEditedQuestionIndex].id,
     };
 
@@ -264,6 +291,7 @@ export class QuestionBaseEditComponent implements OnInit {
     var question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
+      imageId: null,
       id: '',
     };
 
@@ -287,6 +315,7 @@ export class QuestionBaseEditComponent implements OnInit {
     var newQuestion: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
+      imageId: null,
       id: '',
     };
 

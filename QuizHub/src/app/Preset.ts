@@ -1442,10 +1442,9 @@ export const Preset = definePreset(Lara, {
               color: '{purple.400}',
             },
             danger: {
-              hoverBackground:
-                'color-mix(in srgb, {danger.400}, transparent 96%)',
+              hoverBackground: 'color-mix(in srgb, {red.400}, transparent 96%)',
               activeBackground:
-                'color-mix(in srgb, {danger.400}, transparent 84%)',
+                'color-mix(in srgb, {red.400}, transparent 84%)',
               borderColor: '{red.700}',
               color: '{red.400}',
             },

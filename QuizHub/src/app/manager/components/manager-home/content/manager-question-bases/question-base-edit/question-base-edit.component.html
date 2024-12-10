@@ -93,6 +93,12 @@
     <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--p-text-color)"></i>
 </p-button>
 
+<p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto', padding: '20px'}" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false">
+    @if (imagePreviewVisible) {
+        <p-image [src]="this.questions![currentEditedQuestionIndex].imageId!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', display: 'inline'}"></p-image>
+    }
+</p-dialog>
+
 <p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '31rem' }">
     <div class="question-input-box">
         <div class="question-content-box">
@@ -100,6 +106,19 @@
                 <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90" formControlName="content"/>
                 <label for="quesiton-content">Pytanie</label>
             </p-floatLabel>
+
+            <div>
+                <p-fileUpload
+                  #fileUploader
+                  accept="image/*"
+                  [maxFileSize]="1000000"
+                  mode="basic"
+                  [multiple]="false"
+                ></p-fileUpload>
+    
+                <button pButton type="button" label="Upload" (click)="uploadContentImage(fileUploader)"></button>
+                <button pButton type="button" label="Show picture" (click)="imagePreviewVisible = true"></button>
+            </div>
         </div>
 
         <div class="question-answer-row">
