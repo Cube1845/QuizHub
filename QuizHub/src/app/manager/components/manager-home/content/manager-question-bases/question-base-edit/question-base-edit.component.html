@@ -2,17 +2,16 @@
 <p-confirmDialog></p-confirmDialog>
 <div class="container">
     <div class="top-bar">
-        <p-button [outlined]="true" [style]="{'margin-right': '40px'}" (click)="goBack()">
-            <i class="pi pi-arrow-left" style="font-size: 1.3rem; padding: 0.25rem"></i>
-        </p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '25px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
 
-        <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '25px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '25px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true"></p-button>
     </div>
 
     @if (!questions || questions.length == 0) {
-        <div style="display: flex; justify-content: center;  margin: 0px 95px 0px 65px;">
+        <div style="display: flex; justify-content: center;  margin: 0px 25px;">
             <p>Brak pytań do wyświetlenia</p>
         </div>
     }
@@ -24,58 +23,70 @@
             <div class="answer-box">
                 <div class="answer-row">
                     <div class="answer-column">
-                        <h2>Odpowiedź A:</h2>
-                        <p>
-                            @if (question.answers[0].isCorrect) {
-                                <i class="pi pi-check-circle" style="font-size: 1rem"></i>
-                            } @else {
-                                <i class="pi pi-times-circle" style="font-size: 1rem"></i>
-                            }
-                            
-                            {{ question.answers[0].content }}
-                        </p>
+                        @if (question.answers[0].isCorrect) {
+                            <h2 style="color: var(--p-primary-color)">Odpowiedź A:</h2>
+                            <p style="color: var(--p-primary-color)">
+                                <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                {{ question.answers[0].content }}
+                            </p>
+                        } @else {
+                            <h2>Odpowiedź A:</h2>
+                            <p>
+                                <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                {{ question.answers[0].content }}
+                            </p>
+                        }
                     </div>
                     <div class="answer-column">
-                        <h2>Odpowiedź B:</h2>
-                        <p>
-                            @if (question.answers[1].isCorrect) {
-                                <i class="pi pi-check-circle" style="font-size: 1rem"></i>
-                            } @else {
-                                <i class="pi pi-times-circle" style="font-size: 1rem"></i>
-                            }
-
-                            {{ question.answers[1].content }}
-                        </p>
+                        @if (question.answers[1].isCorrect) {
+                            <h2 style="color: var(--p-primary-color)">Odpowiedź B:</h2>
+                            <p style="color: var(--p-primary-color)">
+                                <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                {{ question.answers[1].content }}
+                            </p>
+                        } @else {
+                            <h2>Odpowiedź B:</h2>
+                            <p>
+                                <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                {{ question.answers[1].content }}
+                            </p>
+                        }
                     </div>
                 </div>
 
                 @if (question.answers.length > 2) {
                     <div class="answer-row">
                         <div class="answer-column">
-                            <h2>Odpowiedź C:</h2>
-                            <p>
-                                @if (question.answers[2].isCorrect) {
-                                    <i class="pi pi-check-circle" style="font-size: 1rem"></i>
-                                } @else {
-                                    <i class="pi pi-times-circle" style="font-size: 1rem"></i>
-                                }
-
-                                {{ question.answers[2].content }}
-                            </p>
+                            @if (question.answers[2].isCorrect) {
+                                <h2 style="color: var(--p-primary-color)">Odpowiedź C:</h2>
+                                <p style="color: var(--p-primary-color)">
+                                    <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                    {{ question.answers[2].content }}
+                                </p>
+                            } @else {
+                                <h2>Odpowiedź C:</h2>
+                                <p>
+                                    <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                    {{ question.answers[2].content }}
+                                </p>
+                            }
                         </div>
 
                         @if (question.answers.length > 3) {
                             <div class="answer-column">
-                                <h2>Odpowiedź D:</h2>
-                                <p>
-                                    @if (question.answers[3].isCorrect) {
-                                        <i class="pi pi-check-circle" style="font-size: 1rem"></i>
-                                    } @else {
-                                        <i class="pi pi-times-circle" style="font-size: 1rem"></i>
-                                    }
-    
-                                    {{ question.answers[3].content }}
-                                </p>
+                                @if (question.answers[3].isCorrect) {
+                                    <h2 style="color: var(--p-primary-color)">Odpowiedź D:</h2>
+                                    <p style="color: var(--p-primary-color)">
+                                        <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                        {{ question.answers[3].content }}
+                                    </p>
+                                } @else {
+                                    <h2>Odpowiedź D:</h2>
+                                    <p>
+                                        <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                        {{ question.answers[3].content }}
+                                    </p>
+                                }
                             </div>
                         }
 
@@ -88,10 +99,6 @@
         </div>
     }
 </div>
-
-<p-button class="add-question-button" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true">
-    <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--p-text-color)"></i>
-</p-button>
 
 <p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto' }" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false">
     @if (imagePreviewVisible) {
@@ -120,7 +127,7 @@
                   [multiple]="false"
                   (onSelect)="setTemporaryContentImage(fileUploader)"
                   [auto]="true"
-                  chooseLabel="Wybierz obraz"
+                  [chooseLabel]="getContentImageFileUploaderText()"
                   chooseIcon="pi pi-upload"
                   [style]="
                     {'height': '30px',
@@ -135,16 +142,14 @@
                     @if ((temporaryContentImageBase64 != null || this.questions![currentEditedQuestionIndex].image != null) && temporaryContentImageBase64 != '') {
                         <p-button 
                             type="button" 
-                            label="" 
                             icon="pi pi-eye"
-                            (click)="imagePreviewVisible = true" 
+                            (click)="imagePreviewVisible = true"
+                            [outlined]="true"
                             [style]="
                                 {'height': '30px',
-                                'color': 'var(--p-primary-color)',
                                 'margin-right': '12px',
                                 'margin-top': '10px',
-                                'font-size': '14px',
-                                'background': 'transparent'}"
+                                'font-size': '14px'}"
                             />
 
                         <p-button 
@@ -152,7 +157,7 @@
                             label="" 
                             icon="pi pi-trash"
                             (click)="temporaryContentImageBase64 = ''"
-                            severity="danger"
+                            severity="secondary"
                             [outlined]="true"
                             [style]="
                                 {'height': '30px',
@@ -229,15 +234,13 @@
         </div>
     </div>
     
-    @if (currentEditedQuestionIndex >= 0) {
-        <div class="question-buttons-box">
-            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="questionDialogVisible = false; questionFormGroup.reset(); currentEditedQuestionIndex = -1; temporaryContentImageBase64 = null" class="dialog-button"/>
-            <p-button label="Zapisz" severity="success" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="saveQuestion(); questionDialogVisible = false; questionFormGroup.reset(); currentEditedQuestionIndex = -1; temporaryContentImageBase64 = null" class="dialog-button"/>
-        </div>
-    } @else {
-        <div class="question-buttons-box">
-            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="questionDialogVisible = false; questionFormGroup.reset(); temporaryContentImageBase64 = null" class="dialog-button"/>
-            <p-button label="Zapisz" severity="success" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion(); questionDialogVisible = false; questionFormGroup.reset()" class="dialog-button"/>
-        </div>
-    }
+    <div class="question-buttons-box">
+        @if (currentEditedQuestionIndex >= 0) {
+            <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="closeEditDialog()" class="dialog-button"/>
+            <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="saveQuestion()" class="dialog-button"/>
+        } @else {
+            <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="closeEditDialog()" class="dialog-button"/>
+            <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="dialog-button"/>
+        }
+    </div>
 </p-dialog>

@@ -203,6 +203,29 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
+  getContentImageFileUploaderText(): string {
+    const defaultString = 'Wybierz obraz';
+
+    if (
+      this.questions == null ||
+      this.questions.length == 0 ||
+      this.currentEditedQuestionIndex == -1
+    ) {
+      return defaultString;
+    }
+
+    if (
+      this.questions![this.currentEditedQuestionIndex].image == null &&
+      (this.temporaryContentImageBase64 == null ||
+        this.temporaryContentImageBase64 == '')
+    ) {
+      return defaultString;
+    }
+
+    //here change
+    return 'awda';
+  }
+
   setTemporaryContentImage(fileUploader: any): void {
     const files = fileUploader.files;
     if (!files || files.length === 0) {
@@ -236,8 +259,8 @@ export class QuestionBaseEditComponent implements OnInit {
       message: 'Na pewno chcesz usunąć to pytanie?',
       header: 'Potwierdzenie',
       icon: '',
-      acceptButtonStyleClass: 'p-button-success p-button-outlined',
-      rejectButtonStyleClass: 'p-button-danger p-button-outlined',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
       acceptIcon: '',
       rejectIcon: '',
       acceptLabel: 'Tak',
@@ -323,6 +346,11 @@ export class QuestionBaseEditComponent implements OnInit {
 
     this.questions![this.currentEditedQuestionIndex].image = question.image;
 
+    this.questionDialogVisible = false;
+    this.questionFormGroup.reset();
+    this.currentEditedQuestionIndex = -1;
+    this.temporaryContentImageBase64 = null;
+
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
@@ -332,31 +360,6 @@ export class QuestionBaseEditComponent implements OnInit {
 
   addQuestion(): void {
     //change that to questionDTO something \/
-
-    var answerFormControls =
-      this.questionFormGroup.controls.answers.controls.filter(
-        (fc) => fc.value != ''
-      );
-
-    var answers: Answer[] = [];
-
-    answerFormControls.forEach((fc, i) => {
-      answers.push({
-        content: fc.value!,
-        id: '',
-        isCorrect:
-          this.questionFormGroup.controls.correctAnswers.controls[i].value!,
-      });
-    });
-
-    var question: Question = {
-      content: this.questionFormGroup.controls.content.value!,
-      answers: answers,
-      image: null,
-      id: '',
-    };
-
-    this.questionService.addQuestion(question);
 
     var answers: Answer[] = this.questionFormGroup.controls.answers.controls
       .filter((fc) => fc.value != '')
@@ -373,18 +376,31 @@ export class QuestionBaseEditComponent implements OnInit {
         return null!;
       });
 
-    var newQuestion: Question = {
+    var question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: null,
       id: '',
     };
 
-    this.questions!.push(newQuestion);
+    this.questionService.addQuestion(question);
+
+    this.questionDialogVisible = false;
+    this.questionFormGroup.reset();
+    this.temporaryContentImageBase64 = null;
+
+    this.questions!.push(question);
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
       detail: 'Dodano pytanie',
     });
+  }
+
+  closeEditDialog(): void {
+    this.questionDialogVisible = false;
+    this.questionFormGroup.reset();
+    this.currentEditedQuestionIndex = -1;
+    this.temporaryContentImageBase64 = null;
   }
 }

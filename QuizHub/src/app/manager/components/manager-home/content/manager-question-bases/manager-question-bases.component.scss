@@ -1,9 +1,7 @@
 :host {
-    $panel-size: 200px;
+    $panel-size: 210px;
 
-    width: 100%;
-    height: 100%;
-    margin: 0;
+    margin: 15px;
     padding: 0;
     display: flex;
     flex-direction: row;
@@ -11,12 +9,12 @@
     flex-wrap: wrap;
     
     .question-base-panel {
-        background: var(--p-primary-900);
+        background: var(--p-zinc-800);
         color: var(--p-text-color);
         width: $panel-size;
         height: $panel-size;
-        border-radius: var(--p-border-radius-md);
-        margin: 40px 30px 20px 30px;
+        border-radius: var(--p-border-radius-lg);
+        margin: 16px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -28,11 +26,17 @@
         }
 
         p {
-            font-size: 20px;
+            font-size: 18px;
+            color: var(--p-zinc-400);
+        }
+
+        h1, p {
+            padding: 0px;
+            margin: 0px;
         }
 
         &:hover {
-            background: var(--p-primary-700);
+            background: var(--p-zinc-700);
             transition: 0.2s;
             cursor: pointer;
         }
@@ -44,44 +48,24 @@
 
     .clickable-icon {
         position: absolute;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: var(--p-text-color);
         transition: 0.1s;
-        bottom: 0.8rem;
+        bottom: 10px;
 
         &:hover {
-            font-size: 1.4rem;
             transition: 0.1s;
-            bottom: 0.75rem;
+            bottom: 10px;
+            color: var(--p-primary-color);
         }
     }
 
     .delete-icon {
-        right: 1.2rem;
-
-        &:hover {
-            color: var(--p-red-500);
-            right: 1.15rem;
-        }
+        right: 10px;
     }
 
     .edit-icon {
-        left: 1.2rem;
-
-        &:hover {
-            color: var(--p-yellow-300);
-            left: 1.15rem;
-        }
-    }
-
-    .add-question-base-button {
-        padding: 0px;
-        border-radius: 100%;
-        display: flex;
-        position: absolute;
-        transition: 0.2s;
-        right: 30px;
-        bottom: 30px;
+        right: 38px;
     }
 
     p-floatLabel {

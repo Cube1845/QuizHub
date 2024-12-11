@@ -13,7 +13,7 @@
     }
 
     .top-bar {
-        margin: 60px 95px 20px 65px;
+        margin: 25px;
         display: flex;
         flex-direction: row;
         justify-content: start;
@@ -25,9 +25,9 @@
 
     .question-panel {
         position: relative;
-        background: var(--p-primary-900);
-        margin: 30px 95px 30px 65px;
-        border-radius: var(--p-border-radius-md);
+        background: var(--p-zinc-900);
+        margin: 0 25px 25px 25px;
+        border-radius: var(--p-border-radius-lg);
         padding: 1px 40px;
         display: flex;
         flex-direction: column;
@@ -35,23 +35,29 @@
         transition: 0.2s;
 
         &:hover {
-            background: var(--p-primary-700);
+            background: var(--p-zinc-800);
             transition: 0.2s;
             cursor: pointer;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 15px 0 0 0;
+            padding: 0px;
         }
     }
 
     .answer-box {
         display: flex;
         flex-direction: column;
-        width: 90%;
-        margin-bottom: 30px;
+        width: 93%;
+        margin-bottom: 15px;
     }
 
     .answer-row {
         display: flex;
         flex-direction: row;
-        width: 90%;
+        width: 100%;
         margin: 5px 0px
     }
 
@@ -62,32 +68,36 @@
         align-items: start;
 
         h2 {
-            margin: 5px;
-            font-size: 24px;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            color: var(--p-zinc-300);
         }
 
         p {
-            padding: 3px;
+            padding: 0;
             margin: 0;
-            margin-left: 3px;
-            font-size: 20px;
+            font-size: 16px;
+            color: var(--p-zinc-300);
+
+            i {
+                padding-right: 5px;
+                color: var(--p-zinc-300);
+            }
         }
     }
 
     .delete-icon {
         position: absolute;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         color: var(--p-text-color);
         transition: 0.1s;
-        bottom: 0.8rem;
-        right: 1.1rem;
+        bottom: 10px;
+        right: 10px;
 
         &:hover {
-            color: var(--p-red-500);
-            right: 1.05rem;
-            font-size: 1.6rem;
+            color: var(--p-primary-color);
             transition: 0.1s;
-            bottom: 0.75rem;
         }
     }
 
@@ -102,10 +112,10 @@
     }
 
     .question-input-box {
-        margin: 30px 25px 0px 20px;
+        margin: 30px 20px 0px 20px;
         
         .question-content-box {
-            margin: 0px 5px 0px 5px !important;
+            margin: 0px 5px 0px 5px;
             
             .question-content-image-box {
                 display: flex;
@@ -115,7 +125,7 @@
     }
 
     .question-buttons-box {
-        margin: 60px 15px 10px 0px;
+        margin: 60px 25px 10px 0px;
         display: flex;
         justify-content: end;
 
