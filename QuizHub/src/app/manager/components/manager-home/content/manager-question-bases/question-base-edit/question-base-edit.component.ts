@@ -25,6 +25,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { Image } from 'primeng/image';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -55,12 +56,13 @@ export class QuestionBaseEditComponent implements OnInit {
   messageService = inject(MessageService);
   router = inject(Router);
 
-  id: string | null = null;
+  questionBaseId: string | null = null;
 
   questionDialogVisible: boolean = false;
   currentEditedQuestionIndex: number = -1;
 
   imagePreviewVisible: boolean = false;
+  temporaryContentImageBase64: string | null = null;
 
   questions: Question[] | null = null;
 
@@ -106,10 +108,12 @@ export class QuestionBaseEditComponent implements OnInit {
         return;
       }
 
-      this.id = paramMap.get('id');
+      this.questionBaseId = paramMap.get('id');
 
       this.questions =
-        this.questionBaseService.getQuestionsFromUserQuestionBase(this.id!);
+        this.questionBaseService.getQuestionsFromUserQuestionBase(
+          this.questionBaseId!
+        );
     });
   }
 
@@ -119,7 +123,7 @@ export class QuestionBaseEditComponent implements OnInit {
 
   searchForQuestions(): void {
     this.questionService.searchForQuestions(
-      this.id!,
+      this.questionBaseId!,
       this.searchFormControl.value!
     );
   }
@@ -167,7 +171,39 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionDialogVisible = true;
   }
 
-  uploadContentImage(fileUploader: any): void {
+  private resizeImage(
+    base64String: string,
+    targetHeight: number
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = document.createElement('img') as HTMLImageElement;
+
+      img.onload = () => {
+        const aspectRatio = img.width / img.height;
+        const targetWidth = targetHeight * aspectRatio;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Failed to get canvas context'));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+        const resizedBase64 = canvas.toDataURL('image/png');
+        resolve(resizedBase64);
+      };
+      img.onerror = (error) => reject(new Error(`Image load error: ${error}`));
+
+      img.src = base64String;
+    });
+  }
+
+  setTemporaryContentImage(fileUploader: any): void {
     const files = fileUploader.files;
     if (!files || files.length === 0) {
       console.error('No file selected to upload!');
@@ -178,8 +214,13 @@ export class QuestionBaseEditComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = reader.result as string;
-      this.questions![this.currentEditedQuestionIndex].imageId = base64String;
+      this.resizeImage(base64String, environment.defaultImageHeight).then(
+        (resizedBase64) => {
+          this.temporaryContentImageBase64 = resizedBase64;
+        }
+      );
     };
+
     reader.onerror = (error) => {
       console.error('Error reading file:', error);
     };
@@ -226,9 +267,7 @@ export class QuestionBaseEditComponent implements OnInit {
     return '';
   }
 
-  saveQuestion(): void {
-    //change that to questionDTO something \/
-
+  private buildQuestionFromQuestionFormGroup(): Question {
     var answerFormControls =
       this.questionFormGroup.controls.answers.controls.filter(
         (fc) => fc.value != ''
@@ -245,22 +284,44 @@ export class QuestionBaseEditComponent implements OnInit {
       });
     });
 
+    var image: string | null = null;
+
+    if (
+      this.temporaryContentImageBase64 != '' &&
+      this.temporaryContentImageBase64 != null
+    ) {
+      image = this.temporaryContentImageBase64;
+    } else if (
+      this.temporaryContentImageBase64 == null &&
+      this.questions![this.currentEditedQuestionIndex].image != null
+    ) {
+      image = this.questions![this.currentEditedQuestionIndex].image!;
+    }
+
     var question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
-      imageId: null,
+      image: image,
       id: this.questions![this.currentEditedQuestionIndex].id,
     };
+
+    return question;
+  }
+
+  saveQuestion(): void {
+    const question = this.buildQuestionFromQuestionFormGroup();
 
     this.questionService.editQuestion(
       question,
       this.questions![this.currentEditedQuestionIndex].id
-    ); // to API
+    );
 
     this.questions![this.currentEditedQuestionIndex].content =
       this.questionFormGroup.controls.content.value!;
 
-    this.questions![this.currentEditedQuestionIndex].answers = answers;
+    this.questions![this.currentEditedQuestionIndex].answers = question.answers;
+
+    this.questions![this.currentEditedQuestionIndex].image = question.image;
 
     this.messageService.add({
       severity: 'success',
@@ -291,11 +352,11 @@ export class QuestionBaseEditComponent implements OnInit {
     var question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
-      imageId: null,
+      image: null,
       id: '',
     };
 
-    this.questionService.addQuestion(question); // to API
+    this.questionService.addQuestion(question);
 
     var answers: Answer[] = this.questionFormGroup.controls.answers.controls
       .filter((fc) => fc.value != '')
@@ -315,7 +376,7 @@ export class QuestionBaseEditComponent implements OnInit {
     var newQuestion: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
-      imageId: null,
+      image: null,
       id: '',
     };
 

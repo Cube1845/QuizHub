@@ -93,13 +93,17 @@
     <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--p-text-color)"></i>
 </p-button>
 
-<p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto', padding: '20px'}" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false">
+<p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto' }" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false">
     @if (imagePreviewVisible) {
-        <p-image [src]="this.questions![currentEditedQuestionIndex].imageId!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', display: 'inline'}"></p-image>
+        @if (this.questions![currentEditedQuestionIndex].image != null && temporaryContentImageBase64 == null) {
+            <p-image [src]="this.questions![currentEditedQuestionIndex].image!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', margin: '5px'}"></p-image>
+        } @else {
+            <p-image [src]="temporaryContentImageBase64!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', margin: '5px'}"></p-image>
+        }
     }
 </p-dialog>
 
-<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '31rem' }">
+<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '34rem' }">
     <div class="question-input-box">
         <div class="question-content-box">
             <p-floatLabel>
@@ -107,17 +111,57 @@
                 <label for="quesiton-content">Pytanie</label>
             </p-floatLabel>
 
-            <div>
+            <div class="question-content-image-box">
                 <p-fileUpload
                   #fileUploader
                   accept="image/*"
                   [maxFileSize]="1000000"
                   mode="basic"
                   [multiple]="false"
+                  (onSelect)="setTemporaryContentImage(fileUploader)"
+                  [auto]="true"
+                  chooseLabel="Wybierz obraz"
+                  chooseIcon="pi pi-upload"
+                  [style]="
+                    {'height': '30px',
+                    'color': 'var(--p-primary-color)',
+                    'margin-right': '12px',
+                    'margin-top': '10px',
+                    'font-size': '14px',
+                    'background': 'var(--p-severity-danger)'}"
                 ></p-fileUpload>
-    
-                <button pButton type="button" label="Upload" (click)="uploadContentImage(fileUploader)"></button>
-                <button pButton type="button" label="Show picture" (click)="imagePreviewVisible = true"></button>
+                
+                @if (!!questions && currentEditedQuestionIndex >= 0) {
+                    @if ((temporaryContentImageBase64 != null || this.questions![currentEditedQuestionIndex].image != null) && temporaryContentImageBase64 != '') {
+                        <p-button 
+                            type="button" 
+                            label="" 
+                            icon="pi pi-eye"
+                            (click)="imagePreviewVisible = true" 
+                            [style]="
+                                {'height': '30px',
+                                'color': 'var(--p-primary-color)',
+                                'margin-right': '12px',
+                                'margin-top': '10px',
+                                'font-size': '14px',
+                                'background': 'transparent'}"
+                            />
+
+                        <p-button 
+                            type="button" 
+                            label="" 
+                            icon="pi pi-trash"
+                            (click)="temporaryContentImageBase64 = ''"
+                            severity="danger"
+                            [outlined]="true"
+                            [style]="
+                                {'height': '30px',
+                                'margin-right': '12px',
+                                'margin-top': '10px',
+                                'font-size': '14px'}"
+                            />
+                    }
+                }
             </div>
         </div>
 
@@ -187,12 +231,12 @@
     
     @if (currentEditedQuestionIndex >= 0) {
         <div class="question-buttons-box">
-            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="questionDialogVisible = false; questionFormGroup.reset(); currentEditedQuestionIndex = -1" class="dialog-button"/>
-            <p-button label="Zapisz" severity="success" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="saveQuestion(); questionDialogVisible = false; questionFormGroup.reset(); currentEditedQuestionIndex = -1" class="dialog-button"/>
+            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="questionDialogVisible = false; questionFormGroup.reset(); currentEditedQuestionIndex = -1; temporaryContentImageBase64 = null" class="dialog-button"/>
+            <p-button label="Zapisz" severity="success" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="saveQuestion(); questionDialogVisible = false; questionFormGroup.reset(); currentEditedQuestionIndex = -1; temporaryContentImageBase64 = null" class="dialog-button"/>
         </div>
     } @else {
         <div class="question-buttons-box">
-            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="questionDialogVisible = false; questionFormGroup.reset()" class="dialog-button"/>
+            <p-button label="Anuluj" severity="danger" [outlined]="true" (click)="questionDialogVisible = false; questionFormGroup.reset(); temporaryContentImageBase64 = null" class="dialog-button"/>
             <p-button label="Zapisz" severity="success" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion(); questionDialogVisible = false; questionFormGroup.reset()" class="dialog-button"/>
         </div>
     }

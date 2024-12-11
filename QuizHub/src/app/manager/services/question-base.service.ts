@@ -40,7 +40,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 1',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz a',
@@ -62,7 +62,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 2',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz a1',
@@ -89,7 +89,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 3',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz a2',
@@ -121,7 +121,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 11',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz 1a',
@@ -148,7 +148,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 12',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz 1a1',
@@ -175,7 +175,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 13',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz 1a2',
@@ -202,7 +202,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 14',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz 1a3',
@@ -229,7 +229,7 @@ export class QuestionBaseService {
         {
           content: 'Pytanie 15',
           id: uuidv4(),
-          imageId: null,
+          image: null,
           answers: [
             {
               content: 'Odpowiedz 1a4',
