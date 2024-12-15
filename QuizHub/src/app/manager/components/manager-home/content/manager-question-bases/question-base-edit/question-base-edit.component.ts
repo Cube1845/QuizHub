@@ -26,6 +26,7 @@ import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { Image } from 'primeng/image';
 import { environment } from '../../../../../../../environments/environment.development';
+import { NamedImage } from '../../../../../../common/models/namedImage';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -56,13 +57,16 @@ export class QuestionBaseEditComponent implements OnInit {
   messageService = inject(MessageService);
   router = inject(Router);
 
+  readonly maxImageSize = environment.maxImageSize;
+
   questionBaseId: string | null = null;
 
   questionDialogVisible: boolean = false;
   currentEditedQuestionIndex: number = -1;
 
   imagePreviewVisible: boolean = false;
-  temporaryContentImageBase64: string | null = null;
+
+  temporaryContentImage: NamedImage | null = null;
 
   questions: Question[] | null = null;
 
@@ -134,6 +138,11 @@ export class QuestionBaseEditComponent implements OnInit {
     }
 
     return 'Dodaj pytanie';
+  }
+
+  previewRawImage(imageString: string, event: Event): void {
+    event.stopPropagation();
+    this.imagePreviewVisible = true;
   }
 
   openQuestionEditor(index: number) {
@@ -216,14 +225,37 @@ export class QuestionBaseEditComponent implements OnInit {
 
     if (
       this.questions![this.currentEditedQuestionIndex].image == null &&
-      (this.temporaryContentImageBase64 == null ||
-        this.temporaryContentImageBase64 == '')
+      (this.temporaryContentImage == null ||
+        this.temporaryContentImage.imageBase64 == '')
     ) {
       return defaultString;
     }
 
-    //here change
-    return 'awda';
+    if (
+      this.temporaryContentImage != null &&
+      this.temporaryContentImage.imageBase64 == ''
+    ) {
+      return defaultString;
+    }
+
+    if (this.temporaryContentImage != null) {
+      return this.temporaryContentImage!.imageName;
+    }
+
+    return this.questions![this.currentEditedQuestionIndex].image!.imageName;
+  }
+
+  handleSelectedContentImage(event: any): void {
+    const file: File = event.files[0];
+
+    if (file.size > this.maxImageSize) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Błąd',
+        detail: 'Wybrany plik jest zbyt duży.',
+      });
+      return;
+    }
   }
 
   setTemporaryContentImage(fileUploader: any): void {
@@ -239,7 +271,10 @@ export class QuestionBaseEditComponent implements OnInit {
       const base64String = reader.result as string;
       this.resizeImage(base64String, environment.defaultImageHeight).then(
         (resizedBase64) => {
-          this.temporaryContentImageBase64 = resizedBase64;
+          this.temporaryContentImage = {
+            imageBase64: resizedBase64,
+            imageName: file.name,
+          };
         }
       );
     };
@@ -307,15 +342,18 @@ export class QuestionBaseEditComponent implements OnInit {
       });
     });
 
-    var image: string | null = null;
+    var image: NamedImage | null = null;
 
     if (
-      this.temporaryContentImageBase64 != '' &&
-      this.temporaryContentImageBase64 != null
+      this.temporaryContentImage?.imageBase64 != '' &&
+      this.temporaryContentImage != null
     ) {
-      image = this.temporaryContentImageBase64;
+      image = {
+        imageBase64: this.temporaryContentImage.imageBase64,
+        imageName: this.temporaryContentImage.imageName,
+      };
     } else if (
-      this.temporaryContentImageBase64 == null &&
+      this.temporaryContentImage == null &&
       this.questions![this.currentEditedQuestionIndex].image != null
     ) {
       image = this.questions![this.currentEditedQuestionIndex].image!;
@@ -349,7 +387,7 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionDialogVisible = false;
     this.questionFormGroup.reset();
     this.currentEditedQuestionIndex = -1;
-    this.temporaryContentImageBase64 = null;
+    this.temporaryContentImage = null;
 
     this.messageService.add({
       severity: 'success',
@@ -385,11 +423,12 @@ export class QuestionBaseEditComponent implements OnInit {
 
     this.questionService.addQuestion(question);
 
+    this.questions!.push(question);
+
     this.questionDialogVisible = false;
     this.questionFormGroup.reset();
-    this.temporaryContentImageBase64 = null;
+    this.temporaryContentImage = null;
 
-    this.questions!.push(question);
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
@@ -401,6 +440,6 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionDialogVisible = false;
     this.questionFormGroup.reset();
     this.currentEditedQuestionIndex = -1;
-    this.temporaryContentImageBase64 = null;
+    this.temporaryContentImage = null;
   }
 }

@@ -9,18 +9,27 @@
         width: 100%;
         height: 100%;
         margin: 0;
-        overflow: auto;
     }
 
     .top-bar {
-        margin: 25px;
+        padding: 25px;
+        margin: 0;
         display: flex;
         flex-direction: row;
         justify-content: start;
+        background: var(--p-zinc-850);
 
         input {
             width: 100%;
         }
+    }
+
+    .question-box {
+        margin: 0;
+        width: 100%;
+        max-height: 100%;
+        padding-top: 25px;
+        overflow: auto;
     }
 
     .question-panel {
@@ -39,18 +48,36 @@
             transition: 0.2s;
             cursor: pointer;
         }
+    }
+
+    .question-content {
+        display: flex;
+        flex-direction: column;
+        margin: 15px 0 0 0;
+        padding: 0;
+        align-items: start;
+        justify-content: center;
+        width: 100%;
 
         h1 {
             font-size: 28px;
-            margin: 15px 0 0 0;
+            margin: 0;
             padding: 0px;
         }
+
+        p-image {
+            margin: 25px 0 5px 0;
+        }
+    }
+
+    .image-button .pi {
+        font-size: 10px !important;
     }
 
     .answer-box {
         display: flex;
         flex-direction: column;
-        width: 93%;
+        width: 100%;
         margin-bottom: 15px;
     }
 
@@ -58,7 +85,7 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        margin: 5px 0px
+        margin: 8px 0px
     }
 
     .answer-column {
@@ -90,7 +117,7 @@
     .delete-icon {
         position: absolute;
         font-size: 1.2rem;
-        color: var(--p-text-color);
+        color: var(--p-zinc-300);
         transition: 0.1s;
         bottom: 10px;
         right: 10px;
@@ -119,7 +146,19 @@
             
             .question-content-image-box {
                 display: flex;
-                flex-direction: none;
+                flex-direction: column;
+
+                p {
+                    color: var(--p-zinc-300);
+                    padding: 0;
+                    margin: 5px 0 0 2px;
+                    line-height: 0;
+                    font-size: 12px;
+
+                    i {
+                        padding-right: 5px;
+                    }
+                }
             }
         }
     }
