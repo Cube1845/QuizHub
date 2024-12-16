@@ -18,10 +18,10 @@
         }
 
         @for (question of questions; track $index) {
-            <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index)">
+            <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index, $event)">
                 <div class="question-content">
                     @if (question.image != null) {
-                        <p-image [src]="question.image.imageBase64" alt="Image Preview" [style]="{ height: '400px', width: '25rem', margin: '5px'}"></p-image>
+                        <p-image [src]="question.image.imageBase64" alt="Obraz do treści" height="150" [preview]="true" class="independent-cilck-action"></p-image>
                     }
                     <h1>{{ question.content }}</h1>
                 </div>
@@ -100,7 +100,7 @@
 
                 </div>
 
-                <i class="pi pi-trash delete-icon" (click)="displayQuestionRemovalModal($event, $index)"></i>
+                <i class="pi pi-trash delete-icon independent-cilck-action" (click)="displayQuestionRemovalModal($event, $index)"></i>
             </div>
         }
     </div>

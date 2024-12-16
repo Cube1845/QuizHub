@@ -140,12 +140,16 @@ export class QuestionBaseEditComponent implements OnInit {
     return 'Dodaj pytanie';
   }
 
-  previewRawImage(imageString: string, event: Event): void {
-    event.stopPropagation();
-    this.imagePreviewVisible = true;
-  }
+  openQuestionEditor(index: number, event: MouseEvent) {
+    const clickedElement = event.target as HTMLElement;
+    const isMainComponent =
+      clickedElement.closest('.independent-cilck-action') !== null;
 
-  openQuestionEditor(index: number) {
+    if (isMainComponent) {
+      event.stopPropagation();
+      return;
+    }
+
     var answerValues = this.questions![index].answers.map(
       (answer) => answer.content
     );
@@ -287,8 +291,6 @@ export class QuestionBaseEditComponent implements OnInit {
   }
 
   displayQuestionRemovalModal(event: Event, index: number): void {
-    event.stopPropagation();
-
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Na pewno chcesz usunąć to pytanie?',
