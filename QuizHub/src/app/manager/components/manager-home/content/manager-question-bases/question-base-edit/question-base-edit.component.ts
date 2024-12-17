@@ -67,6 +67,7 @@ export class QuestionBaseEditComponent implements OnInit {
   imagePreviewVisible: boolean = false;
 
   temporaryContentImage: NamedImage | null = null;
+  temporaryAnswerImages: (NamedImage | null)[] = [null, null, null, null];
 
   questions: Question[] | null = null;
 
@@ -249,7 +250,42 @@ export class QuestionBaseEditComponent implements OnInit {
     return this.questions![this.currentEditedQuestionIndex].image!.imageName;
   }
 
-  handleSelectedContentImage(event: any): void {
+  getAnswerImageFileUploaderText(answerIndex: number): string {
+    const defaultString = 'Wybierz obraz';
+
+    if (
+      this.questions == null ||
+      this.questions.length == 0 ||
+      this.currentEditedQuestionIndex == -1
+    ) {
+      return defaultString;
+    }
+
+    if (
+      this.questions![this.currentEditedQuestionIndex].answers[answerIndex]
+        .image == null &&
+      (this.temporaryAnswerImages[answerIndex] == null ||
+        this.temporaryAnswerImages[answerIndex]!.imageBase64 == '')
+    ) {
+      return defaultString;
+    }
+
+    if (
+      this.temporaryAnswerImages[answerIndex] != null &&
+      this.temporaryAnswerImages[answerIndex]!.imageBase64 == ''
+    ) {
+      return defaultString;
+    }
+
+    if (this.temporaryAnswerImages[answerIndex] != null) {
+      return this.temporaryAnswerImages[answerIndex]!.imageName;
+    }
+
+    return this.questions![this.currentEditedQuestionIndex].answers[answerIndex]
+      .image!.imageName;
+  }
+
+  handleSelectedImage(event: any): void {
     const file: File = event.files[0];
 
     if (file.size > this.maxImageSize) {
@@ -276,6 +312,34 @@ export class QuestionBaseEditComponent implements OnInit {
       this.resizeImage(base64String, environment.defaultImageHeight).then(
         (resizedBase64) => {
           this.temporaryContentImage = {
+            imageBase64: resizedBase64,
+            imageName: file.name,
+          };
+        }
+      );
+    };
+
+    reader.onerror = (error) => {
+      console.error('Error reading file:', error);
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  setTemporaryAnswerImage(fileUploader: any, answerIndex: number): void {
+    const files = fileUploader.files;
+    if (!files || files.length === 0) {
+      console.error('No file selected to upload!');
+      return;
+    }
+
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = reader.result as string;
+      this.resizeImage(base64String, environment.defaultImageHeight).then(
+        (resizedBase64) => {
+          this.temporaryAnswerImages[answerIndex] = {
             imageBase64: resizedBase64,
             imageName: file.name,
           };
@@ -333,12 +397,39 @@ export class QuestionBaseEditComponent implements OnInit {
         (fc) => fc.value != ''
       );
 
+    var answerImages: (NamedImage | null)[] = answerFormControls
+      .map(() => null)
+      .map((none, index) => {
+        var tempImage: NamedImage | null = null;
+
+        if (
+          this.temporaryAnswerImages[index]! != null &&
+          this.temporaryAnswerImages[index]!.imageBase64 != ''
+        ) {
+          tempImage = {
+            imageBase64: this.temporaryAnswerImages[index]!.imageBase64,
+            imageName: this.temporaryAnswerImages[index]!.imageName,
+          };
+        } else if (
+          this.temporaryAnswerImages[index]! == null &&
+          this.questions![this.currentEditedQuestionIndex].answers[index]
+            .image != null
+        ) {
+          tempImage =
+            this.questions![this.currentEditedQuestionIndex].answers[index]
+              .image;
+        }
+
+        return tempImage;
+      });
+
     var answers: Answer[] = [];
 
     answerFormControls.forEach((fc, i) => {
       answers.push({
         content: fc.value!,
         id: this.getAnswerId(this.currentEditedQuestionIndex, i),
+        image: answerImages[i],
         isCorrect:
           this.questionFormGroup.controls.correctAnswers.controls[i].value!,
       });
@@ -347,8 +438,8 @@ export class QuestionBaseEditComponent implements OnInit {
     var image: NamedImage | null = null;
 
     if (
-      this.temporaryContentImage?.imageBase64 != '' &&
-      this.temporaryContentImage != null
+      this.temporaryContentImage != null &&
+      this.temporaryContentImage?.imageBase64 != ''
     ) {
       image = {
         imageBase64: this.temporaryContentImage.imageBase64,
@@ -410,6 +501,7 @@ export class QuestionBaseEditComponent implements OnInit {
             isCorrect:
               this.questionFormGroup.controls.correctAnswers.controls[index]
                 .value!,
+            image: null, //here
             id: '',
           };
         }

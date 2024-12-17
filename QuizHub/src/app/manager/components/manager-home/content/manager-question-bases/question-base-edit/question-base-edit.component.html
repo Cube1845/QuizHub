@@ -108,6 +108,7 @@
 
 <p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto' }" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false">
     @if (imagePreviewVisible) {
+        <!-- here choose what do display -->
         @if (this.questions![currentEditedQuestionIndex].image != null && temporaryContentImage == null) {
             <p-image [src]="this.questions![currentEditedQuestionIndex].image!.imageBase64" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', margin: '5px'}"></p-image>
         } @else {
@@ -116,7 +117,7 @@
     }
 </p-dialog>
 
-<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '34rem' }">
+<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '45rem' }">
     <div class="question-input-box">
         <div class="question-content-box">
             <p-floatLabel>
@@ -137,7 +138,7 @@
                     [auto]="true"
                     [chooseLabel]="getContentImageFileUploaderText()"
                     chooseIcon="pi pi-upload"
-                    (onSelect)="handleSelectedContentImage($event)"
+                    (onSelect)="handleSelectedImage($event)"
                     invalidFileSizeMessageSummary=""
                     invalidFileSizeMessageDetail=""
                     [style]="
@@ -180,12 +181,12 @@
                         }
                     }
                 </div>
-                <p><i class="pi pi-info-circle" style="font-size: 12px"></i>Wybrany obraz będzie się wyświetlał nad treścią pytania.</p>
+                <p class="image-info-text-p"><i class="pi pi-info-circle" style="font-size: 12px"></i>Wybrany obraz będzie się wyświetlał nad treścią pytania.</p>
             </div>
         </div>
 
         <div class="question-answer-row">
-            <div>
+            <div class="dialog-single-answer-box">
                 <p-inputGroup>
                     <p-floatLabel [style]="{width: '100%'}">
                         <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[0]"/>
@@ -198,8 +199,64 @@
                         </p-inputGroupAddon>
                     </p-floatLabel>
                 </p-inputGroup>
+                <div style="display: flex; margin: 0; padding: 0; flex-direction: row; margin-left: 5px">
+                    <p-fileUpload
+                    #fileUploaderA
+                    accept="image/*"
+                    [maxFileSize]="this.maxImageSize"
+                    [customUpload]="true"
+                    mode="basic"
+                    [multiple]="false"
+                    (onSelect)="setTemporaryAnswerImage(fileUploaderA, 0)"
+                    [auto]="true"
+                    [chooseLabel]="getAnswerImageFileUploaderText(0)"
+                    chooseIcon="pi pi-upload"
+                    (onSelect)="handleSelectedImage($event)"
+                    invalidFileSizeMessageSummary=""
+                    invalidFileSizeMessageDetail=""
+                    [style]="
+                        {'height': '30px',
+                        'color': 'var(--p-primary-color)',
+                        'margin-right': '12px',
+                        'margin-top': '10px',
+                        'font-size': '14px',
+                        'background': 'transparent'}"
+                    ></p-fileUpload>
+                    
+                    @if (!!questions && currentEditedQuestionIndex >= 0) {
+                        @if ((temporaryAnswerImages[0] != null || this.questions![currentEditedQuestionIndex].answers[0].image != null) && temporaryAnswerImages[0]?.imageBase64 != '') {
+                            <p-button 
+                                type="button" 
+                                icon="pi pi-eye"
+                                (click)="imagePreviewVisible = true"
+                                [outlined]="true"
+                                severity="primary"
+                                [style]="
+                                    {'height': '30px',
+                                    'margin-right': '12px',
+                                    'margin-top': '10px',
+                                    'font-size': '14px'}"
+                                />
+
+                            <p-button 
+                                type="button" 
+                                label="" 
+                                icon="pi pi-trash"
+                                (click)="temporaryAnswerImages[0] = {imageBase64: '', imageName: ''}"
+                                severity="secondary"
+                                [outlined]="true"
+                                [style]="
+                                    {'height': '30px',
+                                    'margin-right': '12px',
+                                    'margin-top': '10px',
+                                    'font-size': '14px'}"
+                                />
+                        }
+                    }
+                </div>
+                <p class="image-info-text-p"><i class="pi pi-info-circle" style="font-size: 12px"></i>Wybrany obraz będzie się wyświetlał nad treścią odpowiedzi A.</p>
             </div>
-            <div>
+            <div class="dialog-single-answer-box">
                 <p-inputGroup>
                     <p-floatLabel [style]="{width: '100%'}">
                         <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[1]"/>
