@@ -65,6 +65,7 @@ export class QuestionBaseEditComponent implements OnInit {
   currentEditedQuestionIndex: number = -1;
 
   imagePreviewVisible: boolean = false;
+  imagePreviewBase64: string | null = null;
 
   temporaryContentImage: NamedImage | null = null;
   temporaryAnswerImages: (NamedImage | null)[] = [null, null, null, null];
@@ -256,12 +257,17 @@ export class QuestionBaseEditComponent implements OnInit {
     if (
       this.questions == null ||
       this.questions.length == 0 ||
-      this.currentEditedQuestionIndex == -1
+      this.currentEditedQuestionIndex == -1 ||
+      (answerIndex >=
+        this.questions[this.currentEditedQuestionIndex].answers.length &&
+        this.temporaryAnswerImages[answerIndex] == null)
     ) {
       return defaultString;
     }
 
     if (
+      answerIndex <
+        this.questions[this.currentEditedQuestionIndex].answers.length &&
       this.questions![this.currentEditedQuestionIndex].answers[answerIndex]
         .image == null &&
       (this.temporaryAnswerImages[answerIndex] == null ||
@@ -391,10 +397,16 @@ export class QuestionBaseEditComponent implements OnInit {
     return '';
   }
 
+  displayImagePreview(imageBase64: string): void {
+    this.imagePreviewBase64 = imageBase64;
+    this.imagePreviewVisible = true;
+  }
+
   private buildQuestionFromQuestionFormGroup(): Question {
     var answerFormControls =
       this.questionFormGroup.controls.answers.controls.filter(
-        (fc) => fc.value != ''
+        (fc, index) =>
+          fc.value != '' || this.temporaryAnswerImages[index] != null
       );
 
     var answerImages: (NamedImage | null)[] = answerFormControls
@@ -434,6 +446,10 @@ export class QuestionBaseEditComponent implements OnInit {
           this.questionFormGroup.controls.correctAnswers.controls[i].value!,
       });
     });
+
+    answers = answers.filter(
+      (answer) => answer.image != null || answer.content != ''
+    );
 
     var image: NamedImage | null = null;
 
@@ -481,6 +497,7 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionFormGroup.reset();
     this.currentEditedQuestionIndex = -1;
     this.temporaryContentImage = null;
+    this.temporaryAnswerImages = [null, null, null, null];
 
     this.messageService.add({
       severity: 'success',
@@ -535,5 +552,6 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionFormGroup.reset();
     this.currentEditedQuestionIndex = -1;
     this.temporaryContentImage = null;
+    this.temporaryAnswerImages = [null, null, null, null];
   }
 }
