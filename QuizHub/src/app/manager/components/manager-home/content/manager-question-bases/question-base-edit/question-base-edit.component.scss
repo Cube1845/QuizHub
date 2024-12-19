@@ -144,22 +144,9 @@
         .question-content-box {
             margin: 0px 5px 0px 5px;
             
-            .question-content-image-box {
-                display: flex;
-                flex-direction: column;
+            app-image-panel {
+                margin-top: 10px;
             }
-        }
-    }
-
-    .image-info-text-p {
-        color: var(--p-zinc-300);
-        padding: 0;
-        margin: 5px 0 0 2px;
-        line-height: 0;
-        font-size: 12px;
-
-        i {
-            padding-right: 5px;
         }
     }
 
@@ -168,15 +155,6 @@
         flex-direction: column !important;
         margin: 0;
         padding: 0;
-
-        .image-info-text-p {
-            margin-left: 5px;
-            font-size: 14px;
-        }
-
-        .smaller {
-            font-size: 12px !important;
-        }
     }
 
     .question-buttons-box {
