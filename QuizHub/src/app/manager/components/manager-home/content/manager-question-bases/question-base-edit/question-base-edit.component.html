@@ -2,12 +2,12 @@
 <p-confirmDialog></p-confirmDialog>
 <div class="container">
     <div class="top-bar">
-        <p-button [outlined]="true" [style]="{'margin-right': '25px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
 
-        <p-button [outlined]="true" [style]="{'margin-left': '25px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
-        <p-button [outlined]="true" [style]="{'margin-left': '25px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true"></p-button>
     </div>
 
     <div class="question-box">

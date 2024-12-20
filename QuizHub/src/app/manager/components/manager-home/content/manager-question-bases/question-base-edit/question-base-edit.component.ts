@@ -24,7 +24,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { Image } from 'primeng/image';
-import { environment } from '../../../../../../../environments/environment.development';
+import { DialogService } from 'primeng/dynamicdialog';
 import { ImagePanelComponent } from './image-panel/image-panel.component';
 
 @Component({
@@ -46,15 +46,16 @@ import { ImagePanelComponent } from './image-panel/image-panel.component';
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService, DialogService],
 })
 export class QuestionBaseEditComponent implements OnInit {
-  activatedRoute = inject(ActivatedRoute);
+  private readonly activatedRoute = inject(ActivatedRoute);
   questionBaseService = inject(QuestionBaseService);
   questionService = inject(QuestionService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
   router = inject(Router);
+  dialogService = inject(DialogService);
 
   questionBaseId!: string | null;
 
@@ -73,7 +74,7 @@ export class QuestionBaseEditComponent implements OnInit {
         Validators.minLength(3),
       ]),
       contentImage: new FormControl<File | null>(null),
-      answers: new FormGroup(
+      answers: new FormGroup<FormControl<string | null>[]>(
         [
           new FormControl<string>('', [
             Validators.required,
@@ -88,7 +89,7 @@ export class QuestionBaseEditComponent implements OnInit {
         ],
         enforceSequentialAnswersValidator()
       ),
-      correctAnswers: new FormGroup(
+      correctAnswers: new FormGroup<FormControl<boolean | null>[]>(
         [
           new FormControl<boolean>(false),
           new FormControl<boolean>(false),
@@ -153,39 +154,27 @@ export class QuestionBaseEditComponent implements OnInit {
       return;
     }
 
-    var answerValues = this.questions![index].answers.map(
+    const answerValues = this.questions![index].answers.map(
       (answer) => answer.content
+    );
+
+    const correctAnswers = this.questions![index].answers.map(
+      (answer) => answer.isCorrect
     );
 
     while (answerValues.length < 4) {
       answerValues.push('');
-    }
-
-    var correctAnswers = this.questions![index].answers.map(
-      (answer) => answer.isCorrect
-    );
-
-    while (correctAnswers.length < 4) {
       correctAnswers.push(false);
     }
 
     this.questionFormGroup.setValue({
       content: this.questions![index].content,
       contentImage: null,
-      answers: [
-        answerValues[0],
-        answerValues[1],
-        answerValues[2],
-        answerValues[3],
-      ],
-      correctAnswers: [
-        correctAnswers[0],
-        correctAnswers[1],
-        correctAnswers[2],
-        correctAnswers[3],
-      ],
+      answers: answerValues,
+      correctAnswers: correctAnswers,
       answerImages: [null, null, null, null],
     });
+
     this.questionDialogVisible = true;
   }
 
@@ -232,18 +221,20 @@ export class QuestionBaseEditComponent implements OnInit {
   }
 
   private buildQuestionFromQuestionFormGroup(): Question {
-    var lastAnswerIndex = 0;
+    const controls = this.questionFormGroup.controls; //change
+
+    let lastAnswerIndex = 0;
 
     for (let i = 0; i < 4; i++) {
       if (
-        this.questionFormGroup.controls.answers.controls[i] != null ||
-        this.questionFormGroup.controls.answerImages.controls[i] != null
+        this.questionFormGroup.controls.answers.controls[i].value != null ||
+        this.questionFormGroup.controls.answerImages.controls[i].value != null
       ) {
         lastAnswerIndex++;
       }
     }
 
-    var answers: Answer[] = [];
+    const answers: Answer[] = [];
 
     for (let i = 0; i < lastAnswerIndex; i++) {
       answers.push({
@@ -255,9 +246,9 @@ export class QuestionBaseEditComponent implements OnInit {
       });
     }
 
-    var image: File | null = null;
+    const image = this.questionFormGroup.value.contentImage!;
 
-    var question: Question = {
+    const question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: image,
@@ -268,6 +259,8 @@ export class QuestionBaseEditComponent implements OnInit {
   }
 
   saveQuestion(): void {
+    const currentQuestion = this.questions![this.currentEditedQuestionIndex]; //change
+
     const question = this.buildQuestionFromQuestionFormGroup();
 
     this.questionService.editQuestion(
@@ -312,7 +305,7 @@ export class QuestionBaseEditComponent implements OnInit {
         return null!;
       });
 
-    var question: Question = {
+    const question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: null,
