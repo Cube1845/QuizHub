@@ -2,18 +2,19 @@ import {
   Component,
   EventEmitter,
   forwardRef,
+  HostBinding,
   Input,
   Output,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { FileUpload } from 'primeng/fileupload';
 import { environment } from '../../../../../../../../environments/environment.development';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-image-panel',
   standalone: true,
-  imports: [ButtonModule, FileUpload],
+  imports: [ButtonModule, NgStyle],
   templateUrl: './image-panel.component.html',
   styleUrl: './image-panel.component.scss',
   providers: [
@@ -29,15 +30,23 @@ export class ImagePanelComponent implements ControlValueAccessor {
 
   maxImageSize = environment.maxImageSize;
 
-  selectedFile: File | null = null;
+  selectedFile!: File | null;
 
-  @Output() displayPreviewEvent = new EventEmitter<string>();
+  @Output() onDisplayPreview = new EventEmitter<string>();
 
-  @Input() componentHeight: string = '30px';
-  @Input() uploaderDisabled: boolean = false;
+  @Input() componentHeight: string = '30';
+  @Input() uploaderDisabled!: boolean;
 
-  async onUpload(event: any): Promise<void> {
-    const file = event.files[0];
+  @HostBinding('style.--comp-height') compHeight = this.componentHeight + 'px';
+
+  getFontSize(): string {
+    var x = (Number(this.componentHeight) / 2).toString() + 'px';
+    return x;
+  }
+
+  async onUpload(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files![0];
 
     if (!file) {
       console.error('File error');
@@ -108,9 +117,7 @@ export class ImagePanelComponent implements ControlValueAccessor {
   }
 
   emitDisplayImageEvent(): void {
-    this.displayPreviewEvent.emit(
-      URL.createObjectURL(this.selectedFile as File)
-    );
+    this.onDisplayPreview.emit(URL.createObjectURL(this.selectedFile as File));
   }
 
   writeValue(obj: any): void {

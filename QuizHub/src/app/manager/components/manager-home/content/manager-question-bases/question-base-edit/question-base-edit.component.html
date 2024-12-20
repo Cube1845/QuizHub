@@ -120,7 +120,7 @@
                 <label for="quesiton-content">Pytanie</label>
             </p-floatLabel>
 
-            <app-image-panel formControlName="contentImage" (displayPreviewEvent)="displayImagePreview($event)"/>
+            <app-image-panel formControlName="contentImage" (onDisplayPreview)="displayImagePreview($event)"/>
         </div>
 
         <div class="question-answer-row">

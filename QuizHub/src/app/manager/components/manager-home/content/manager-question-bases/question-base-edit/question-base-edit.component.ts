@@ -58,15 +58,15 @@ export class QuestionBaseEditComponent implements OnInit {
 
   readonly maxImageSize = environment.maxImageSize;
 
-  questionBaseId: string | null = null;
+  questionBaseId!: string | null;
 
-  questionDialogVisible: boolean = false;
+  questionDialogVisible!: boolean;
   currentEditedQuestionIndex: number = -1;
 
-  imagePreviewVisible: boolean = false;
-  imagePreviewUrl: string | null = null;
+  imagePreviewVisible!: boolean;
+  imagePreviewUrl!: string | null;
 
-  questions: Question[] | null = null;
+  questions!: Question[] | null;
 
   questionFormGroup = new FormGroup(
     {

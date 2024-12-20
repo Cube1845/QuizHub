@@ -1,27 +1,12 @@
-<p-fileUpload
-    #fileUploader
-    accept="image/*"
-    [maxFileSize]="this.maxImageSize"
-    [customUpload]="true"
-    mode="basic"
-    [auto]="true"
-    [multiple]="false"
-    [chooseLabel]="getFileUploaderContentText()"
-    chooseIcon="pi pi-upload"
-    (onSelect)="onUpload(fileUploader)"
-    invalidFileSizeMessageSummary=""
-    invalidFileSizeMessageDetail=""
-    [disabled]="uploaderDisabled"
-    [style]="
-        {'height': this.componentHeight,
-        'color': 'var(--p-primary-color)',
-        'font-size': '14px',
-        'background': 'transparent',
-        'border':'1px solid var(--p-primary-600)',
-        'outline':'none'}"
-    />
+<div class="custom-file-input">
+    <input type="file" id="fileUpload" (change)="onUpload($event)" accept="image/*" [disabled]="uploaderDisabled"/>
+    <label for="fileUpload" [ngStyle]="{'height': componentHeight + 'px', 'font-size': getFontSize()}" >
+      <i class="pi pi-upload" [ngStyle]="{'font-size': getFontSize()}"></i>
+      {{ getFileUploaderContentText() }}
+    </label>
+</div>
 
 @if (this.selectedFile != null) {
-    <p-button icon="pi pi-eye" [outlined]="true" [style]="{'height':this.componentHeight}" (click)="emitDisplayImageEvent()"/>
-    <p-button icon="pi pi-trash" [outlined]="true" severity="secondary" [style]="{'height':this.componentHeight}" (click)="removeImage()"/>
+    <p-button icon="pi pi-eye" [outlined]="true" [style]="{'height': componentHeight + 'px'}" (click)="emitDisplayImageEvent()"/>
+    <p-button icon="pi pi-trash" [outlined]="true" severity="secondary" [style]="{'height': componentHeight + 'px'}" (click)="removeImage()"/>
 }
