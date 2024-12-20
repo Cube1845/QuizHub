@@ -56,8 +56,6 @@ export class QuestionBaseEditComponent implements OnInit {
   messageService = inject(MessageService);
   router = inject(Router);
 
-  readonly maxImageSize = environment.maxImageSize;
-
   questionBaseId!: string | null;
 
   questionDialogVisible!: boolean;
@@ -189,19 +187,6 @@ export class QuestionBaseEditComponent implements OnInit {
       answerImages: [null, null, null, null],
     });
     this.questionDialogVisible = true;
-  }
-
-  handleSelectedImage(event: any): void {
-    const file: File = event.files[0];
-
-    if (file.size > this.maxImageSize) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Błąd',
-        detail: 'Wybrany plik jest zbyt duży.',
-      });
-      return;
-    }
   }
 
   displayQuestionRemovalModal(event: Event, index: number): void {
