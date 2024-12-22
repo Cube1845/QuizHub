@@ -10,8 +10,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgStyle } from '@angular/common';
-import { ImageService } from '../../../../../../../../common/services/image.service';
 import { environment } from '../../../../../../../../../environments/environment.development';
+import { ImageService } from '../../../../../../../../common/services/image.service';
 
 @Component({
   selector: 'app-image-panel',

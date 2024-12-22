@@ -148,6 +148,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.questionService.removeQuestion(this.questions![index].id);
 
     this.questions!.splice(index, 1);
+
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
