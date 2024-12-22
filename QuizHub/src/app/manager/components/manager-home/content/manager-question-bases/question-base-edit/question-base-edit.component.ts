@@ -16,13 +16,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { Image } from 'primeng/image';
-<<<<<<< Updated upstream
-import { environment } from '../../../../../../../environments/environment.development';
-import { NamedImage } from '../../../../../../common/models/namedImage';
-=======
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
->>>>>>> Stashed changes
 
 @Component({
   selector: 'app-question-base-edit',
@@ -38,86 +33,32 @@ import { QuestionEditDialogComponent } from './question-edit-dialog/question-edi
     ReactiveFormsModule,
     ConfirmDialogModule,
     ToastModule,
-    FileUpload,
     Image,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService, DialogService],
 })
-<<<<<<< Updated upstream
-export class QuestionBaseEditComponent implements OnInit {
-  activatedRoute = inject(ActivatedRoute);
-=======
 export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
->>>>>>> Stashed changes
   questionBaseService = inject(QuestionBaseService);
   questionService = inject(QuestionService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
   router = inject(Router);
+  dialogService = inject(DialogService);
 
-<<<<<<< Updated upstream
-  readonly maxImageSize = environment.maxImageSize;
-
-  questionBaseId: string | null = null;
-
-  questionDialogVisible: boolean = false;
-  currentEditedQuestionIndex: number = -1;
-=======
   ref: DynamicDialogRef | undefined;
 
   questionBaseId!: string | null;
 
   questionDialogVisible!: boolean;
->>>>>>> Stashed changes
 
   imagePreviewVisible: boolean = false;
-  imagePreviewBase64: string | null = null;
-
-  temporaryContentImage: NamedImage | null = null;
-  temporaryAnswerImages: (NamedImage | null)[] = [null, null, null, null];
+  imagePreviewUrl: string | null = null;
 
   questions: Question[] | null = null;
 
-<<<<<<< Updated upstream
-  questionFormGroup = new FormGroup(
-    {
-      content: new FormControl<string>('', [
-        Validators.required,
-        Validators.minLength(3),
-      ]),
-      answers: new FormGroup(
-        [
-          new FormControl<string>('', [
-            Validators.required,
-            Validators.minLength(3),
-          ]),
-          new FormControl<string>('', [
-            Validators.required,
-            Validators.minLength(3),
-          ]),
-          new FormControl<string>('', Validators.minLength(3)),
-          new FormControl<string>('', Validators.minLength(3)),
-        ],
-        enforceSequentialAnswersValidator()
-      ),
-      correctAnswers: new FormGroup(
-        [
-          new FormControl<boolean>(false),
-          new FormControl<boolean>(false),
-          new FormControl<boolean>(false),
-          new FormControl<boolean>(false),
-        ],
-        requireOneSelectedAnswerValidator()
-      ),
-    },
-    correctAnswerSelectionValidator()
-  );
-
-=======
->>>>>>> Stashed changes
   searchFormControl = new FormControl<string>('', Validators.required);
 
   ngOnInit() {
@@ -162,40 +103,6 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-<<<<<<< Updated upstream
-    var answerValues = this.questions![index].answers.map(
-      (answer) => answer.content
-    );
-
-    while (answerValues.length < 4) {
-      answerValues.push('');
-    }
-
-    var correctAnswers = this.questions![index].answers.map(
-      (answer) => answer.isCorrect
-    );
-
-    while (correctAnswers.length < 4) {
-      correctAnswers.push(false);
-    }
-
-    this.questionFormGroup.setValue({
-      content: this.questions![index].content,
-      answers: [
-        answerValues[0],
-        answerValues[1],
-        answerValues[2],
-        answerValues[3],
-      ],
-      correctAnswers: [
-        correctAnswers[0],
-        correctAnswers[1],
-        correctAnswers[2],
-        correctAnswers[3],
-      ],
-    });
-    this.questionDialogVisible = true;
-=======
     this.showEditQuestionDialog(index);
   }
 
@@ -217,181 +124,6 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
         return;
       }
     });
->>>>>>> Stashed changes
-  }
-
-  private resizeImage(
-    base64String: string,
-    targetHeight: number
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const img = document.createElement('img') as HTMLImageElement;
-
-      img.onload = () => {
-        const aspectRatio = img.width / img.height;
-        const targetWidth = targetHeight * aspectRatio;
-
-        const canvas = document.createElement('canvas');
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          reject(new Error('Failed to get canvas context'));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-        const resizedBase64 = canvas.toDataURL('image/png');
-        resolve(resizedBase64);
-      };
-      img.onerror = (error) => reject(new Error(`Image load error: ${error}`));
-
-      img.src = base64String;
-    });
-  }
-
-  getContentImageFileUploaderText(): string {
-    const defaultString = 'Wybierz obraz';
-
-    if (
-      this.questions == null ||
-      this.questions.length == 0 ||
-      this.currentEditedQuestionIndex == -1
-    ) {
-      return defaultString;
-    }
-
-    if (
-      this.questions![this.currentEditedQuestionIndex].image == null &&
-      (this.temporaryContentImage == null ||
-        this.temporaryContentImage.imageBase64 == '')
-    ) {
-      return defaultString;
-    }
-
-    if (
-      this.temporaryContentImage != null &&
-      this.temporaryContentImage.imageBase64 == ''
-    ) {
-      return defaultString;
-    }
-
-    if (this.temporaryContentImage != null) {
-      return this.temporaryContentImage!.imageName;
-    }
-
-    return this.questions![this.currentEditedQuestionIndex].image!.imageName;
-  }
-
-  getAnswerImageFileUploaderText(answerIndex: number): string {
-    const defaultString = 'Wybierz obraz';
-
-    if (
-      this.questions == null ||
-      this.questions.length == 0 ||
-      this.currentEditedQuestionIndex == -1 ||
-      (answerIndex >=
-        this.questions[this.currentEditedQuestionIndex].answers.length &&
-        this.temporaryAnswerImages[answerIndex] == null)
-    ) {
-      return defaultString;
-    }
-
-    if (
-      answerIndex <
-        this.questions[this.currentEditedQuestionIndex].answers.length &&
-      this.questions![this.currentEditedQuestionIndex].answers[answerIndex]
-        .image == null &&
-      (this.temporaryAnswerImages[answerIndex] == null ||
-        this.temporaryAnswerImages[answerIndex]!.imageBase64 == '')
-    ) {
-      return defaultString;
-    }
-
-    if (
-      this.temporaryAnswerImages[answerIndex] != null &&
-      this.temporaryAnswerImages[answerIndex]!.imageBase64 == ''
-    ) {
-      return defaultString;
-    }
-
-    if (this.temporaryAnswerImages[answerIndex] != null) {
-      return this.temporaryAnswerImages[answerIndex]!.imageName;
-    }
-
-    return this.questions![this.currentEditedQuestionIndex].answers[answerIndex]
-      .image!.imageName;
-  }
-
-  handleSelectedImage(event: any): void {
-    const file: File = event.files[0];
-
-    if (file.size > this.maxImageSize) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Błąd',
-        detail: 'Wybrany plik jest zbyt duży.',
-      });
-      return;
-    }
-  }
-
-  setTemporaryContentImage(fileUploader: any): void {
-    const files = fileUploader.files;
-    if (!files || files.length === 0) {
-      console.error('No file selected to upload!');
-      return;
-    }
-
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64String = reader.result as string;
-      this.resizeImage(base64String, environment.defaultImageHeight).then(
-        (resizedBase64) => {
-          this.temporaryContentImage = {
-            imageBase64: resizedBase64,
-            imageName: file.name,
-          };
-        }
-      );
-    };
-
-    reader.onerror = (error) => {
-      console.error('Error reading file:', error);
-    };
-
-    reader.readAsDataURL(file);
-  }
-
-  setTemporaryAnswerImage(fileUploader: any, answerIndex: number): void {
-    const files = fileUploader.files;
-    if (!files || files.length === 0) {
-      console.error('No file selected to upload!');
-      return;
-    }
-
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64String = reader.result as string;
-      this.resizeImage(base64String, environment.defaultImageHeight).then(
-        (resizedBase64) => {
-          this.temporaryAnswerImages[answerIndex] = {
-            imageBase64: resizedBase64,
-            imageName: file.name,
-          };
-        }
-      );
-    };
-
-    reader.onerror = (error) => {
-      console.error('Error reading file:', error);
-    };
-
-    reader.readAsDataURL(file);
   }
 
   displayQuestionRemovalModal(event: Event, index: number): void {
@@ -426,114 +158,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   saveQuestion(question: Question, questionIndex: number): void {
     this.questionService.editQuestion(question, question.id);
 
-<<<<<<< Updated upstream
-    return '';
-  }
-
-  displayImagePreview(imageBase64: string): void {
-    this.imagePreviewBase64 = imageBase64;
-    this.imagePreviewVisible = true;
-  }
-
-  private buildQuestionFromQuestionFormGroup(): Question {
-    var answerFormControls =
-      this.questionFormGroup.controls.answers.controls.filter(
-        (fc, index) =>
-          fc.value != '' || this.temporaryAnswerImages[index] != null
-      );
-
-    var answerImages: (NamedImage | null)[] = answerFormControls
-      .map(() => null)
-      .map((none, index) => {
-        var tempImage: NamedImage | null = null;
-
-        if (
-          this.temporaryAnswerImages[index]! != null &&
-          this.temporaryAnswerImages[index]!.imageBase64 != ''
-        ) {
-          tempImage = {
-            imageBase64: this.temporaryAnswerImages[index]!.imageBase64,
-            imageName: this.temporaryAnswerImages[index]!.imageName,
-          };
-        } else if (
-          this.temporaryAnswerImages[index]! == null &&
-          this.questions![this.currentEditedQuestionIndex].answers[index]
-            .image != null
-        ) {
-          tempImage =
-            this.questions![this.currentEditedQuestionIndex].answers[index]
-              .image;
-        }
-
-        return tempImage;
-      });
-
-    var answers: Answer[] = [];
-
-    answerFormControls.forEach((fc, i) => {
-      answers.push({
-        content: fc.value!,
-        id: this.getAnswerId(this.currentEditedQuestionIndex, i),
-        image: answerImages[i],
-        isCorrect:
-          this.questionFormGroup.controls.correctAnswers.controls[i].value!,
-      });
-    });
-
-    answers = answers.filter(
-      (answer) => answer.image != null || answer.content != ''
-    );
-
-    var image: NamedImage | null = null;
-
-    if (
-      this.temporaryContentImage != null &&
-      this.temporaryContentImage?.imageBase64 != ''
-    ) {
-      image = {
-        imageBase64: this.temporaryContentImage.imageBase64,
-        imageName: this.temporaryContentImage.imageName,
-      };
-    } else if (
-      this.temporaryContentImage == null &&
-      this.questions![this.currentEditedQuestionIndex].image != null
-    ) {
-      image = this.questions![this.currentEditedQuestionIndex].image!;
-    }
-
-    var question: Question = {
-      content: this.questionFormGroup.controls.content.value!,
-      answers: answers,
-      image: image,
-      id: this.questions![this.currentEditedQuestionIndex].id,
-    };
-
-    return question;
-  }
-
-  saveQuestion(): void {
-    const question = this.buildQuestionFromQuestionFormGroup();
-
-    this.questionService.editQuestion(
-      question,
-      this.questions![this.currentEditedQuestionIndex].id
-    );
-
-    this.questions![this.currentEditedQuestionIndex].content =
-      this.questionFormGroup.controls.content.value!;
-
-    this.questions![this.currentEditedQuestionIndex].answers = question.answers;
-
-    this.questions![this.currentEditedQuestionIndex].image = question.image;
-
-    this.questionDialogVisible = false;
-    this.questionFormGroup.reset();
-    this.currentEditedQuestionIndex = -1;
-    this.temporaryContentImage = null;
-    this.temporaryAnswerImages = [null, null, null, null];
-=======
     this.questions![questionIndex] = question;
->>>>>>> Stashed changes
 
     this.messageService.add({
       severity: 'success',
@@ -561,46 +186,17 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   //       return null!;
   //     });
 
-<<<<<<< Updated upstream
-    var question: Question = {
-      content: this.questionFormGroup.controls.content.value!,
-      answers: answers,
-      image: null,
-      id: '',
-    };
-=======
   //   const question: Question = {
   //     content: this.questionFormGroup.controls.content.value!,
   //     answers: answers,
   //     image: null,
   //     id: '',
   //   };
->>>>>>> Stashed changes
 
   //   this.questionService.addQuestion(question);
 
   //   this.questions!.push(question);
 
-<<<<<<< Updated upstream
-    this.questionDialogVisible = false;
-    this.questionFormGroup.reset();
-    this.temporaryContentImage = null;
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sukces',
-      detail: 'Dodano pytanie',
-    });
-  }
-
-  closeEditDialog(): void {
-    this.questionDialogVisible = false;
-    this.questionFormGroup.reset();
-    this.currentEditedQuestionIndex = -1;
-    this.temporaryContentImage = null;
-    this.temporaryAnswerImages = [null, null, null, null];
-  }
-=======
   //   this.questionDialogVisible = false;
   //   this.questionFormGroup.reset();
 
@@ -610,5 +206,4 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   //     detail: 'Dodano pytanie',
   //   });
   // }
->>>>>>> Stashed changes
 }
