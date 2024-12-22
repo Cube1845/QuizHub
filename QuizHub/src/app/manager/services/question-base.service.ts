@@ -413,6 +413,6 @@ export class QuestionBaseService {
       ];
     }
 
-    return null;
+    return [];
   }
 }
