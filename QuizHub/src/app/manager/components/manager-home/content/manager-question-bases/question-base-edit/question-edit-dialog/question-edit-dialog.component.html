@@ -1,0 +1,82 @@
+<div class="question-input-box" [formGroup]="questionFormGroup">
+    <div class="question-content-box">
+        <p-floatLabel>
+            <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90" formControlName="content"/>
+            <label for="quesiton-content">Pytanie</label>
+        </p-floatLabel>
+
+        <app-image-panel formControlName="contentImage" (onDisplayPreview)="false"/>
+    </div>
+
+    <div class="question-answer-row">
+        <div class="dialog-single-answer-box">
+            <p-inputGroup>
+                <p-floatLabel [style]="{width: '100%'}">
+                    <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[0]"/>
+                    <label for="quesiton-content">Odpowiedź A</label>
+                    <p-inputGroupAddon>
+                        <p-checkbox
+                            [formControl]="questionFormGroup.controls.correctAnswers.controls[0]"
+                            [binary]="true" 
+                            />
+                    </p-inputGroupAddon>
+                </p-floatLabel>
+            </p-inputGroup>
+        </div>
+        <div class="dialog-single-answer-box">
+            <p-inputGroup>
+                <p-floatLabel [style]="{width: '100%'}">
+                    <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[1]"/>
+                    <label for="quesiton-content">Odpowiedź B</label>
+                    <p-inputGroupAddon>
+                        <p-checkbox
+                            [formControl]="questionFormGroup.controls.correctAnswers.controls[1]"
+                            [binary]="true"
+                            />
+                    </p-inputGroupAddon>
+                </p-floatLabel>
+            </p-inputGroup>
+        </div>
+    </div>
+
+    <div class="question-answer-row">
+        <div class="dialog-single-answer-box">
+            <p-inputGroup>
+                <p-floatLabel [style]="{width: '100%'}">
+                    <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[2]"/>
+                    <label for="quesiton-content">Odpowiedź C</label>
+                    <p-inputGroupAddon>
+                        <p-checkbox
+                            [formControl]="questionFormGroup.controls.correctAnswers.controls[2]"
+                            [binary]="true"
+                            />
+                    </p-inputGroupAddon>
+                </p-floatLabel>
+            </p-inputGroup>
+        </div>
+        <div class="dialog-single-answer-box">
+            <p-inputGroup>
+                <p-floatLabel [style]="{width: '100%'}">
+                    <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[3]"/>
+                    <label for="quesiton-content">Odpowiedź D</label>
+                    <p-inputGroupAddon>
+                        <p-checkbox
+                            [formControl]="questionFormGroup.controls.correctAnswers.controls[3]"
+                            [binary]="true"
+                            />
+                    </p-inputGroupAddon>
+                </p-floatLabel>
+            </p-inputGroup>
+        </div>
+    </div>
+</div>
+
+<div class="question-buttons-box">
+    @if (true) {
+        <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
+        <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="save()" class="dialog-button"/>
+    } @else {
+        <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
+        <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="save()" class="dialog-button"/>
+    }
+</div>

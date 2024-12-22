@@ -6,8 +6,13 @@
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
 
+<<<<<<< Updated upstream
         <p-button [outlined]="true" [style]="{'margin-left': '25px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
         <p-button [outlined]="true" [style]="{'margin-left': '25px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true"></p-button>
+=======
+        <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="questionDialogVisible = true"></p-button>
+>>>>>>> Stashed changes
     </div>
 
     <div class="question-box">
@@ -18,7 +23,7 @@
         }
 
         @for (question of questions; track $index) {
-            <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index, $event)">
+            <div class="question-panel" (click)="openQuestionEditor($index, $event)">
                 <div class="question-content">
                     @if (question.image != null) {
                         <p-image [src]="question.image.imageBase64" alt="Obraz do treści" height="150" [preview]="true" class="independent-cilck-action"></p-image>
@@ -110,6 +115,7 @@
     @if (imagePreviewVisible) {
         <p-image [src]="this.imagePreviewBase64!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', margin: '5px'}"></p-image>
     }
+<<<<<<< Updated upstream
 </p-dialog>
 
 <p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '45rem' }">
@@ -551,4 +557,6 @@
             <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="dialog-button"/>
         }
     </div>
+=======
+>>>>>>> Stashed changes
 </p-dialog>

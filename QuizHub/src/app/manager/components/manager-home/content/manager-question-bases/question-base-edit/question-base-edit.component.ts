@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Question } from '../../../../../../common/models/question';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
@@ -9,24 +9,20 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { requireOneSelectedAnswerValidator } from '../../../../../../common/validators/require-one-selected-answer-validator';
-import { correctAnswerSelectionValidator } from '../../../../../../common/validators/correct-answer-selection-validator';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuestionService } from '../../../../../services/question.service';
-import { Answer } from '../../../../../../common/models/answer';
-import { enforceSequentialAnswersValidator } from '../../../../../../common/validators/enforce-sequential-answers-validator';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { Image } from 'primeng/image';
+<<<<<<< Updated upstream
 import { environment } from '../../../../../../../environments/environment.development';
 import { NamedImage } from '../../../../../../common/models/namedImage';
+=======
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-question-base-edit',
@@ -49,20 +45,33 @@ import { NamedImage } from '../../../../../../common/models/namedImage';
   styleUrl: './question-base-edit.component.scss',
   providers: [ConfirmationService, MessageService],
 })
+<<<<<<< Updated upstream
 export class QuestionBaseEditComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
+=======
+export class QuestionBaseEditComponent implements OnInit, OnDestroy {
+  private readonly activatedRoute = inject(ActivatedRoute);
+>>>>>>> Stashed changes
   questionBaseService = inject(QuestionBaseService);
   questionService = inject(QuestionService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
   router = inject(Router);
 
+<<<<<<< Updated upstream
   readonly maxImageSize = environment.maxImageSize;
 
   questionBaseId: string | null = null;
 
   questionDialogVisible: boolean = false;
   currentEditedQuestionIndex: number = -1;
+=======
+  ref: DynamicDialogRef | undefined;
+
+  questionBaseId!: string | null;
+
+  questionDialogVisible!: boolean;
+>>>>>>> Stashed changes
 
   imagePreviewVisible: boolean = false;
   imagePreviewBase64: string | null = null;
@@ -72,6 +81,7 @@ export class QuestionBaseEditComponent implements OnInit {
 
   questions: Question[] | null = null;
 
+<<<<<<< Updated upstream
   questionFormGroup = new FormGroup(
     {
       content: new FormControl<string>('', [
@@ -106,6 +116,8 @@ export class QuestionBaseEditComponent implements OnInit {
     correctAnswerSelectionValidator()
   );
 
+=======
+>>>>>>> Stashed changes
   searchFormControl = new FormControl<string>('', Validators.required);
 
   ngOnInit() {
@@ -123,6 +135,12 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
+  }
+
   goBack(): void {
     this.router.navigateByUrl('manager/question-bases');
   }
@@ -132,14 +150,6 @@ export class QuestionBaseEditComponent implements OnInit {
       this.questionBaseId!,
       this.searchFormControl.value!
     );
-  }
-
-  getDialogHeader(): string {
-    if (this.currentEditedQuestionIndex >= 0) {
-      return 'Edytuj pytanie';
-    }
-
-    return 'Dodaj pytanie';
   }
 
   openQuestionEditor(index: number, event: MouseEvent) {
@@ -152,6 +162,7 @@ export class QuestionBaseEditComponent implements OnInit {
       return;
     }
 
+<<<<<<< Updated upstream
     var answerValues = this.questions![index].answers.map(
       (answer) => answer.content
     );
@@ -184,6 +195,29 @@ export class QuestionBaseEditComponent implements OnInit {
       ],
     });
     this.questionDialogVisible = true;
+=======
+    this.showEditQuestionDialog(index);
+  }
+
+  showEditQuestionDialog(questionIndex: number): void {
+    this.ref = this.dialogService.open(QuestionEditDialogComponent, {
+      header: 'Edytuj pytanie',
+      width: '72rem',
+      height: '45rem',
+      modal: true,
+      data: {
+        question: this.questions![questionIndex],
+        questionIndex: questionIndex,
+      },
+    });
+
+    this.ref.onClose.subscribe((result) => {
+      if (result != null) {
+        this.saveQuestion(result.question, result.questionIndex);
+        return;
+      }
+    });
+>>>>>>> Stashed changes
   }
 
   private resizeImage(
@@ -389,11 +423,10 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
-  private getAnswerId(questionIndex: number, answerIndex: number): string {
-    if (this.questions![questionIndex].answers.length > answerIndex) {
-      return this.questions![questionIndex].answers[answerIndex].id;
-    }
+  saveQuestion(question: Question, questionIndex: number): void {
+    this.questionService.editQuestion(question, question.id);
 
+<<<<<<< Updated upstream
     return '';
   }
 
@@ -498,6 +531,9 @@ export class QuestionBaseEditComponent implements OnInit {
     this.currentEditedQuestionIndex = -1;
     this.temporaryContentImage = null;
     this.temporaryAnswerImages = [null, null, null, null];
+=======
+    this.questions![questionIndex] = question;
+>>>>>>> Stashed changes
 
     this.messageService.add({
       severity: 'success',
@@ -506,36 +542,46 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
-  addQuestion(): void {
-    //change that to questionDTO something \/
+  // addQuestion(): void {
+  //   //change that to questionDTO something \/
 
-    var answers: Answer[] = this.questionFormGroup.controls.answers.controls
-      .filter((fc) => fc.value != '')
-      .map((fc, index) => {
-        if (fc.value! != '') {
-          return {
-            content: fc.value!,
-            isCorrect:
-              this.questionFormGroup.controls.correctAnswers.controls[index]
-                .value!,
-            image: null, //here
-            id: '',
-          };
-        }
-        return null!;
-      });
+  //   var answers: Answer[] = this.questionFormGroup.controls.answers.controls
+  //     .filter((fc) => fc.value != '')
+  //     .map((fc, index) => {
+  //       if (fc.value! != '') {
+  //         return {
+  //           content: fc.value!,
+  //           isCorrect:
+  //             this.questionFormGroup.controls.correctAnswers.controls[index]
+  //               .value!,
+  //           image: null, //here
+  //           id: '',
+  //         };
+  //       }
+  //       return null!;
+  //     });
 
+<<<<<<< Updated upstream
     var question: Question = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: null,
       id: '',
     };
+=======
+  //   const question: Question = {
+  //     content: this.questionFormGroup.controls.content.value!,
+  //     answers: answers,
+  //     image: null,
+  //     id: '',
+  //   };
+>>>>>>> Stashed changes
 
-    this.questionService.addQuestion(question);
+  //   this.questionService.addQuestion(question);
 
-    this.questions!.push(question);
+  //   this.questions!.push(question);
 
+<<<<<<< Updated upstream
     this.questionDialogVisible = false;
     this.questionFormGroup.reset();
     this.temporaryContentImage = null;
@@ -554,4 +600,15 @@ export class QuestionBaseEditComponent implements OnInit {
     this.temporaryContentImage = null;
     this.temporaryAnswerImages = [null, null, null, null];
   }
+=======
+  //   this.questionDialogVisible = false;
+  //   this.questionFormGroup.reset();
+
+  //   this.messageService.add({
+  //     severity: 'success',
+  //     summary: 'Sukces',
+  //     detail: 'Dodano pytanie',
+  //   });
+  // }
+>>>>>>> Stashed changes
 }
