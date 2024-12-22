@@ -30,8 +30,10 @@ import { ToastModule } from 'primeng/toast';
 })
 export class ManagerQuestionBasesComponent {
   private readonly questionBaseService = inject(QuestionBaseService);
-  readonly polishWordVariationService = inject(PolishWordVariationService);
-  readonly router = inject(Router);
+  private readonly polishWordVariationService = inject(
+    PolishWordVariationService
+  );
+  private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
 
@@ -56,6 +58,16 @@ export class ManagerQuestionBasesComponent {
     }
 
     return 'Dodaj bazę pytań';
+  }
+
+  goToQuestionEditor(questionBaseId: string) {
+    this.router.navigateByUrl('manager/question-base-edit/' + questionBaseId);
+  }
+
+  getQuestionWordVariation(questionNumber: number): string {
+    return this.polishWordVariationService.getQuestionWordVariation(
+      questionNumber
+    );
   }
 
   displayQuestionBaseNameEditDialog(event: Event, index: number): void {

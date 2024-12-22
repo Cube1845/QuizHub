@@ -1,9 +1,9 @@
 <p-toast position="bottom-left" [life]="3000" />
 <p-confirmDialog></p-confirmDialog>
 @for (questionBase of questionBases; track $index) {
-    <div class="question-base-panel contains-delete-button" (click)="this.router.navigateByUrl('manager/question-base-edit/' + questionBase.id)">
+    <div class="question-base-panel contains-delete-button" (click)="goToQuestionEditor(questionBase.id)">
         <h1>{{ questionBase.name }}</h1>
-        <p>{{ questionBase.questionCount }} {{ this.polishWordVariationService.getQuestionWordVariation(questionBase.questionCount) }}</p>
+        <p>{{ questionBase.questionCount }} {{ getQuestionWordVariation(questionBase.questionCount) }}</p>
 
         <i class="pi pi-pencil clickable-icon edit-icon" (click)="displayQuestionBaseNameEditDialog($event, $index)"></i>
         <i class="pi pi-trash clickable-icon delete-icon" (click)="displayQuestionBaseRemovalModal($event, $index)"></i>

@@ -24,6 +24,8 @@ import { Question } from '../../../../../../../common/models/question';
 import { Answer } from '../../../../../../../common/models/answer';
 import { ImagePreviewComponent } from './image-preview/image-preview.component';
 import { requireFirstTwoAnswersValidator } from '../../../../../../../common/validators/require-first-two-answers-validator';
+import { UndefinedAnswer } from '../../../../../../../common/models/undefinedAnswer';
+import { UndefinedQuestion } from '../../../../../../../common/models/undefinedQuestion';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -47,8 +49,10 @@ export class QuestionEditDialogComponent implements OnInit {
   private readonly config = inject(DynamicDialogConfig);
   private readonly dialogService = inject(DialogService);
 
-  question: Question = this.config.data.question;
-  questionIndex: number | null = this.config.data.questionIndex;
+  question: Question | null = this.config.data?.question;
+  questionIndex: number | null = this.config.data?.questionIndex;
+
+  addingNewQuestion: boolean = this.questionIndex == null;
 
   imageDisplayRef: DynamicDialogRef | undefined;
 
@@ -57,13 +61,26 @@ export class QuestionEditDialogComponent implements OnInit {
       content: new FormControl<string>('', [
         Validators.required,
         Validators.minLength(3),
+        Validators.maxLength(120),
       ]),
       contentImage: new FormControl<File | null>(null),
       answers: new FormGroup<FormControl<string | null>[]>([
-        new FormControl<string>('', Validators.minLength(3)),
-        new FormControl<string>('', Validators.minLength(3)),
-        new FormControl<string>('', Validators.minLength(3)),
-        new FormControl<string>('', Validators.minLength(3)),
+        new FormControl<string>('', [
+          Validators.minLength(3),
+          Validators.maxLength(50),
+        ]),
+        new FormControl<string>('', [
+          Validators.minLength(3),
+          Validators.maxLength(50),
+        ]),
+        new FormControl<string>('', [
+          Validators.minLength(3),
+          Validators.maxLength(50),
+        ]),
+        new FormControl<string>('', [
+          Validators.minLength(3),
+          Validators.maxLength(50),
+        ]),
       ]),
       correctAnswers: new FormGroup<FormControl<boolean | null>[]>(
         [
@@ -109,7 +126,7 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   getAnswerContentValues(): (string | null)[] {
-    const answerValues = this.question.answers.map((answer) => answer.content);
+    const answerValues = this.question!.answers.map((answer) => answer.content);
 
     while (answerValues.length < 4) {
       answerValues.push('');
@@ -119,7 +136,7 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   getCorrectAnswers(): (boolean | null)[] {
-    const correctAnswers = this.question.answers.map(
+    const correctAnswers = this.question!.answers.map(
       (answer) => answer.isCorrect
     );
 
@@ -131,7 +148,7 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   getAnswerImages(): (File | null)[] {
-    const answerImages = this.question.answers.map((answer) => answer.image);
+    const answerImages = this.question!.answers.map((answer) => answer.image);
 
     while (answerImages.length < 4) {
       answerImages.push(null);
@@ -141,9 +158,13 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   setInputValues(): void {
+    if (this.addingNewQuestion) {
+      return;
+    }
+
     this.questionFormGroup.setValue({
-      content: this.question.content,
-      contentImage: this.question.image,
+      content: this.question!.content,
+      contentImage: this.question!.image,
       answers: this.getAnswerContentValues(),
       correctAnswers: this.getCorrectAnswers(),
       answerImages: this.getAnswerImages(),
@@ -151,8 +172,8 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   private getAnswerId(answerIndex: number): string {
-    if (this.question.answers.length > answerIndex) {
-      return this.question.answers[answerIndex].id;
+    if (!!this.question && this.question.answers.length > answerIndex) {
+      return this.question!.answers[answerIndex].id;
     }
 
     return '';
@@ -189,7 +210,42 @@ export class QuestionEditDialogComponent implements OnInit {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: image,
-      id: this.question.id,
+      id: this.question?.id || '',
+    };
+
+    return question;
+  }
+
+  private buildUndefinedQuestionFromQuestionFormGroup(): UndefinedQuestion {
+    const controls = this.questionFormGroup.controls;
+
+    let lastAnswerIndex = 0;
+
+    for (let i = 0; i < 4; i++) {
+      if (
+        controls.answers.controls[i].value != '' ||
+        controls.answerImages.controls[i].value != null
+      ) {
+        lastAnswerIndex++;
+      }
+    }
+
+    const answers: UndefinedAnswer[] = [];
+
+    for (let i = 0; i < lastAnswerIndex; i++) {
+      answers.push({
+        content: controls.answers.controls[i].value,
+        image: controls.answerImages.controls[i].value,
+        isCorrect: controls.correctAnswers.controls[i].value!,
+      });
+    }
+
+    const image: File | null = this.questionFormGroup.value.contentImage!;
+
+    const question: UndefinedQuestion = {
+      content: this.questionFormGroup.controls.content.value!,
+      answers: answers,
+      image: image,
     };
 
     return question;
@@ -203,6 +259,10 @@ export class QuestionEditDialogComponent implements OnInit {
       data: imageUrl,
       closable: true,
     });
+  }
+
+  addQuestion(): void {
+    this.ref.close(this.buildUndefinedQuestionFromQuestionFormGroup());
   }
 
   save(): void {

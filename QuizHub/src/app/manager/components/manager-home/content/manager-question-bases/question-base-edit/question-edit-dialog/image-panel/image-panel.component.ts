@@ -46,19 +46,11 @@ export class ImagePanelComponent implements ControlValueAccessor {
   @Input() smaller: boolean = false;
 
   getComponentHeight(): string {
-    if (this.smaller) {
-      return '24px';
-    }
-
-    return '30px';
+    return this.smaller ? '24px' : '30px';
   }
 
   getFontSize(): string {
-    if (this.smaller) {
-      return '12px';
-    }
-
-    return '14px';
+    return this.smaller ? '12px' : '14px';
   }
 
   async onUpload(event: Event): Promise<void> {

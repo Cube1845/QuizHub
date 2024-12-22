@@ -19,6 +19,7 @@ import { Image, ImageModule } from 'primeng/image';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
 import { ImageService } from '../../../../../../common/services/image.service';
+import { UndefinedQuestion } from '../../../../../../common/models/undefinedQuestion';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -131,6 +132,22 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     });
   }
 
+  showCreatingQuestionDialog(): void {
+    this.ref = this.dialogService.open(QuestionEditDialogComponent, {
+      header: 'Dodaj pytanie',
+      width: '72rem',
+      height: '45rem',
+      modal: true,
+    });
+
+    this.ref.onClose.subscribe((result) => {
+      if (result != null) {
+        this.addQuestion(result);
+        return;
+      }
+    });
+  }
+
   displayQuestionRemovalModal(event: Event, index: number): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
@@ -173,43 +190,30 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  // addQuestion(): void {
-  //   //change that to questionDTO something \/
+  addQuestion(questionToAdd: UndefinedQuestion): void {
+    this.questionService.addQuestion(questionToAdd);
 
-  //   var answers: Answer[] = this.questionFormGroup.controls.answers.controls
-  //     .filter((fc) => fc.value != '')
-  //     .map((fc, index) => {
-  //       if (fc.value! != '') {
-  //         return {
-  //           content: fc.value!,
-  //           isCorrect:
-  //             this.questionFormGroup.controls.correctAnswers.controls[index]
-  //               .value!,
-  //           image: null, //here
-  //           id: '',
-  //         };
-  //       }
-  //       return null!;
-  //     });
+    //temporary solution before API
+    let question: Question = {
+      content: questionToAdd.content,
+      answers: questionToAdd.answers.map((undefinedAnswer) => {
+        return {
+          content: undefinedAnswer.content,
+          image: undefinedAnswer.image,
+          isCorrect: undefinedAnswer.isCorrect,
+          id: '',
+        };
+      }),
+      image: questionToAdd.image,
+      id: '',
+    };
 
-  //   const question: Question = {
-  //     content: this.questionFormGroup.controls.content.value!,
-  //     answers: answers,
-  //     image: null,
-  //     id: '',
-  //   };
+    this.questions!.push(question);
 
-  //   this.questionService.addQuestion(question);
-
-  //   this.questions!.push(question);
-
-  //   this.questionDialogVisible = false;
-  //   this.questionFormGroup.reset();
-
-  //   this.messageService.add({
-  //     severity: 'success',
-  //     summary: 'Sukces',
-  //     detail: 'Dodano pytanie',
-  //   });
-  // }
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Dodano pytanie',
+    });
+  }
 }
