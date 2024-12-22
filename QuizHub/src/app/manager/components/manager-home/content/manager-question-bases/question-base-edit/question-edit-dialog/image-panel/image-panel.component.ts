@@ -70,9 +70,15 @@ export class ImagePanelComponent implements ControlValueAccessor {
       return;
     }
 
+    let defaultHeight = environment.defaultContentImageHeight;
+
+    if (this.smaller) {
+      defaultHeight = environment.defaultAnswerImageHeight;
+    }
+
     const resizedBlob = await this.imageService.resizeImage(
       file,
-      environment.defaultImageHeight
+      defaultHeight
     );
 
     this.selectedFile = new File([resizedBlob], file.name, { type: file.type });
@@ -94,7 +100,9 @@ export class ImagePanelComponent implements ControlValueAccessor {
   }
 
   emitDisplayImageEvent(): void {
-    this.onDisplayPreview.emit(URL.createObjectURL(this.selectedFile as File));
+    this.onDisplayPreview.emit(
+      this.imageService.getImageUrl(this.selectedFile!)
+    );
   }
 
   writeValue(obj: any): void {

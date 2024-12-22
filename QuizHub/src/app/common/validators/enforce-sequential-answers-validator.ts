@@ -6,27 +6,30 @@ import {
 } from '@angular/forms';
 
 export function enforceSequentialAnswersValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!(control instanceof FormGroup)) {
-      return null; // Only works on FormGroup
+  return (formGroup: AbstractControl): ValidationErrors | null => {
+    if (!(formGroup instanceof FormGroup)) {
+      throw new Error('sequentialAnswerValidator must be used on a FormGroup');
     }
 
-    const controls = Object.values(control.controls);
-    let lastNonEmptyIndex = -1;
+    const answers = formGroup.get('answers') as FormGroup;
+    const answerImages = formGroup.get('answerImages') as FormGroup;
 
-    for (let i = 0; i < controls.length; i++) {
-      const currentControl = controls[i];
+    if (!answers || !answerImages) {
+      return null;
+    }
 
-      if (currentControl.value && lastNonEmptyIndex < i - 1) {
-        return {
-          sequentialViolation: `Answer ${i} is set but Answer ${
-            i - 1
-          } is empty.`,
-        };
-      }
+    const answerKeys = Object.keys(answers.controls);
+    const imageKeys = Object.keys(answerImages.controls);
 
-      if (currentControl.value) {
-        lastNonEmptyIndex = i;
+    for (let i = 1; i < answerKeys.length; i++) {
+      const prevAnswer = answers.get(answerKeys[i - 1])?.value;
+      const prevImage = answerImages.get(imageKeys[i - 1])?.value;
+
+      const currentAnswer = answers.get(answerKeys[i])?.value;
+      const currentImage = answerImages.get(imageKeys[i])?.value;
+
+      if ((currentAnswer || currentImage) && !(prevAnswer || prevImage)) {
+        return { sequentialInvalid: true };
       }
     }
 

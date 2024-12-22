@@ -14,8 +14,9 @@ export function correctAnswerSelectionValidator(): ValidatorFn {
 
     const answers = control.get('answers') as FormGroup;
     const correctAnswers = control.get('correctAnswers') as FormGroup;
+    const answerImages = control.get('answerImages') as FormGroup;
 
-    if (!answers || !correctAnswers) {
+    if (!answers || !correctAnswers || !answerImages) {
       return null;
     }
 
@@ -24,10 +25,12 @@ export function correctAnswerSelectionValidator(): ValidatorFn {
     Object.keys(correctAnswers.controls).forEach((key) => {
       const correctAnswer = correctAnswers.get(key);
       const answer = answers.get(key);
+      const answerImage = answerImages.get(key);
 
       if (
         correctAnswer?.value &&
-        (!answer || answer.invalid || !answer.value)
+        (!answer || !answer.value.trim()) &&
+        (!answerImage || !answerImage.value)
       ) {
         errors[`invalidCorrectAnswer${key}`] = true;
       }

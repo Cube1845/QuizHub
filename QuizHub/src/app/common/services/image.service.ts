@@ -65,4 +65,8 @@ export class ImageService {
       reader.readAsDataURL(file);
     });
   }
+
+  getImageUrl(image: File): string {
+    return URL.createObjectURL(image as File);
+  }
 }

@@ -15,9 +15,10 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
-import { Image } from 'primeng/image';
+import { Image, ImageModule } from 'primeng/image';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
+import { ImageService } from '../../../../../../common/services/image.service';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -33,6 +34,7 @@ import { QuestionEditDialogComponent } from './question-edit-dialog/question-edi
     ReactiveFormsModule,
     ConfirmDialogModule,
     ToastModule,
+    ImageModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
@@ -46,6 +48,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
+  private readonly imageService = inject(ImageService);
 
   ref: DynamicDialogRef | undefined;
 
@@ -76,6 +79,10 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  getImageUrl(image: File): string {
+    return this.imageService.getImageUrl(image);
+  }
+
   goBack(): void {
     this.router.navigateByUrl('manager/question-bases');
   }
@@ -89,10 +96,14 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
 
   openQuestionEditor(index: number, event: MouseEvent) {
     const clickedElement = event.target as HTMLElement;
-    const isMainComponent =
-      clickedElement.closest('.independent-cilck-action') !== null;
+    const isNotMainComponent =
+      clickedElement.closest('.independent-cilck-action') != null;
 
-    if (isMainComponent) {
+    const isNotImage = clickedElement.closest('.p-image-preview-mask') != null;
+
+    const isNotMask = clickedElement.closest('.p-overlay-mask') != null;
+
+    if (isNotMainComponent || isNotImage || isNotMask) {
       event.stopPropagation();
       return;
     }

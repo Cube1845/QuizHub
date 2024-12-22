@@ -23,6 +23,7 @@ import {
 import { Question } from '../../../../../../../common/models/question';
 import { Answer } from '../../../../../../../common/models/answer';
 import { ImagePreviewComponent } from './image-preview/image-preview.component';
+import { requireFirstTwoAnswersValidator } from '../../../../../../../common/validators/require-first-two-answers-validator';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -58,21 +59,12 @@ export class QuestionEditDialogComponent implements OnInit {
         Validators.minLength(3),
       ]),
       contentImage: new FormControl<File | null>(null),
-      answers: new FormGroup<FormControl<string | null>[]>(
-        [
-          new FormControl<string>('', [
-            Validators.required,
-            Validators.minLength(3),
-          ]),
-          new FormControl<string>('', [
-            Validators.required,
-            Validators.minLength(3),
-          ]),
-          new FormControl<string>('', Validators.minLength(3)),
-          new FormControl<string>('', Validators.minLength(3)),
-        ],
-        enforceSequentialAnswersValidator()
-      ),
+      answers: new FormGroup<FormControl<string | null>[]>([
+        new FormControl<string>('', Validators.minLength(3)),
+        new FormControl<string>('', Validators.minLength(3)),
+        new FormControl<string>('', Validators.minLength(3)),
+        new FormControl<string>('', Validators.minLength(3)),
+      ]),
       correctAnswers: new FormGroup<FormControl<boolean | null>[]>(
         [
           new FormControl<boolean>(false),
@@ -89,7 +81,11 @@ export class QuestionEditDialogComponent implements OnInit {
         new FormControl<File | null>(null),
       ]),
     },
-    correctAnswerSelectionValidator()
+    [
+      enforceSequentialAnswersValidator(),
+      correctAnswerSelectionValidator(),
+      requireFirstTwoAnswersValidator(),
+    ]
   );
 
   ngOnInit(): void {
