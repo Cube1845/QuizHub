@@ -1,6 +1,6 @@
 <div class="custom-file-input">
     <input type="file" [id]="'fileUpload' + uuid" (change)="onUpload($event)" accept="image/*" [disabled]="uploaderDisabled"/>
-    <label [for]="'fileUpload' + uuid" [ngStyle]="{'height': getComponentHeight(), 'font-size': getFontSize()}" >
+    <label [for]="'fileUpload' + uuid" [ngStyle]="{'height': getComponentHeight(), 'font-size': getFontSize()}" [class.disabled]="uploaderDisabled">
       <i class="pi pi-upload" [ngStyle]="{'font-size': getFontSize()}"></i>
       {{ getFileUploaderContentText() }}
     </label>

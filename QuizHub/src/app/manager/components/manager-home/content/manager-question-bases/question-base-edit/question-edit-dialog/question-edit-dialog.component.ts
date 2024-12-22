@@ -92,6 +92,22 @@ export class QuestionEditDialogComponent implements OnInit {
     this.setInputValues();
   }
 
+  isPreviousAnswerSet(currentAnswerIndex: number): boolean {
+    const content =
+      this.questionFormGroup.controls.answers.controls[currentAnswerIndex - 1]
+        .value;
+    const image =
+      this.questionFormGroup.controls.answerImages.controls[
+        currentAnswerIndex - 1
+      ].value;
+
+    if ((content == null || content.trim().length < 3) && image == null) {
+      return false;
+    }
+
+    return true;
+  }
+
   getAnswerContentValues(): (string | null)[] {
     const answerValues = this.question.answers.map((answer) => answer.content);
 
