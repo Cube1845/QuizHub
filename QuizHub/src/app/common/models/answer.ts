@@ -1,8 +1,6 @@
-import { NamedImage } from './namedImage';
-
 export type Answer = {
-  content: string;
+  content: string | null;
   isCorrect: boolean;
-  image: NamedImage | null;
+  image: File | null;
   id: string;
 };
