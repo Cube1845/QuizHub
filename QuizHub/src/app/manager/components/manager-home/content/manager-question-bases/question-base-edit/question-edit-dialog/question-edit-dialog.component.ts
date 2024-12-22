@@ -15,9 +15,14 @@ import {
 import { enforceSequentialAnswersValidator } from '../../../../../../../common/validators/enforce-sequential-answers-validator';
 import { requireOneSelectedAnswerValidator } from '../../../../../../../common/validators/require-one-selected-answer-validator';
 import { correctAnswerSelectionValidator } from '../../../../../../../common/validators/correct-answer-selection-validator';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import {
+  DialogService,
+  DynamicDialogConfig,
+  DynamicDialogRef,
+} from 'primeng/dynamicdialog';
 import { Question } from '../../../../../../../common/models/question';
 import { Answer } from '../../../../../../../common/models/answer';
+import { ImagePreviewComponent } from './image-preview/image-preview.component';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -34,13 +39,17 @@ import { Answer } from '../../../../../../../common/models/answer';
   ],
   templateUrl: './question-edit-dialog.component.html',
   styleUrl: './question-edit-dialog.component.scss',
+  providers: [DialogService],
 })
 export class QuestionEditDialogComponent implements OnInit {
   private readonly ref = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
+  private readonly dialogService = inject(DialogService);
 
   question: Question = this.config.data.question;
-  questionIndex: number = this.config.data.questionIndex;
+  questionIndex: number | null = this.config.data.questionIndex;
+
+  imageDisplayRef: DynamicDialogRef | undefined;
 
   questionFormGroup = new FormGroup(
     {
@@ -73,7 +82,7 @@ export class QuestionEditDialogComponent implements OnInit {
         ],
         requireOneSelectedAnswerValidator()
       ),
-      answerImages: new FormGroup([
+      answerImages: new FormGroup<FormControl<File | null>[]>([
         new FormControl<File | null>(null),
         new FormControl<File | null>(null),
         new FormControl<File | null>(null),
@@ -87,24 +96,45 @@ export class QuestionEditDialogComponent implements OnInit {
     this.setInputValues();
   }
 
-  setInputValues(): void {
+  getAnswerContentValues(): (string | null)[] {
     const answerValues = this.question.answers.map((answer) => answer.content);
 
+    while (answerValues.length < 4) {
+      answerValues.push('');
+    }
+
+    return answerValues;
+  }
+
+  getCorrectAnswers(): (boolean | null)[] {
     const correctAnswers = this.question.answers.map(
       (answer) => answer.isCorrect
     );
 
-    while (answerValues.length < 4) {
-      answerValues.push('');
+    while (correctAnswers.length < 4) {
       correctAnswers.push(false);
     }
 
+    return correctAnswers;
+  }
+
+  getAnswerImages(): (File | null)[] {
+    const answerImages = this.question.answers.map((answer) => answer.image);
+
+    while (answerImages.length < 4) {
+      answerImages.push(null);
+    }
+
+    return answerImages;
+  }
+
+  setInputValues(): void {
     this.questionFormGroup.setValue({
       content: this.question.content,
       contentImage: this.question.image,
-      answers: answerValues,
-      correctAnswers: correctAnswers,
-      answerImages: [null, null, null, null],
+      answers: this.getAnswerContentValues(),
+      correctAnswers: this.getCorrectAnswers(),
+      answerImages: this.getAnswerImages(),
     });
   }
 
@@ -123,7 +153,7 @@ export class QuestionEditDialogComponent implements OnInit {
 
     for (let i = 0; i < 4; i++) {
       if (
-        controls.answers.controls[i].value != null ||
+        controls.answers.controls[i].value != '' ||
         controls.answerImages.controls[i].value != null
       ) {
         lastAnswerIndex++;
@@ -141,7 +171,7 @@ export class QuestionEditDialogComponent implements OnInit {
       });
     }
 
-    const image = this.questionFormGroup.value.contentImage!;
+    const image: File | null = this.questionFormGroup.value.contentImage!;
 
     const question: Question = {
       content: this.questionFormGroup.controls.content.value!,
@@ -151,6 +181,16 @@ export class QuestionEditDialogComponent implements OnInit {
     };
 
     return question;
+  }
+
+  displayImagePreview(imageUrl: string): void {
+    this.imageDisplayRef = this.dialogService.open(ImagePreviewComponent, {
+      width: 'auto',
+      height: 'auto',
+      modal: true,
+      data: imageUrl,
+      closable: true,
+    });
   }
 
   save(): void {

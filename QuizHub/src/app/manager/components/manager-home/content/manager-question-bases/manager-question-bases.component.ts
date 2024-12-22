@@ -29,11 +29,11 @@ import { ToastModule } from 'primeng/toast';
   providers: [ConfirmationService, MessageService],
 })
 export class ManagerQuestionBasesComponent {
-  questionBaseService = inject(QuestionBaseService);
-  polishWordVariationService = inject(PolishWordVariationService);
-  router = inject(Router);
-  confirmationService = inject(ConfirmationService);
-  messageService = inject(MessageService);
+  private readonly questionBaseService = inject(QuestionBaseService);
+  readonly polishWordVariationService = inject(PolishWordVariationService);
+  readonly router = inject(Router);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
 
   dialogVisible: boolean = false;
   currentEditedQuestionBaseIndex: number = -1;

@@ -2,12 +2,12 @@
 <p-confirmDialog></p-confirmDialog>
 <div class="container">
     <div class="top-bar">
-        <p-button [outlined]="true" [style]="{'margin-right': '25px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
 
         <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
-        <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="questionDialogVisible = true"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="false"></p-button>
     </div>
 
     <div class="question-box">
@@ -102,9 +102,3 @@
         }
     </div>
 </div>
-
-<p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto' }" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false" (onHide)="imagePreviewUrl = null">
-    @if (imagePreviewVisible) {
-        <p-image [src]="this.imagePreviewUrl!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', margin: '5px'}"></p-image>
-    }
-</p-dialog>

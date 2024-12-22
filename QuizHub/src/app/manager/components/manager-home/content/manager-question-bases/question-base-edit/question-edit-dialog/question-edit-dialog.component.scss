@@ -16,6 +16,14 @@
         flex-direction: column !important;
         margin: 0;
         padding: 0;
+
+        app-image-panel {
+            margin: 10px 0 0 5px;
+        }
+
+        p {
+            margin: 3px 0 0 5px;
+        }
     }
 
     .question-buttons-box {
@@ -49,5 +57,27 @@
 
     .input-border-radius-left-only {
         border-radius: var(--p-border-radius-sm) 0px 0px var(--p-border-radius-sm) !important;
+    }
+
+    .p-info-text {
+        padding: 0;
+        margin: 5px 0 0 0;
+        font-size: 14px;
+        color: var(--p-zinc-300);
+
+        i {
+            font-size: 12px;
+            padding-right: 5px;
+            color: var(--p-zinc-300);
+        }
+    }
+
+    .smaller {
+        font-size: 12px !important;
+
+        i {
+            font-size: 10px !important;
+            padding-right: 4px !important;
+        }
     }
 }

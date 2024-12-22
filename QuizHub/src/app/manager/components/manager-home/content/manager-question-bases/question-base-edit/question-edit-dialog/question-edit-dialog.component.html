@@ -1,11 +1,12 @@
-<div class="question-input-box" [formGroup]="questionFormGroup">
+<div class="question-input-box">
     <div class="question-content-box">
         <p-floatLabel>
-            <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90" formControlName="content"/>
+            <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90" [formControl]="questionFormGroup.controls.content"/>
             <label for="quesiton-content">Pytanie</label>
         </p-floatLabel>
 
-        <app-image-panel formControlName="contentImage" (onDisplayPreview)="false"/>
+        <app-image-panel [formControl]="questionFormGroup.controls.contentImage" (onDisplayPreview)="displayImagePreview($event)"/>
+        <p class="p-info-text"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią pytania</p>
     </div>
 
     <div class="question-answer-row">
@@ -22,6 +23,9 @@
                     </p-inputGroupAddon>
                 </p-floatLabel>
             </p-inputGroup>
+
+            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[0]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true"/>
+            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi A</p>
         </div>
         <div class="dialog-single-answer-box">
             <p-inputGroup>
@@ -36,6 +40,9 @@
                     </p-inputGroupAddon>
                 </p-floatLabel>
             </p-inputGroup>
+
+            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[1]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true"/>
+            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi B</p>
         </div>
     </div>
 
@@ -53,6 +60,9 @@
                     </p-inputGroupAddon>
                 </p-floatLabel>
             </p-inputGroup>
+
+            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[2]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true"/>
+            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi C</p>
         </div>
         <div class="dialog-single-answer-box">
             <p-inputGroup>
@@ -67,6 +77,9 @@
                     </p-inputGroupAddon>
                 </p-floatLabel>
             </p-inputGroup>
+
+            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[3]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true"/>
+            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi D</p>
         </div>
     </div>
 </div>

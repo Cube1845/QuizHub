@@ -1,10 +1,11 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   forwardRef,
-  HostBinding,
   inject,
   Input,
+  OnInit,
   Output,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
@@ -12,6 +13,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgStyle } from '@angular/common';
 import { environment } from '../../../../../../../../../environments/environment.development';
 import { ImageService } from '../../../../../../../../common/services/image.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-image-panel',
@@ -34,18 +36,29 @@ export class ImagePanelComponent implements ControlValueAccessor {
 
   maxImageSize = environment.maxImageSize;
 
+  uuid = uuidv4();
+
   selectedFile!: File | null;
 
   @Output() onDisplayPreview = new EventEmitter<string>();
 
-  @Input() componentHeight: string = '30';
   @Input() uploaderDisabled!: boolean;
+  @Input() smaller: boolean = false;
 
-  @HostBinding('style.--comp-height') compHeight = this.componentHeight + 'px';
-  @HostBinding('style.--comp-font-size') compFontSize = this.getFontSize();
+  getComponentHeight(): string {
+    if (this.smaller) {
+      return '24px';
+    }
+
+    return '30px';
+  }
 
   getFontSize(): string {
-    return (Number(this.componentHeight) / 2).toString() + 'px';
+    if (this.smaller) {
+      return '12px';
+    }
+
+    return '14px';
   }
 
   async onUpload(event: Event): Promise<void> {
@@ -69,7 +82,7 @@ export class ImagePanelComponent implements ControlValueAccessor {
 
   getFileUploaderContentText(): string {
     if (this.selectedFile == null) {
-      return 'Wybierz obraz';
+      return 'Dodaj obraz';
     }
 
     return this.selectedFile.name;
@@ -77,6 +90,7 @@ export class ImagePanelComponent implements ControlValueAccessor {
 
   removeImage(): void {
     this.selectedFile = null;
+    this.onChange(this.selectedFile);
   }
 
   emitDisplayImageEvent(): void {

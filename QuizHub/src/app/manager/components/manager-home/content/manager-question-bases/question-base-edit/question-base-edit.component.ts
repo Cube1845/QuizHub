@@ -33,7 +33,6 @@ import { QuestionEditDialogComponent } from './question-edit-dialog/question-edi
     ReactiveFormsModule,
     ConfirmDialogModule,
     ToastModule,
-    Image,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
@@ -41,21 +40,16 @@ import { QuestionEditDialogComponent } from './question-edit-dialog/question-edi
 })
 export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
-  questionBaseService = inject(QuestionBaseService);
-  questionService = inject(QuestionService);
-  confirmationService = inject(ConfirmationService);
-  messageService = inject(MessageService);
-  router = inject(Router);
-  dialogService = inject(DialogService);
+  private readonly questionBaseService = inject(QuestionBaseService);
+  private readonly questionService = inject(QuestionService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+  private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
 
   ref: DynamicDialogRef | undefined;
 
   questionBaseId!: string | null;
-
-  questionDialogVisible!: boolean;
-
-  imagePreviewVisible: boolean = false;
-  imagePreviewUrl: string | null = null;
 
   questions: Question[] | null = null;
 
