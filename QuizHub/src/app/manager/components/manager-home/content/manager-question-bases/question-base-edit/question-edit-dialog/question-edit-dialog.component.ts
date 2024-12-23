@@ -9,6 +9,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -27,6 +28,8 @@ import { DisplayableImage } from '../../../../../../models/displayableImage';
 import { Answer } from '../../../../../../models/answer';
 import { UndefinedQuestion } from '../../../../../../models/undefinedQuestion';
 import { UndefinedAnswer } from '../../../../../../models/undefinedAnswer';
+import { QuestionType } from '../../../../../../enums/questionType';
+import { SelectButton } from 'primeng/selectbutton';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -40,6 +43,7 @@ import { UndefinedAnswer } from '../../../../../../models/undefinedAnswer';
     InputGroupModule,
     InputGroupAddonModule,
     ReactiveFormsModule,
+    SelectButton,
   ],
   templateUrl: './question-edit-dialog.component.html',
   styleUrl: './question-edit-dialog.component.scss',
@@ -49,6 +53,11 @@ export class QuestionEditDialogComponent implements OnInit {
   private readonly ref = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
   private readonly dialogService = inject(DialogService);
+
+  questionTypes: any[] = [
+    { label: 'Pojedyncza odpowiedź', value: QuestionType.SingleAnswer },
+    { label: 'Wielokrotna odpowiedź', value: QuestionType.MultiAnswer },
+  ];
 
   question: Question | null = this.config.data?.question;
   questionIndex: number | null = this.config.data?.questionIndex;
@@ -98,6 +107,10 @@ export class QuestionEditDialogComponent implements OnInit {
         new FormControl<DisplayableImage | null>(null),
         new FormControl<DisplayableImage | null>(null),
       ]),
+      questionType: new FormControl<QuestionType | null>(
+        QuestionType.SingleAnswer,
+        Validators.required
+      ),
     },
     [
       enforceSequentialAnswersValidator(),
@@ -169,6 +182,7 @@ export class QuestionEditDialogComponent implements OnInit {
       answers: this.getAnswerContentValues(),
       correctAnswers: this.getCorrectAnswers(),
       answerImages: this.getAnswerImages(),
+      questionType: this.question!.questionType,
     });
   }
 
@@ -212,6 +226,7 @@ export class QuestionEditDialogComponent implements OnInit {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: image,
+      questionType: this.questionFormGroup.controls.questionType.value!,
       id: this.question?.id || '',
     };
 
@@ -249,6 +264,7 @@ export class QuestionEditDialogComponent implements OnInit {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: image,
+      questionType: this.questionFormGroup.controls.questionType.value!,
     };
 
     return question;

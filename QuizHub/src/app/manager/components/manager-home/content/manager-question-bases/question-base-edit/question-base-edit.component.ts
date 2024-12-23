@@ -18,6 +18,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
 import { Question } from '../../../../../models/question';
 import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
+import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -34,6 +35,7 @@ import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
     ConfirmDialogModule,
     ToastModule,
     ImageModule,
+    NgStyle,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
@@ -109,7 +111,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.ref = this.dialogService.open(QuestionEditDialogComponent, {
       header: 'Edytuj pytanie',
       width: '72rem',
-      height: '45rem',
+      height: '51.5rem',
       modal: true,
       data: {
         question: this.questions![questionIndex],
@@ -129,7 +131,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.ref = this.dialogService.open(QuestionEditDialogComponent, {
       header: 'Dodaj pytanie',
       width: '72rem',
-      height: '45rem',
+      height: '51.5rem',
       modal: true,
     });
 
@@ -198,6 +200,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
         };
       }),
       image: questionToAdd.image,
+      questionType: questionToAdd.questionType,
       id: '',
     };
 

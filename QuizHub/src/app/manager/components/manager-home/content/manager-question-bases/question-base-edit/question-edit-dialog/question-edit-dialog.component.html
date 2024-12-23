@@ -84,6 +84,16 @@
     </div>
 </div>
 
+<div class="question-options-box">
+    <h2>Typ pytania</h2>
+
+    <p-select-button [options]="questionTypes" optionLabel="label" optionValue="value" [formControl]="questionFormGroup.controls.questionType" size="small"/>
+    <p>
+        <i class="pi pi-info-circle"></i>
+        W przypadku wybrania pojedynczej odpowiedzi, wymagane będzie zaznaczenie którejkolwiek z poprawynch odpowiedzi, natomiast w przypadku wybrania wielokrotnej odpowiedzi, wymagane będzie zaznaczenie wszystkich z poprawnych odpowiedzi
+    </p>
+</div>
+
 <div class="question-buttons-box">
     @if (addingNewQuestion) {
         <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
