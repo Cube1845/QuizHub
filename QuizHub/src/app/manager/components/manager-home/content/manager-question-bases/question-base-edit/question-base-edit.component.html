@@ -20,8 +20,8 @@
         @for (question of questions; track $index) {
             <div class="question-panel" (click)="openQuestionEditor($index, $event)">
                 <div class="question-content">
-                    @if (question.image != null) {
-                        <p-image [src]="this.getImageUrl(question.image)" preview="true" height="200"></p-image>
+                    @if (question.image != null && !!question.image.displayUrl) {
+                        <p-image [src]="question.image.displayUrl" preview="true" height="200"></p-image>
                     }
 
                     <h1>{{ question.content }}</h1>
@@ -32,8 +32,8 @@
                             @if (question.answers[0].isCorrect) {
                                 <h2 style="color: var(--p-primary-color)">Odpowiedź A:</h2>
 
-                                @if (question.answers[0].image != null) {
-                                    <p-image [src]="this.getImageUrl(question.answers[0].image)" preview="true" height="160"></p-image>
+                                @if (question.answers[0].image != null && !!question.answers[0].image.displayUrl) {
+                                    <p-image [src]="question.answers[0].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
                                 <p style="color: var(--p-primary-color)">
@@ -43,8 +43,8 @@
                             } @else {
                                 <h2>Odpowiedź A:</h2>
 
-                                @if (question.answers[0].image != null) {
-                                    <p-image [src]="this.getImageUrl(question.answers[0].image)" preview="true" height="160"></p-image>
+                                @if (question.answers[0].image != null && !!question.answers[0].image.displayUrl) {
+                                    <p-image [src]="question.answers[0].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
                                 <p>
@@ -57,8 +57,8 @@
                             @if (question.answers[1].isCorrect) {
                                 <h2 style="color: var(--p-primary-color)">Odpowiedź B:</h2>
 
-                                @if (question.answers[1].image != null) {
-                                    <p-image [src]="this.getImageUrl(question.answers[1].image)" preview="true" height="160"></p-image>
+                                @if (question.answers[1].image != null && !!question.answers[1].image.displayUrl) {
+                                    <p-image [src]="question.answers[1].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
                                 <p style="color: var(--p-primary-color)">
@@ -68,8 +68,8 @@
                             } @else {
                                 <h2>Odpowiedź B:</h2>
 
-                                @if (question.answers[1].image != null) {
-                                    <p-image [src]="this.getImageUrl(question.answers[1].image)" preview="true" height="160"></p-image>
+                                @if (question.answers[1].image != null && !!question.answers[1].image.displayUrl) {
+                                    <p-image [src]="question.answers[1].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
                                 <p>
@@ -86,8 +86,8 @@
                                 @if (question.answers[2].isCorrect) {
                                     <h2 style="color: var(--p-primary-color)">Odpowiedź C:</h2>
 
-                                    @if (question.answers.length >= 3 && question.answers[2].image != null) {
-                                        <p-image [src]="this.getImageUrl(question.answers[2].image)" preview="true" height="160"></p-image>
+                                    @if (question.answers.length >= 3 && question.answers[2].image != null && !!question.answers[2].image.displayUrl) {
+                                        <p-image [src]="question.answers[2].image.displayUrl" preview="true" height="160"></p-image>
                                     }
 
                                     <p style="color: var(--p-primary-color)">
@@ -97,8 +97,8 @@
                                 } @else {
                                     <h2>Odpowiedź C:</h2>
 
-                                    @if (question.answers.length >= 3 && question.answers[2].image != null) {
-                                        <p-image [src]="this.getImageUrl(question.answers[2].image)" preview="true" height="160"></p-image>
+                                    @if (question.answers.length >= 3 && question.answers[2].image != null && !!question.answers[2].image.displayUrl) {
+                                        <p-image [src]="question.answers[2].image.displayUrl" preview="true" height="160"></p-image>
                                     }
 
                                     <p>
@@ -113,8 +113,8 @@
                                     @if (question.answers[3].isCorrect) {
                                         <h2 style="color: var(--p-primary-color)">Odpowiedź D:</h2>
 
-                                        @if (question.answers.length == 4 && question.answers[3].image != null) {
-                                            <p-image [src]="this.getImageUrl(question.answers[3].image)" preview="true" height="160"></p-image>
+                                        @if (question.answers.length == 4 && question.answers[3].image != null && !!question.answers[3].image.displayUrl) {
+                                            <p-image [src]="question.answers[3].image.displayUrl" preview="true" height="160"></p-image>
                                         }
 
                                         <p style="color: var(--p-primary-color)">
@@ -124,8 +124,8 @@
                                     } @else {
                                         <h2>Odpowiedź D:</h2>
 
-                                        @if (question.answers.length == 4 && question.answers[3].image != null) {
-                                            <p-image [src]="this.getImageUrl(question.answers[3].image)" preview="true" height="160"></p-image>
+                                        @if (question.answers.length == 4 && question.answers[3].image != null && !!question.answers[3].image.displayUrl) {
+                                            <p-image [src]="question.answers[3].image.displayUrl" preview="true" height="160"></p-image>
                                         }
 
                                         <p>

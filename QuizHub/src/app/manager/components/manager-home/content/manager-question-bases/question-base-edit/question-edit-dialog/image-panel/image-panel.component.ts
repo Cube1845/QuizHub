@@ -14,6 +14,7 @@ import { NgStyle } from '@angular/common';
 import { environment } from '../../../../../../../../../environments/environment.development';
 import { ImageService } from '../../../../../../../../common/services/image.service';
 import { v4 as uuidv4 } from 'uuid';
+import { DisplayableImage } from '../../../../../../../../common/models/displayableImage';
 
 @Component({
   selector: 'app-image-panel',
@@ -38,7 +39,7 @@ export class ImagePanelComponent implements ControlValueAccessor {
 
   uuid = uuidv4();
 
-  selectedFile!: File | null;
+  selectedImage!: DisplayableImage | null;
 
   @Output() onDisplayPreview = new EventEmitter<string>();
 
@@ -73,32 +74,36 @@ export class ImagePanelComponent implements ControlValueAccessor {
       defaultHeight
     );
 
-    this.selectedFile = new File([resizedBlob], file.name, { type: file.type });
+    this.selectedImage = new File([resizedBlob], file.name, {
+      type: file.type,
+    });
 
-    this.onChange(this.selectedFile);
+    this.selectedImage.displayUrl = this.imageService.getImageUrl(
+      this.selectedImage
+    );
+
+    this.onChange(this.selectedImage);
   }
 
   getFileUploaderContentText(): string {
-    if (this.selectedFile == null) {
+    if (this.selectedImage == null) {
       return 'Dodaj obraz';
     }
 
-    return this.selectedFile.name;
+    return this.selectedImage.name;
   }
 
   removeImage(): void {
-    this.selectedFile = null;
-    this.onChange(this.selectedFile);
+    this.selectedImage = null;
+    this.onChange(this.selectedImage);
   }
 
   emitDisplayImageEvent(): void {
-    this.onDisplayPreview.emit(
-      this.imageService.getImageUrl(this.selectedFile!)
-    );
+    this.onDisplayPreview.emit(this.selectedImage!.displayUrl);
   }
 
   writeValue(obj: any): void {
-    this.selectedFile = obj;
+    this.selectedImage = obj;
   }
 
   registerOnChange(fn: any): void {

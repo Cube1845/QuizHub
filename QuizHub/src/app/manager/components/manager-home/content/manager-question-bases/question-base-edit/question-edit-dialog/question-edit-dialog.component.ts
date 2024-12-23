@@ -26,6 +26,7 @@ import { ImagePreviewComponent } from './image-preview/image-preview.component';
 import { requireFirstTwoAnswersValidator } from '../../../../../../../common/validators/require-first-two-answers-validator';
 import { UndefinedAnswer } from '../../../../../../../common/models/undefinedAnswer';
 import { UndefinedQuestion } from '../../../../../../../common/models/undefinedQuestion';
+import { DisplayableImage } from '../../../../../../../common/models/displayableImage';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -63,7 +64,7 @@ export class QuestionEditDialogComponent implements OnInit {
         Validators.minLength(3),
         Validators.maxLength(120),
       ]),
-      contentImage: new FormControl<File | null>(null),
+      contentImage: new FormControl<DisplayableImage | null>(null),
       answers: new FormGroup<FormControl<string | null>[]>([
         new FormControl<string>('', [
           Validators.minLength(3),
@@ -91,11 +92,11 @@ export class QuestionEditDialogComponent implements OnInit {
         ],
         requireOneSelectedAnswerValidator()
       ),
-      answerImages: new FormGroup<FormControl<File | null>[]>([
-        new FormControl<File | null>(null),
-        new FormControl<File | null>(null),
-        new FormControl<File | null>(null),
-        new FormControl<File | null>(null),
+      answerImages: new FormGroup<FormControl<DisplayableImage | null>[]>([
+        new FormControl<DisplayableImage | null>(null),
+        new FormControl<DisplayableImage | null>(null),
+        new FormControl<DisplayableImage | null>(null),
+        new FormControl<DisplayableImage | null>(null),
       ]),
     },
     [
@@ -204,7 +205,8 @@ export class QuestionEditDialogComponent implements OnInit {
       });
     }
 
-    const image: File | null = this.questionFormGroup.value.contentImage!;
+    const image: DisplayableImage | null =
+      this.questionFormGroup.value.contentImage!;
 
     const question: Question = {
       content: this.questionFormGroup.controls.content.value!,
@@ -240,7 +242,8 @@ export class QuestionEditDialogComponent implements OnInit {
       });
     }
 
-    const image: File | null = this.questionFormGroup.value.contentImage!;
+    const image: DisplayableImage | null =
+      this.questionFormGroup.value.contentImage!;
 
     const question: UndefinedQuestion = {
       content: this.questionFormGroup.controls.content.value!,

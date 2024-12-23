@@ -87,7 +87,7 @@
 <div class="question-buttons-box">
     @if (addingNewQuestion) {
         <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
-        <p-button label="Dodaj" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="dialog-button"/>
+        <p-button label="Utwórz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="dialog-button"/>
     } @else {
         <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
         <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="save()" class="dialog-button"/>

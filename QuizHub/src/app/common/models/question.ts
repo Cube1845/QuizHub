@@ -1,8 +1,7 @@
 import { Answer } from './answer';
+import { UndefinedQuestion } from './undefinedQuestion';
 
-export type Question = {
-  content: string;
+export type Question = UndefinedQuestion & {
   answers: Answer[];
-  image: File | null;
   id: string;
 };
