@@ -1,18 +1,18 @@
 import { Component, inject, OnDestroy } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { QuestionBaseService } from '../../../../services/question-base.service';
-import { PolishWordVariationService } from '../../../../../common/services/polish-word-variation.service';
+import { PolishWordVariationService } from '../../../../services/polish-word-variation.service';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { QuestionBaseData } from '../../../../../common/models/questionBaseData';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionBaseNameEditDialogComponent } from './question-base-name-edit-dialog/question-base-name-edit-dialog.component';
+import { QuestionBaseData } from '../../../../models/questionBaseData';
 
 @Component({
   selector: 'app-manager-question-bases',

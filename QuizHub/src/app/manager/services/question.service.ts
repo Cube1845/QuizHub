@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Question } from '../../common/models/question';
-import { UndefinedQuestion } from '../../common/models/undefinedQuestion';
+import { UndefinedQuestion } from '../models/undefinedQuestion';
+import { Question } from '../models/question';
 
 @Injectable({
   providedIn: 'root',

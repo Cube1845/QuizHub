@@ -11,7 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { passwordsMatchValidator } from '../../../common/validators/passwords-match-validator';
+import { passwordsMatchValidator } from '../../../manager/validators/passwords-match-validator';
 import { environment } from '../../../../environments/environment.development';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';

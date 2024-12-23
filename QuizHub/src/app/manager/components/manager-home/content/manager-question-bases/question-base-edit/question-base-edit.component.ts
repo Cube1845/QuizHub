@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Question } from '../../../../../../common/models/question';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -14,12 +13,11 @@ import { QuestionService } from '../../../../../services/question.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-import { FileUpload } from 'primeng/fileupload';
-import { Image, ImageModule } from 'primeng/image';
+import { ImageModule } from 'primeng/image';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
-import { ImageService } from '../../../../../../common/services/image.service';
-import { UndefinedQuestion } from '../../../../../../common/models/undefinedQuestion';
+import { Question } from '../../../../../models/question';
+import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -49,7 +47,6 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
-  private readonly imageService = inject(ImageService);
 
   ref: DynamicDialogRef | undefined;
 
@@ -78,10 +75,6 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     if (this.ref) {
       this.ref.close();
     }
-  }
-
-  getImageUrl(image: File): string {
-    return this.imageService.getImageUrl(image);
   }
 
   goBack(): void {

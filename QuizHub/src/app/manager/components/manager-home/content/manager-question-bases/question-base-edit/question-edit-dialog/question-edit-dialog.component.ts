@@ -12,21 +12,21 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { enforceSequentialAnswersValidator } from '../../../../../../../common/validators/enforce-sequential-answers-validator';
-import { requireOneSelectedAnswerValidator } from '../../../../../../../common/validators/require-one-selected-answer-validator';
-import { correctAnswerSelectionValidator } from '../../../../../../../common/validators/correct-answer-selection-validator';
+import { enforceSequentialAnswersValidator } from '../../../../../../validators/enforce-sequential-answers-validator';
+import { requireOneSelectedAnswerValidator } from '../../../../../../validators/require-one-selected-answer-validator';
+import { correctAnswerSelectionValidator } from '../../../../../../validators/correct-answer-selection-validator';
 import {
   DialogService,
   DynamicDialogConfig,
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { Question } from '../../../../../../../common/models/question';
-import { Answer } from '../../../../../../../common/models/answer';
 import { ImagePreviewComponent } from './image-preview/image-preview.component';
-import { requireFirstTwoAnswersValidator } from '../../../../../../../common/validators/require-first-two-answers-validator';
-import { UndefinedAnswer } from '../../../../../../../common/models/undefinedAnswer';
-import { UndefinedQuestion } from '../../../../../../../common/models/undefinedQuestion';
-import { DisplayableImage } from '../../../../../../../common/models/displayableImage';
+import { requireFirstTwoAnswersValidator } from '../../../../../../validators/require-first-two-answers-validator';
+import { Question } from '../../../../../../models/question';
+import { DisplayableImage } from '../../../../../../models/displayableImage';
+import { Answer } from '../../../../../../models/answer';
+import { UndefinedQuestion } from '../../../../../../models/undefinedQuestion';
+import { UndefinedAnswer } from '../../../../../../models/undefinedAnswer';
 
 @Component({
   selector: 'app-question-edit-dialog',
