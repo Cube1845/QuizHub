@@ -1,15 +1,17 @@
 <p-toast position="bottom-left" [life]="3000" />
 <p-confirmDialog></p-confirmDialog>
-@for (questionBase of questionBases; track $index) {
-    <div class="question-base-panel contains-delete-button" (click)="goToQuestionEditor(questionBase.id)">
-        <h1>{{ questionBase.name }}</h1>
-        <p>{{ questionBase.questionCount }} {{ getQuestionWordVariation(questionBase.questionCount) }}</p>
+<div class="container m-3">
+    @for (questionBase of questionBases; track $index) {
+        <div class="question-base-panel contains-delete-button m-3" (click)="goToQuestionEditor(questionBase.id)">
+            <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ questionBase.name }}</h1>
+            <p class="m-0 p-0">{{ questionBase.questionCount }} {{ getQuestionWordVariation(questionBase.questionCount) }}</p>
 
-        <i class="pi pi-pencil clickable-icon edit-icon" (click)="displayQuestionBaseNameEditDialog($event, $index)"></i>
-        <i class="pi pi-trash clickable-icon delete-icon" (click)="displayQuestionBaseRemovalModal($event, $index)"></i>
+            <i class="pi pi-pencil clickable-icon edit-icon text-lg" (click)="displayQuestionBaseNameEditDialog($event, $index)"></i>
+            <i class="pi pi-trash clickable-icon delete-icon text-lg" (click)="displayQuestionBaseRemovalModal($event, $index)"></i>
+        </div>
+    }
+
+    <div class="question-base-panel m-3" (click)="displayQuestionBaseCreatingDialog($event)">
+        <i class="pi pi-plus text-2xl" style="color: var(--p-zinc-200)"></i>
     </div>
-}
-
-<div class="question-base-panel" (click)="displayQuestionBaseCreatingDialog($event)">
-    <i class="pi pi-plus" style="font-size: 1.5rem; color: var(--p-zinc-200)"></i>
 </div>

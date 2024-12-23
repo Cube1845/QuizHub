@@ -15,14 +15,10 @@
 
     h1 {
         color: var(--p-primary-color);
-        margin-bottom: 60px;
-        font-size: 48px;
     }
 
     a {
         color: var(--p-primary-color);
-        margin-top: 35px;
-        font-size: 18px;
         text-decoration: none;
 
         &:hover {
@@ -42,13 +38,5 @@
         align-items: center;
         width: 500px;
         height: auto;
-    }
-
-    p-floatlabel {
-        margin: 20px 0px;
-    }
-
-    p-button {
-        margin-top: 40px;
     }
 }

@@ -66,7 +66,7 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
       width: '30rem',
       height: '19rem',
       modal: true,
-      data: { index: index },
+      data: { index: index, currentName: this.questionBases![index].name },
     });
 
     this.ref.onClose.subscribe((result) => {
