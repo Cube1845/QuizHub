@@ -111,7 +111,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.ref = this.dialogService.open(QuestionEditDialogComponent, {
       header: 'Edytuj pytanie',
       width: '72rem',
-      height: '51.5rem',
+      height: '46rem',
       modal: true,
       data: {
         question: this.questions![questionIndex],
@@ -131,7 +131,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.ref = this.dialogService.open(QuestionEditDialogComponent, {
       header: 'Dodaj pytanie',
       width: '72rem',
-      height: '51.5rem',
+      height: '46rem',
       modal: true,
     });
 

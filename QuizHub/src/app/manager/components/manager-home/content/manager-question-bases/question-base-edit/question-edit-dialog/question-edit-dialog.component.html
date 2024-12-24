@@ -1,16 +1,16 @@
-<div class="question-input-box">
-    <div class="question-content-box">
+<div class="mx-4 mt-4 mb-0">
+    <div class="my-0">
         <p-floatLabel>
             <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="120" [formControl]="questionFormGroup.controls.content"/>
             <label for="quesiton-content">Pytanie</label>
         </p-floatLabel>
 
-        <app-image-panel [formControl]="questionFormGroup.controls.contentImage" (onDisplayPreview)="displayImagePreview($event)"/>
-        <p class="p-info-text"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią pytania</p>
+        <app-image-panel [formControl]="questionFormGroup.controls.contentImage" (onDisplayPreview)="displayImagePreview($event)" class="mt-2"/>
+        <p class="p-info-text text-sm p-0 m-0 mt-2"><i class="pi pi-info-circle pr-1 text-xs"></i>Wybrany obraz będzie wyświetlany nad treścią pytania</p>
     </div>
 
-    <div class="question-answer-row">
-        <div class="dialog-single-answer-box">
+    <div class="question-answer-row m-0 mt-5">
+        <div class="dialog-single-answer-box m-0 p-0 mr-2">
             <p-inputGroup>
                 <p-floatLabel [style]="{width: '100%'}">
                     <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="50" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[0]"/>
@@ -24,10 +24,10 @@
                 </p-floatLabel>
             </p-inputGroup>
 
-            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[0]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true"/>
-            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi A</p>
+            <app-image-panel class="mt-2" [formControl]="questionFormGroup.controls.answerImages.controls[0]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true"/>
+            <p class="p-info-text smaller mt-2 ml-1 text-xs p-0 m-0 mt-2"><i class="pi pi-info-circle pr-1 text-xs"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi A</p>
         </div>
-        <div class="dialog-single-answer-box">
+        <div class="dialog-single-answer-box m-0 p-0 ml-2">
             <p-inputGroup>
                 <p-floatLabel [style]="{width: '100%'}">
                     <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="50" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[1]"/>
@@ -41,13 +41,13 @@
                 </p-floatLabel>
             </p-inputGroup>
 
-            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[1]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true" [uploaderDisabled]="!isPreviousAnswerSet(1)"/>
-            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi B</p>
+            <app-image-panel class="mt-2" [formControl]="questionFormGroup.controls.answerImages.controls[1]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true" [uploaderDisabled]="!isPreviousAnswerSet(1)"/>
+            <p class="p-info-text smaller mt-2 ml-1 text-xs p-0 m-0 mt-2"><i class="pi pi-info-circle pr-1 text-xs"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi B</p>
         </div>
     </div>
 
-    <div class="question-answer-row">
-        <div class="dialog-single-answer-box">
+    <div class="question-answer-row m-0 mt-5">
+        <div class="dialog-single-answer-box m-0 p-0 mr-2">
             <p-inputGroup>
                 <p-floatLabel [style]="{width: '100%'}">
                     <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="50" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[2]"/>
@@ -61,10 +61,10 @@
                 </p-floatLabel>
             </p-inputGroup>
 
-            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[2]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true" [uploaderDisabled]="!isPreviousAnswerSet(2)"/>
-            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi C</p>
+            <app-image-panel class="mt-2" [formControl]="questionFormGroup.controls.answerImages.controls[2]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true" [uploaderDisabled]="!isPreviousAnswerSet(2)"/>
+            <p class="p-info-text smaller mt-2 ml-1 text-xs p-0 m-0 mt-2"><i class="pi pi-info-circle pr-1 text-xs"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi C</p>
         </div>
-        <div class="dialog-single-answer-box">
+        <div class="dialog-single-answer-box m-0 p-0 ml-2">
             <p-inputGroup>
                 <p-floatLabel [style]="{width: '100%'}">
                     <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="50" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[3]"/>
@@ -78,28 +78,28 @@
                 </p-floatLabel>
             </p-inputGroup>
 
-            <app-image-panel [formControl]="questionFormGroup.controls.answerImages.controls[3]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true" [uploaderDisabled]="!isPreviousAnswerSet(3)"/>
-            <p class="p-info-text smaller"><i class="pi pi-info-circle"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi D</p>
+            <app-image-panel class="mt-2" [formControl]="questionFormGroup.controls.answerImages.controls[3]" (onDisplayPreview)="displayImagePreview($event)" [smaller]="true" [uploaderDisabled]="!isPreviousAnswerSet(3)"/>
+            <p class="p-info-text smaller mt-2 ml-1 text-xs p-0 m-0 mt-2"><i class="pi pi-info-circle pr-1 text-xs"></i>Wybrany obraz będzie wyświetlany nad treścią odpowiedzi D</p>
         </div>
     </div>
 </div>
 
-<div class="question-options-box">
-    <h2>Typ pytania</h2>
+<div class="question-options-box mx-4 mt-3">
+    <h2 class="m-0 mt-1 p-0 text-lg line-height-1">Typ pytania</h2>
 
-    <p-select-button [options]="questionTypes" optionLabel="label" optionValue="value" [formControl]="questionFormGroup.controls.questionType" size="small" [allowEmpty]="false"/>
-    <p>
-        <i class="pi pi-info-circle"></i>
+    <p-select-button class="my-2" [options]="questionTypes" optionLabel="label" optionValue="value" [formControl]="questionFormGroup.controls.questionType" size="small" [allowEmpty]="false"/>
+    <p class="text-xs line-height-2 m-0 p-0">
+        <i class="pi pi-info-circle text-xs m-0 pr-1"></i>
         W przypadku wybrania pojedynczej odpowiedzi, wymagane będzie zaznaczenie którejkolwiek z poprawynch odpowiedzi, natomiast w przypadku wybrania wielokrotnej odpowiedzi, wymagane będzie zaznaczenie wszystkich z poprawnych odpowiedzi
     </p>
 </div>
 
-<div class="question-buttons-box">
+<div class="question-buttons-box mt-5 mr-4">
     @if (addingNewQuestion) {
         <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
-        <p-button label="Utwórz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="dialog-button"/>
+        <p-button label="Utwórz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="ml-2"/>
     } @else {
         <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" class="dialog-button"/>
-        <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="save()" class="dialog-button"/>
+        <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="save()" class="ml-2"/>
     }
 </div>

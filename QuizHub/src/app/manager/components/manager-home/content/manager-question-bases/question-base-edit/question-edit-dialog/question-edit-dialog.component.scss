@@ -1,57 +1,23 @@
 :host {
-    .question-input-box {
-        margin: 30px 20px 0px 20px;
-        
-        .question-content-box {
-            margin: 0px 5px 0px 5px;
-            
-            app-image-panel {
-                margin-top: 10px;
-            }
-        }
-    }
-
     .dialog-single-answer-box {
         display: flex;
         flex-direction: column !important;
-        margin: 0;
-        padding: 0;
-
-        app-image-panel {
-            margin: 10px 0 0 5px;
-        }
-
-        p {
-            margin: 3px 0 0 5px;
-        }
     }
 
     .question-buttons-box {
-        margin: 60px 15px 10px 0px;
         display: flex;
         justify-content: end;
-
-        p-button {
-            margin-left: 10px;
-        }
     }
 
     .question-answer-row {
         display: flex;
         flex-direction: row;
         width: 100%;
-        margin: 10px 0 0 0;
 
         div {
             flex: 1;
-            margin: 0;
-            margin-top: 20px;
             display: flex;
             flex-direction: row;
-
-            p-floatLabel {
-                margin: 20px 5px 0px 5px;
-            }
         }
     }
 
@@ -60,52 +26,23 @@
     }
 
     .p-info-text {
-        padding: 0;
-        margin: 5px 0 0 0;
-        font-size: 14px;
         color: var(--p-zinc-300);
 
         i {
-            font-size: 12px;
-            padding-right: 5px;
             color: var(--p-zinc-300);
-        }
-    }
-
-    .smaller {
-        font-size: 12px !important;
-
-        i {
-            font-size: 10px !important;
-            padding-right: 4px !important;
         }
     }
 
     .question-options-box {
-        margin: 15px 0 0 25px;
-
         h2 {
-            margin: 0;
-            padding: 0;
-            font-size: 18px;
             color: var(--p-zinc-300);
-        }
-
-        p-select-button {
-            margin: 5px 0;
         }
         
         p {
-            font-size: 12px;
             color: var(--p-zinc-300);
-            line-height: 16px;
-            margin: 4px 0 0 0;
 
             i {
-                font-size: 10px;
-                padding-right: 4px;
                 color: var(--p-zinc-300);
-                margin: 0;
             }
         }
     }
