@@ -8,12 +8,9 @@
         flex-direction: column;
         width: 100%;
         height: 100%;
-        margin: 0;
     }
 
     .top-bar {
-        padding: 15px;
-        margin: 0;
         display: flex;
         flex-direction: row;
         justify-content: start;
@@ -25,19 +22,15 @@
     }
 
     .question-box {
-        margin: 0;
         width: 100%;
         max-height: 100%;
-        padding-top: 15px;
         overflow: auto;
     }
 
     .question-panel {
         position: relative;
         background: var(--p-zinc-900);
-        margin: 0 15px 15px 15px;
         border-radius: var(--p-border-radius-lg);
-        padding: 25px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -53,26 +46,9 @@
     .question-content {
         display: flex;
         flex-direction: column;
-        margin: 0;
-        padding: 0;
         align-items: start;
         justify-content: center;
         width: 100%;
-
-        h1 {
-            font-size: 28px;
-            line-height: 28px;
-            margin: 0;
-            padding: 0 0 10px 0;
-        }
-
-        p-image {
-            margin: 0 0 10px 0;
-        }
-    }
-
-    .image-button .pi {
-        font-size: 10px !important;
     }
 
     .answer-box {
@@ -85,7 +61,6 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        margin: 0px;
     }
 
     .answer-column {
@@ -95,20 +70,13 @@
         align-items: start;
 
         h2 {
-            margin: 0;
-            padding: 0;
-            font-size: 20px;
             color: var(--p-zinc-300);
         }
 
         p {
-            padding: 0;
-            margin: 0;
-            font-size: 16px;
             color: var(--p-zinc-300);
 
             i {
-                padding: 0 5px 0 0;
                 color: var(--p-zinc-300);
             }
         }
@@ -116,7 +84,6 @@
 
     .delete-icon {
         position: absolute;
-        font-size: 1.2rem;
         color: var(--p-zinc-300);
         transition: 0.1s;
         bottom: 10px;
@@ -128,34 +95,13 @@
         }
     }
 
-    .add-question-button {
-        padding: 0px;
-        border-radius: 100%;
-        display: flex;
-        position: absolute;
-        transition: 0.2s;
-        right: 30px;
-        bottom: 30px;
-    }
-
     .question-type-box {
         width: 100%;
         display: flex;
         justify-content: start;
-        margin: 15px 0 0 0;
-        padding: 0;
 
         p {
-            margin: 0;
-            padding: 0;
-            font-size: 18px;
-            color: var(--p-zinc-200);
-
-            i {
-                margin: 0;
-                padding: 0 3px 0 0;
-                font-size: 15px;
-            }
+            color: var(--p-zinc-100);
         }
     }
 }

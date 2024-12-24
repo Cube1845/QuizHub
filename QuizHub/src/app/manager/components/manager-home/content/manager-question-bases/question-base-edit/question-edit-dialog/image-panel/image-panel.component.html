@@ -1,13 +1,13 @@
-<div class="custom-file-input">
+<div class="custom-file-input mr-2">
     <input type="file" [id]="'fileUpload' + uuid" (change)="onUpload($event)" accept="image/*" [disabled]="uploaderDisabled"/>
-    <label [for]="'fileUpload' + uuid" [ngStyle]="{'height': getComponentHeight(), 'font-size': getFontSize()}" [class.disabled]="uploaderDisabled">
-      <i class="pi pi-upload" [ngStyle]="{'font-size': getFontSize()}"></i>
+    <label [for]="'fileUpload' + uuid" [ngStyle]="{'height': getComponentHeight(), 'font-size': getFontSize()}" [class.disabled]="uploaderDisabled" class="py-1 px-2">
+      <i class="pi pi-upload mr-2" [ngStyle]="{'font-size': getFontSize()}"></i>
       {{ getFileUploaderContentText() }}
     </label>
 </div>
 
 @if (this.selectedImage != null) {
-    <p-button [outlined]="true" [ngStyle]="{'height': getComponentHeight()}" [style]="{'height': getComponentHeight(), 'width': getComponentHeight(), margin: '0', padding: '0'}" (click)="emitDisplayImageEvent()">
+    <p-button [outlined]="true" [ngStyle]="{'height': getComponentHeight()}" class="m-0 p-0 mr-2" [style]="{'height': getComponentHeight(), 'width': getComponentHeight(), margin: '0', padding: '0'}" (click)="emitDisplayImageEvent()">
       <i class="pi pi-eye" [ngStyle]="{'font-size': getFontSize()}"></i>
     </p-button>
 

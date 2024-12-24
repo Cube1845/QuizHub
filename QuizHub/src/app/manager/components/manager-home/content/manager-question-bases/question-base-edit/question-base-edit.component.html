@@ -1,7 +1,7 @@
 <p-toast position="bottom-left" [life]="3000" />
 <p-confirmDialog></p-confirmDialog>
-<div class="container">
-    <div class="top-bar">
+<div class="container m-0">
+    <div class="top-bar m-0 p-3">
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
@@ -10,7 +10,7 @@
         <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="showCreatingQuestionDialog()"></p-button>
     </div>
 
-    <div class="question-box">
+    <div class="question-box m-0 pt-3">
         @if (!questions || questions.length == 0) {
             <div style="display: flex; justify-content: center;  margin: 0px 25px;">
                 <p>Brak pytań do wyświetlenia</p>
@@ -18,62 +18,62 @@
         }
 
         @for (question of questions; track $index) {
-            <div class="question-panel" (click)="openQuestionEditor($index, $event)">
-                <div class="question-content">
+            <div class="question-panel m-3 mt-0 p-3" (click)="openQuestionEditor($index, $event)">
+                <div class="question-content m-0 p-0">
                     @if (question.image != null && !!question.image.displayUrl) {
-                        <p-image [src]="question.image.displayUrl" preview="true" height="200"></p-image>
+                        <p-image [src]="question.image.displayUrl" preview="true" height="200" class="mb-1"></p-image>
                     }
 
-                    <h1>{{ question.content }}</h1>
+                    <h1 class="text-3xl line-height-1 m-0 pb-1">{{ question.content }}</h1>
                 </div>
                 <div class="answer-box">
-                    <div class="answer-row" [ngStyle]="{'margin-bottom': question.answers.length > 2 ? '5px' : '0'}">
+                    <div class="answer-row m-0" [ngStyle]="{'margin-bottom': question.answers.length > 2 ? '5px' : '0'}">
                         <div class="answer-column">
                             @if (question.answers[0].isCorrect) {
-                                <h2 style="color: var(--p-primary-color)">Odpowiedź A:</h2>
+                                <h2 style="color: var(--p-primary-color)" class="m-0 p-0 text-xl">Odpowiedź A:</h2>
 
                                 @if (question.answers[0].image != null && !!question.answers[0].image.displayUrl) {
                                     <p-image [src]="question.answers[0].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
-                                <p style="color: var(--p-primary-color)">
-                                    <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                <p style="color: var(--p-primary-color)" class="m-0 p-0">
+                                    <i class="pi pi-check-circle text-sm pr-1" style="color: var(--p-primary-color)"></i>
                                     {{ question.answers[0].content }}
                                 </p>
                             } @else {
-                                <h2>Odpowiedź A:</h2>
+                                <h2 class="m-0 p-0 text-xl">Odpowiedź A:</h2>
 
                                 @if (question.answers[0].image != null && !!question.answers[0].image.displayUrl) {
                                     <p-image [src]="question.answers[0].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
-                                <p>
-                                    <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                <p class="m-0 p-0">
+                                    <i class="pi pi-times-circle text-sm pr-1"></i>
                                     {{ question.answers[0].content }}
                                 </p>
                             }
                         </div>
                         <div class="answer-column">
                             @if (question.answers[1].isCorrect) {
-                                <h2 style="color: var(--p-primary-color)">Odpowiedź B:</h2>
+                                <h2 style="color: var(--p-primary-color)" class="m-0 p-0 text-xl">Odpowiedź B:</h2>
 
                                 @if (question.answers[1].image != null && !!question.answers[1].image.displayUrl) {
                                     <p-image [src]="question.answers[1].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
-                                <p style="color: var(--p-primary-color)">
-                                    <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                <p style="color: var(--p-primary-color)" class="m-0 p-0">
+                                    <i class="pi pi-check-circle text-sm pr-1" style="color: var(--p-primary-color)"></i>
                                     {{ question.answers[1].content }}
                                 </p>
                             } @else {
-                                <h2>Odpowiedź B:</h2>
+                                <h2 class="m-0 p-0 text-xl">Odpowiedź B:</h2>
 
                                 @if (question.answers[1].image != null && !!question.answers[1].image.displayUrl) {
                                     <p-image [src]="question.answers[1].image.displayUrl" preview="true" height="160"></p-image>
                                 }
 
-                                <p>
-                                    <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                <p class="m-0 p-0">
+                                    <i class="pi pi-times-circle text-sm pr-1"></i>
                                     {{ question.answers[1].content }}
                                 </p>
                             }
@@ -81,28 +81,28 @@
                     </div>
 
                     @if (question.answers.length > 2) {
-                        <div class="answer-row">
+                        <div class="answer-row m-0">
                             <div class="answer-column">
                                 @if (question.answers[2].isCorrect) {
-                                    <h2 style="color: var(--p-primary-color)">Odpowiedź C:</h2>
+                                    <h2 style="color: var(--p-primary-color)" class="m-0 p-0 text-xl">Odpowiedź C:</h2>
 
                                     @if (question.answers.length >= 3 && question.answers[2].image != null && !!question.answers[2].image.displayUrl) {
                                         <p-image [src]="question.answers[2].image.displayUrl" preview="true" height="160"></p-image>
                                     }
 
-                                    <p style="color: var(--p-primary-color)">
-                                        <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                    <p style="color: var(--p-primary-color)" class="m-0 p-0">
+                                        <i class="pi pi-check-circle text-sm pr-1" style="color: var(--p-primary-color)"></i>
                                         {{ question.answers[2].content }}
                                     </p>
                                 } @else {
-                                    <h2>Odpowiedź C:</h2>
+                                    <h2 class="m-0 p-0 text-xl">Odpowiedź C:</h2>
 
                                     @if (question.answers.length >= 3 && question.answers[2].image != null && !!question.answers[2].image.displayUrl) {
                                         <p-image [src]="question.answers[2].image.displayUrl" preview="true" height="160"></p-image>
                                     }
 
-                                    <p>
-                                        <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                    <p class="m-0 p-0">
+                                        <i class="pi pi-times-circle text-sm pr-1"></i>
                                         {{ question.answers[2].content }}
                                     </p>
                                 }
@@ -111,25 +111,25 @@
                             @if (question.answers.length > 3) {
                                 <div class="answer-column">
                                     @if (question.answers[3].isCorrect) {
-                                        <h2 style="color: var(--p-primary-color)">Odpowiedź D:</h2>
+                                        <h2 style="color: var(--p-primary-color)" class="m-0 p-0 text-xl">Odpowiedź D:</h2>
 
                                         @if (question.answers.length == 4 && question.answers[3].image != null && !!question.answers[3].image.displayUrl) {
                                             <p-image [src]="question.answers[3].image.displayUrl" preview="true" height="160"></p-image>
                                         }
 
-                                        <p style="color: var(--p-primary-color)">
-                                            <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
+                                        <p style="color: var(--p-primary-color)" class="m-0 p-0">
+                                            <i class="pi pi-check-circle text-sm pr-1" style="color: var(--p-primary-color)"></i>
                                             {{ question.answers[3].content }}
                                         </p>
                                     } @else {
-                                        <h2>Odpowiedź D:</h2>
+                                        <h2 class="m-0 p-0 text-xl">Odpowiedź D:</h2>
 
                                         @if (question.answers.length == 4 && question.answers[3].image != null && !!question.answers[3].image.displayUrl) {
                                             <p-image [src]="question.answers[3].image.displayUrl" preview="true" height="160"></p-image>
                                         }
 
-                                        <p>
-                                            <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
+                                        <p class="m-0 p-0">
+                                            <i class="pi pi-times-circle text-sm pr-1"></i>
                                             {{ question.answers[3].content }}
                                         </p>
                                     }
@@ -141,9 +141,9 @@
 
                 </div>
 
-                <div class="question-type-box">
-                    <p>
-                        <i class="pi pi-question-circle"></i>
+                <div class="question-type-box p-0 mt-2">
+                    <p class="m-0 p-0 text-lg">
+                        <i class="pi pi-question-circle m-0 pr-1 text-sm"></i>
 
                         @if (question.questionType == 0) {
                             Pojedyncza odpowiedź
@@ -153,7 +153,7 @@
                     </p>
                 </div>
 
-                <i class="pi pi-trash delete-icon independent-cilck-action" (click)="displayQuestionRemovalModal($event, $index)"></i>
+                <i class="pi pi-trash delete-icon independent-cilck-action text-lg" (click)="displayQuestionRemovalModal($event, $index)"></i>
             </div>
         }
     </div>

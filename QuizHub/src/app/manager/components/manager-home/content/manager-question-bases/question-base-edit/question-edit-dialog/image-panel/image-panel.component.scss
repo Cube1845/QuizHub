@@ -6,14 +6,13 @@
     padding: 0;
 
     p-button {
-        margin: 0 10px 0 0;
-        padding: 0;
+        display: flex;
+        align-items: center;
     }
 
     .custom-file-input {
         position: relative;
         display: inline-block;
-        margin: 0 10px 0 0;
       
         input[type="file"] {
             opacity: 0;
@@ -30,14 +29,9 @@
             cursor: pointer;
             background-color: transparent;
             color: var(--p-primary-color);
-            padding: 2px 10px;
             border: 1px solid var(--p-primary-700);
             border-radius: var(--p-border-radius-md);
             transition: .2s background-color;
-
-            i {
-              margin-right: 6px;
-            }
         
             &:hover {
               transition: .2s background-color;
