@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizHub.API", "QuizHub.API.csproj", "{0185C543-28AD-40C2-BAE9-23BABD8C45F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizHub.Application", "..\QuizHub.Application\QuizHub.Application.csproj", "{51C08F37-CF6F-49B9-8A42-556B0ADC267A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizHub.Domain", "..\QuizHub.Domain\QuizHub.Domain.csproj", "{35AD6BC2-3EF7-4B41-B987-85BC41D26ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizHub.Infrastructure", "..\QuizHub.Infrastructure\QuizHub.Infrastructure.csproj", "{2BFEDF70-C77F-436B-AA14-1254AB7F0DD2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0185C543-28AD-40C2-BAE9-23BABD8C45F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0185C543-28AD-40C2-BAE9-23BABD8C45F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0185C543-28AD-40C2-BAE9-23BABD8C45F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0185C543-28AD-40C2-BAE9-23BABD8C45F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51C08F37-CF6F-49B9-8A42-556B0ADC267A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51C08F37-CF6F-49B9-8A42-556B0ADC267A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51C08F37-CF6F-49B9-8A42-556B0ADC267A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51C08F37-CF6F-49B9-8A42-556B0ADC267A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35AD6BC2-3EF7-4B41-B987-85BC41D26ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35AD6BC2-3EF7-4B41-B987-85BC41D26ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35AD6BC2-3EF7-4B41-B987-85BC41D26ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35AD6BC2-3EF7-4B41-B987-85BC41D26ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BFEDF70-C77F-436B-AA14-1254AB7F0DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFEDF70-C77F-436B-AA14-1254AB7F0DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFEDF70-C77F-436B-AA14-1254AB7F0DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFEDF70-C77F-436B-AA14-1254AB7F0DD2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
