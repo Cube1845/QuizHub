@@ -19,6 +19,8 @@ import { QuestionEditDialogComponent } from './question-edit-dialog/question-edi
 import { Question } from '../../../../../models/question';
 import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
 import { NgStyle } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
+import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -36,6 +38,7 @@ import { NgStyle } from '@angular/common';
     ToastModule,
     ImageModule,
     NgStyle,
+    PaginatorModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
@@ -58,7 +61,11 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
 
   searchFormControl = new FormControl<string>('', Validators.required);
 
+  paginatorOptions: PaginatorOptions | undefined;
+
   ngOnInit() {
+    this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
+
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -211,5 +218,9 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
       summary: 'Sukces',
       detail: 'Dodano pytanie',
     });
+  }
+
+  onPageChange(event: any) {
+    const pageNumber = event.page;
   }
 }

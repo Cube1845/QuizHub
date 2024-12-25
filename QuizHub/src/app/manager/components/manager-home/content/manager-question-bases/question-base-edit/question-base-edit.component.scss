@@ -104,4 +104,10 @@
             color: var(--p-zinc-100);
         }
     }
+
+    .paginator-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }

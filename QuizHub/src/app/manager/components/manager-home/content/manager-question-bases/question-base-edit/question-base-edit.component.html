@@ -156,5 +156,7 @@
                 <i class="pi pi-trash delete-icon independent-cilck-action text-lg" (click)="displayQuestionRemovalModal($event, $index)"></i>
             </div>
         }
+
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="paginatorOptions!.first" [rows]="paginatorOptions!.rows" [totalRecords]="paginatorOptions!.totalItems" [rowsPerPageOptions]="paginatorOptions!.rowsPerPage" />
     </div>
 </div>

@@ -13,6 +13,7 @@ import { ToastModule } from 'primeng/toast';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionBaseNameEditDialogComponent } from './question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import { QuestionBaseData } from '../../../../models/questionBaseData';
+import { QuestionBaseAddingMethodDialogComponent } from './question-base-adding-method-dialog/question-base-adding-method-dialog.component';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -77,9 +78,34 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
     });
   }
 
-  displayQuestionBaseCreatingDialog(event: Event): void {
-    event.stopPropagation();
+  displayQuestionBaseImportingDialog(): void {}
 
+  displayQuestionBaseAddingMethodDialog(): void {
+    this.ref = this.dialogService.open(
+      QuestionBaseAddingMethodDialogComponent,
+      {
+        header: 'Jak chcesz dodać bazę pytań?',
+        width: '25rem',
+        height: '17rem',
+        modal: true,
+        closable: true,
+      }
+    );
+
+    this.ref.onClose.subscribe((result) => {
+      if (result === true) {
+        this.displayQuestionBaseCreatingDialog();
+      }
+
+      if (result === false) {
+        this.displayQuestionBaseImportingDialog();
+      }
+
+      return;
+    });
+  }
+
+  displayQuestionBaseCreatingDialog(): void {
     this.ref = this.dialogService.open(QuestionBaseNameEditDialogComponent, {
       header: 'Dodaj bazę pytań',
       width: '30rem',
@@ -145,6 +171,32 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
       severity: 'success',
       summary: 'Sukces',
       detail: 'Zapisano nazwę',
+    });
+  }
+
+  downloadQuestionBase(index: number): void {
+    this.questionBaseService.downloadQuestionBaseFile(
+      this.questionBases![index].id
+    );
+  }
+
+  displayDownloadingQuestionBaseModal(event: Event, index: number): void {
+    event.stopPropagation();
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz pobrać tę bazę pytań do pliku?',
+      header: 'Potwierdzenie',
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      defaultFocus: 'accept',
+
+      accept: () => this.downloadQuestionBase(index),
     });
   }
 
