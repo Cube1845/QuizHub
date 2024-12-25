@@ -35,7 +35,11 @@ export class QuestionBaseService {
     return;
   }
 
-  downloadQuestionBaseFile(questionBaseId: string): void {
+  exportQuestionBaseFile(questionBaseId: string): void {
+    return;
+  }
+
+  importQuestionBaseFile(file: File): void {
     return;
   }
 

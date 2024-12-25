@@ -64,8 +64,6 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   paginatorOptions: PaginatorOptions | undefined;
 
   ngOnInit() {
-    this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
-
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -77,6 +75,8 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
         this.questionBaseService.getQuestionsFromUserQuestionBase(
           this.questionBaseId!
         );
+
+      this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
     });
   }
 

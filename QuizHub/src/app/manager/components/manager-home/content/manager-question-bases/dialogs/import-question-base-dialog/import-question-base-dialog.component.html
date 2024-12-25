@@ -1,0 +1,17 @@
+<div class="container mt-3">
+    <p-fileUpload 
+        #fileUploader
+        mode="basic"
+        [chooseLabel]="getFileUploaderContentText()"
+        chooseIcon="pi pi-upload"
+        accept="application/json"
+        [auto]="true"
+        chooseStyleClass="import-button"
+        (onSelect)="onUpload(fileUploader)"
+        />
+
+    <div class="button-box mt-6">
+        <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()" />
+        <p-button label="Importuj" [outlined]="true" class="ml-2" [disabled]="!isAnyFileSelected()" (click)="import()" />
+    </div>
+</div>

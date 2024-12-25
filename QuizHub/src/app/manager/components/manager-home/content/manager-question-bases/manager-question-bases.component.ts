@@ -11,9 +11,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { QuestionBaseNameEditDialogComponent } from './question-base-name-edit-dialog/question-base-name-edit-dialog.component';
+import { QuestionBaseNameEditDialogComponent } from './dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import { QuestionBaseData } from '../../../../models/questionBaseData';
-import { QuestionBaseAddingMethodDialogComponent } from './question-base-adding-method-dialog/question-base-adding-method-dialog.component';
+import { QuestionBaseAddingMethodDialogComponent } from './dialogs/question-base-adding-method-dialog/question-base-adding-method-dialog.component';
+import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-base-dialog/import-question-base-dialog.component';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -78,15 +79,31 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
     });
   }
 
-  displayQuestionBaseImportingDialog(): void {}
+  displayQuestionBaseImportingDialog(): void {
+    this.ref = this.dialogService.open(ImportQuestionBaseDialogComponent, {
+      header: 'Zaimportuj bazę pytań z pliku',
+      width: '25rem',
+      height: '16rem',
+      modal: true,
+      closable: true,
+    });
+
+    this.ref.onClose.subscribe((result) => {
+      if (result == null) {
+        return;
+      }
+
+      this.questionBaseService.importQuestionBaseFile(result);
+    });
+  }
 
   displayQuestionBaseAddingMethodDialog(): void {
     this.ref = this.dialogService.open(
       QuestionBaseAddingMethodDialogComponent,
       {
         header: 'Jak chcesz dodać bazę pytań?',
-        width: '25rem',
-        height: '17rem',
+        width: '26rem',
+        height: '15rem',
         modal: true,
         closable: true,
       }
@@ -175,7 +192,7 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
   }
 
   downloadQuestionBase(index: number): void {
-    this.questionBaseService.downloadQuestionBaseFile(
+    this.questionBaseService.exportQuestionBaseFile(
       this.questionBases![index].id
     );
   }
