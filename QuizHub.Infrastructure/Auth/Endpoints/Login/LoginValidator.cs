@@ -1,4 +1,7 @@
-﻿namespace QuizHub.Application.Modules.Auth.Login;
+﻿using FastEndpoints;
+using FluentValidation;
+
+namespace QuizHub.Infrastructure.Auth.Endpoints.Login;
 
 public class LoginValidator : Validator<LoginRequest>
 {

@@ -1,10 +1,10 @@
-﻿using QuizHub.Application.Modules.Auth.Interfaces;
+﻿
 using System.Security.Cryptography;
 using System.Text;
 
 namespace QuizHub.Infrastructure.Auth.Services;
 
-public class PasswordHashService : IPasswordHashService
+public class PasswordHashService
 {
     private readonly int keySize = 64;
     private readonly int iterations = 100_000;

@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
+using FluentValidation;
 
-namespace QuizHub.Application.Modules.Auth.Register;
+namespace QuizHub.Infrastructure.Auth.Endpoints.Register;
 
 public class RegisterValidator : Validator<RegisterRequest>
 {

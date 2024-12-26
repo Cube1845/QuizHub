@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Modules.Auth.Interfaces;
 using QuizHub.Infrastructure.Auth.Entities;
 using QuizHub.Infrastructure.Data;
 
 namespace QuizHub.Infrastructure.Auth.Services;
 
-public class AuthRepository(AppDbContext context) : IAuthRepository
+public class AuthRepository(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
@@ -16,7 +15,7 @@ public class AuthRepository(AppDbContext context) : IAuthRepository
         return userExists;
     }
 
-    public async Task<IAppUser?> GetUser(string email, CancellationToken ct = default)
+    public async Task<AppUser?> GetUser(string email, CancellationToken ct = default)
     {
         var user = await _context.AppUsers.FirstOrDefaultAsync(user => user.Email == email, ct);
 

@@ -1,14 +1,13 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using FastEndpoints;
 using QuizHub.Application.Common.Models;
-using QuizHub.Application.Modules.Auth.Interfaces;
+using QuizHub.Infrastructure.Auth.Services;
 
-namespace QuizHub.Application.Modules.Auth.Register;
+namespace QuizHub.Infrastructure.Auth.Endpoints.Register;
 
-public class RegisterEndpoint(IAuthRepository authRepository, IPasswordHashService passwordHashService) : Endpoint<RegisterRequest>
+public class RegisterEndpoint(AuthRepository authRepository, PasswordHashService passwordHashService) : Endpoint<RegisterRequest>
 {
-    private readonly IAuthRepository _authRepository = authRepository;
-    private readonly IPasswordHashService _passwordHashService = passwordHashService;
+    private readonly AuthRepository _authRepository = authRepository;
+    private readonly PasswordHashService _passwordHashService = passwordHashService;
 
     public override void Configure()
     {

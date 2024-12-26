@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FastEndpoints;
+using FastEndpoints.Security;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QuizHub.Application.Interfaces;
-using QuizHub.Application.Modules.Auth.Interfaces;
 using QuizHub.Infrastructure.Auth.Config;
 using QuizHub.Infrastructure.Auth.Services;
 using QuizHub.Infrastructure.Data;
@@ -20,10 +21,17 @@ public static class DependencyInjection
 
         services.AddScoped<IAppDbContext, AppDbContext>();
 
-        services.AddScoped<IAuthRepository, AuthRepository>();
-        services.AddScoped<IPasswordHashService, PasswordHashService>();
-        services.AddScoped<IAccessTokenService, AccessTokenService>();
+        services.AddScoped<AuthRepository>();
+        services.AddScoped<PasswordHashService>();
+        services.AddScoped<TokenService>();
         services.AddScoped<TokenConfiguration>();
+
+        services
+            .AddAuthenticationJwtBearer(s => s.SigningKey = configuration["JwtSettings:SecretKey"]!)
+            .AddAuthorization()
+            .AddFastEndpoints();
+
+        services.Configure<JwtCreationOptions>(o => o.SigningKey = configuration["JwtSettings:SecretKey"]!);
 
         return services;
     }
