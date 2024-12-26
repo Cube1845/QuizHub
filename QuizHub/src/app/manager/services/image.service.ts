@@ -4,27 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ImageService {
-  private readonly getImageBlob = (
-    resolve: (value: Blob | PromiseLike<Blob>) => void,
-    reject: (reason?: any) => void,
-    img: HTMLImageElement,
-    targetHeight: number,
-    fileType: string
-  ): Promise<Blob> => {
-    return new Promise(() => {
-      const canvas = this.getResizedCanvas(reject, img, targetHeight)!;
-
-      canvas.toBlob(
-        (blob) => {
-          if (blob) resolve(blob);
-          else reject(new Error('Canvas toBlob failed'));
-        },
-        fileType,
-        1
-      );
-    });
-  };
-
   getResizedCanvas(
     reject: (reason?: any) => void,
     img: HTMLImageElement,
@@ -69,4 +48,28 @@ export class ImageService {
   getImageUrl(image: File): string {
     return URL.createObjectURL(image as File);
   }
+
+  private readonly getImageBlob = (
+    resolve: (value: Blob | PromiseLike<Blob>) => void,
+    reject: (reason?: any) => void,
+    img: HTMLImageElement,
+    targetHeight: number,
+    fileType: string
+  ): Promise<Blob> => {
+    return new Promise(() => {
+      const canvas = this.getResizedCanvas(reject, img, targetHeight)!;
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Canvas toBlob failed'));
+          }
+        },
+        fileType,
+        1
+      );
+    });
+  };
 }

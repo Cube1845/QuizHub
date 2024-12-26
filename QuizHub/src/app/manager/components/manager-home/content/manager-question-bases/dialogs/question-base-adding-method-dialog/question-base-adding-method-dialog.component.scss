@@ -4,5 +4,11 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
+
+    }
+
+    .tile {
+        width: 120px !important;
+        height: 120px !important;
     }
 }

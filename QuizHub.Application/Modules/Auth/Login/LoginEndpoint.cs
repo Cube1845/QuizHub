@@ -4,10 +4,11 @@ using QuizHub.Application.Modules.Auth.Models;
 
 namespace QuizHub.Application.Modules.Auth.Login;
 
-public class LoginEndpoint(IAuthRepository authRepository, IAccessTokenService accessTokenService) : Endpoint<LoginRequest, Result<LoginResponse>>
+public class LoginEndpoint(IAuthRepository authRepository, IAccessTokenService accessTokenService, IPasswordHashService passwordHashService) : Endpoint<LoginRequest, Result<LoginResponse>>
 {
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IAccessTokenService _accessTokenService = accessTokenService;
+    private readonly IPasswordHashService _passwordHashService = passwordHashService;
 
     public override void Configure()
     {
@@ -17,15 +18,18 @@ public class LoginEndpoint(IAuthRepository authRepository, IAccessTokenService a
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        if (!await _authRepository.UserExists(req.Email))
+        var user = await _authRepository.GetUser(req.Email, ct);
+
+        var userExists = user != null;
+
+        if (!userExists)
         {
             await SendOkAsync(Result<LoginResponse>.Error("Nie znaleziono konta z takim adresem email"), ct);
 
             return;
         }
 
-        var userId = await _authRepository.GetUserIdIfPasswordCorrect(req.Email, req.Password, ct);
-        var passwordCorrect = userId != null;
+        var passwordCorrect = _passwordHashService.VerifyPassword(req.Password, user!.PasswordHash);
 
         if (!passwordCorrect)
         {
@@ -34,9 +38,9 @@ public class LoginEndpoint(IAuthRepository authRepository, IAccessTokenService a
             return;
         }
 
-        AuthData authData = _accessTokenService.GenerateAuthData(userId!.Value);
+        AuthData authData = _accessTokenService.GenerateAuthData(user!.Id);
         LoginResponse response = new(authData.AccessToken, authData.ExpirationDate);
 
-        await SendOkAsync(Result<LoginResponse>.Success(response));
+        await SendOkAsync(Result<LoginResponse>.Success(response), ct);
     }
 }

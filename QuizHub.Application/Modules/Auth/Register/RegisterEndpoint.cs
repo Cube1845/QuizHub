@@ -5,9 +5,10 @@ using QuizHub.Application.Modules.Auth.Interfaces;
 
 namespace QuizHub.Application.Modules.Auth.Register;
 
-public class RegisterEndpoint(IAuthRepository authRepository) : Endpoint<RegisterRequest>
+public class RegisterEndpoint(IAuthRepository authRepository, IPasswordHashService passwordHashService) : Endpoint<RegisterRequest>
 {
     private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IPasswordHashService _passwordHashService = passwordHashService;
 
     public override void Configure()
     {
@@ -27,7 +28,9 @@ public class RegisterEndpoint(IAuthRepository authRepository) : Endpoint<Registe
             return;
         }
 
-        await _authRepository.AddNewUser(req.Email, req.Password, ct);
+        var passwordHash = _passwordHashService.HashPaswordWithSalt(req.Password);
+
+        await _authRepository.AddNewUser(req.Email, passwordHash, ct);
 
         await SendOkAsync(Result.Success(), ct);
     }

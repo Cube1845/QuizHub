@@ -1,4 +1,6 @@
-.dialog-buttons-box {
-    display: flex;
-    justify-content: end;
+:host {
+    .dialog-buttons-box {
+        display: flex;
+        justify-content: end;
+    }
 }

@@ -1,6 +1,8 @@
-﻿namespace QuizHub.Infrastructure.Auth.Entities;
+﻿using QuizHub.Application.Modules.Auth.Interfaces;
 
-public class AppUser(string email = "", string passwordHash = "")
+namespace QuizHub.Infrastructure.Auth.Entities;
+
+public class AppUser(string email = "", string passwordHash = "") : IAppUser
 {
     public Guid Id { get; set; }
     public string Email { get; set; } = email;

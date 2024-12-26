@@ -3,14 +3,13 @@
     <label for="username">Nazwa</label>
 </p-floatLabel>
 
-@if (addingNewQuestionBase) {
-    <div class="dialog-buttons-box mx-2">
-        <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()"/>
-        <p-button label="Utwórz" severity="primary" [outlined]="true" (click)="addNewQuestionBase()" class="ml-2" [disabled]="nameFormControl.invalid"/>
-    </div>
-} @else {
-    <div class="dialog-buttons-box mx-2">
-        <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()"/>
-        <p-button label="Zapisz" severity="primary" [outlined]="true" (click)="saveQuestionBaseName()" class="ml-2" [disabled]="nameFormControl.invalid"/>
-    </div>
-}
+<div class="dialog-buttons-box mx-2">
+    <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()"/>
+    <p-button 
+        [label]="addingNewQuestionBase ? 'Utwórz' : 'Zapisz'" 
+        severity="primary" [outlined]="true" 
+        (click)="addingNewQuestionBase ? addNewQuestionBase() : saveQuestionBaseName()" 
+        class="ml-2" 
+        [disabled]="nameFormControl.invalid"
+    />
+</div>

@@ -102,23 +102,22 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
       QuestionBaseAddingMethodDialogComponent,
       {
         header: 'Jak chcesz dodać bazę pytań?',
-        width: '26rem',
-        height: '15rem',
         modal: true,
         closable: true,
       }
     );
 
     this.ref.onClose.subscribe((result) => {
-      if (result === true) {
+      if (result === null) {
+        return;
+      }
+
+      if (result) {
         this.displayQuestionBaseCreatingDialog();
+        return;
       }
 
-      if (result === false) {
-        this.displayQuestionBaseImportingDialog();
-      }
-
-      return;
+      this.displayQuestionBaseImportingDialog();
     });
   }
 

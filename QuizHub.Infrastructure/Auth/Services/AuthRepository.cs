@@ -5,10 +5,9 @@ using QuizHub.Infrastructure.Data;
 
 namespace QuizHub.Infrastructure.Auth.Services;
 
-public class AuthRepository(AppDbContext context, PasswordHashService hashService) : IAuthRepository
+public class AuthRepository(AppDbContext context) : IAuthRepository
 {
     private readonly AppDbContext _context = context;
-    private readonly PasswordHashService _hashService = hashService;
 
     public async Task<bool> UserExists(string email, CancellationToken ct = default)
     {
@@ -17,28 +16,18 @@ public class AuthRepository(AppDbContext context, PasswordHashService hashServic
         return userExists;
     }
 
-    public async Task AddNewUser(string email, string password, CancellationToken ct = default)
+    public async Task<IAppUser?> GetUser(string email, CancellationToken ct = default)
     {
-        var hashedPassword = _hashService.HashPaswordWithSalt(password);
+        var user = await _context.AppUsers.FirstOrDefaultAsync(user => user.Email == email, ct);
 
-        AppUser appUser = new(email, hashedPassword);
+        return user;
+    }
+
+    public async Task AddNewUser(string email, string passwordHash, CancellationToken ct = default)
+    {
+        AppUser appUser = new(email, passwordHash);
 
         await _context.AppUsers.AddAsync(appUser, ct);
         await _context.SaveChangesAsync(ct);
-    }
-
-    public async Task<Guid?> GetUserIdIfPasswordCorrect(string email, string password, CancellationToken ct = default)
-    {
-        var appUser = await _context.AppUsers.FirstOrDefaultAsync(user => user.Email == email, ct);
-        var correctPasswordHash = appUser!.PasswordHash;
-
-        var passwordHashesMatch = _hashService.VerifyPassword(password, correctPasswordHash);
-
-        if (!passwordHashesMatch)
-        {
-            return null;
-        }
-
-        return appUser.Id;
     }
 }
