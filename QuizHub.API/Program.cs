@@ -1,5 +1,6 @@
 using FastEndpoints;
 using QuizHub.API;
+using QuizHub.Application.Common.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,12 @@ var app = builder.Build();
 app
     .UseAuthentication()
     .UseAuthorization()
-    .UseFastEndpoints();
+    .UseFastEndpoints(config =>
+    {
+        config.Endpoints.RoutePrefix = "api";
+    });
+
+app.UseMiddleware<ValidationErrorHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

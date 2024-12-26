@@ -1,12 +1,10 @@
-﻿using FluentValidation;
+﻿namespace QuizHub.Application.Modules.Auth.Login;
 
-namespace QuizHub.Application.Modules.Auth.Login;
-
-public class LoginValidator : AbstractValidator<LoginRequest>
+public class LoginValidator : Validator<LoginRequest>
 {
     public LoginValidator()
     {
-        RuleFor(x => x.Username)
+        RuleFor(x => x.Email)
             .NotNull()
             .NotEmpty()
             .MinimumLength(3);

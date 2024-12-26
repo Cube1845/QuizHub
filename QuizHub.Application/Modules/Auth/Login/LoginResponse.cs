@@ -1,3 +1,5 @@
-﻿namespace QuizHub.Application.Modules.Auth.Login;
+﻿using QuizHub.Application.Modules.Auth.Models;
 
-public record LoginResponse(string Token);
+namespace QuizHub.Application.Modules.Auth.Login;
+
+public record LoginResponse(string AccessToken, DateTime ExpirationDate) : AuthData(AccessToken, ExpirationDate);
