@@ -47,23 +47,45 @@ export class LoginComponent {
   });
 
   login(): void {
+    let apiResponsed = false;
+
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.loginButttonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.authService
       .login(
         this.loginFormGroup.value.email!,
         this.loginFormGroup.value.password!
       )
-      .subscribe((result) => {
-        if (!isResult(result)) {
-          this.authDataService.setAuthData(result);
-          this.router.navigateByUrl('manager');
-          return;
-        }
+      .subscribe(
+        (result) => {
+          apiResponsed = true;
+          this.loginButttonLoading = false;
 
-        this.toastService.displayToast(
-          'error',
-          'Błąd',
-          result.message || 'Wystąpił błąd podczas logowania'
-        );
-      });
+          if (!isResult(result)) {
+            this.authDataService.setAuthData(result);
+            this.router.navigateByUrl('manager');
+            return;
+          }
+
+          this.toastService.displayToast(
+            'error',
+            'Błąd',
+            result.message || 'Wystąpił błąd podczas logowania'
+          );
+        },
+        () => {
+          this.loginButttonLoading = false;
+
+          this.toastService.displayToast(
+            'error',
+            'Błąd',
+            'Wystąpił błąd z serwerem'
+          );
+        }
+      );
   }
 }

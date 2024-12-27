@@ -29,4 +29,13 @@ export class AuthDataService {
 
     return data;
   }
+
+  isAuthDataSet(): boolean {
+    return (
+      sessionStorage.getItem('userId') != null &&
+      sessionStorage.getItem('accessToken') != null &&
+      sessionStorage.getItem('accessExpiryDateTime') != null &&
+      sessionStorage.getItem('refreshToken') != null
+    );
+  }
 }

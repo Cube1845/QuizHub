@@ -56,27 +56,49 @@ export class RegisterComponent {
   );
 
   register(): void {
+    let apiResponsed = false;
+
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.registerButttonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.authService
       .register(
         this.registerFormGroup.value.email!,
         this.registerFormGroup.value.password!
       )
-      .subscribe((result) => {
-        if (result.isSuccess) {
-          this.router.navigateByUrl('login');
+      .subscribe(
+        (result) => {
+          apiResponsed = true;
+          this.registerButttonLoading = false;
 
-          this.toastService.displayToast(
-            'success',
-            'Sukces',
-            'Zarajestrowano, teraz się zaloguj'
-          );
-        } else {
+          if (result.isSuccess) {
+            this.router.navigateByUrl('login');
+
+            this.toastService.displayToast(
+              'success',
+              'Sukces',
+              'Zarajestrowano, teraz się zaloguj'
+            );
+          } else {
+            this.toastService.displayToast(
+              'error',
+              'Błąd',
+              result.message || 'Wystąpił błąd podczas rejestracji'
+            );
+          }
+        },
+        () => {
+          this.registerButttonLoading = false;
+
           this.toastService.displayToast(
             'error',
             'Błąd',
-            result.message || 'Wystąpił błąd podczas rejestracji'
+            'Wystąpił błąd z serwerem'
           );
         }
-      });
+      );
   }
 }
