@@ -29,13 +29,13 @@ public class ValidationErrorHandlingMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(result);
         }
-        catch (Exception ex)
-        {
-            var result = Result.Error(ex.Message);
+        //catch (Exception ex)
+        //{
+        //    var result = Result.Error(ex.Message);
 
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(result);
-        }
+        //    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        //    context.Response.ContentType = "application/json";
+        //    await context.Response.WriteAsJsonAsync(result);
+        //}
     }
 }
