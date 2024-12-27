@@ -9,12 +9,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionBaseNameEditDialogComponent } from './dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import { QuestionBaseData } from '../../../../models/questionBaseData';
 import { QuestionBaseAddingMethodDialogComponent } from './dialogs/question-base-adding-method-dialog/question-base-adding-method-dialog.component';
 import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-base-dialog/import-question-base-dialog.component';
+import { ToastService } from '../../../../../common/services/toast.service';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -26,11 +26,10 @@ import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-bas
     FloatLabelModule,
     ReactiveFormsModule,
     ConfirmDialogModule,
-    ToastModule,
   ],
   templateUrl: './manager-question-bases.component.html',
   styleUrl: './manager-question-bases.component.scss',
-  providers: [ConfirmationService, MessageService, DialogService],
+  providers: [ConfirmationService, DialogService],
 })
 export class ManagerQuestionBasesComponent implements OnDestroy {
   private readonly questionBaseService = inject(QuestionBaseService);
@@ -39,8 +38,8 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
   );
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
   private readonly dialogService = inject(DialogService);
+  private readonly toastService = inject(ToastService);
 
   questionBases: QuestionBaseData[] | null = null;
 
@@ -161,11 +160,8 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
     this.questionBaseService.removeQuestionBase(this.questionBases![index].id);
 
     this.questionBases?.splice(index, 1);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sukces',
-      detail: 'Usunięto bazę pytań',
-    });
+
+    this.toastService.displayToast('success', 'Sukces', 'Usunięto bazę pytań');
   }
 
   createQuestionBase(name: string): void {
@@ -183,11 +179,7 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
     //temporary, till API
     this.questionBases![questionBaseIndex].name = updatedName;
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sukces',
-      detail: 'Zapisano nazwę',
-    });
+    this.toastService.displayToast('success', 'Sukces', 'Zapisano nazwę');
   }
 
   downloadQuestionBase(index: number): void {

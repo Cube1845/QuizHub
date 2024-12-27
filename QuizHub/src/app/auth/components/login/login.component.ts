@@ -3,7 +3,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -12,8 +12,9 @@ import {
 } from '@angular/forms';
 import { environment } from '../../../../environments/environment.development';
 import { AuthService } from '../../services/auth.service';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { ToastService } from '../../../common/services/toast.service';
+import { isResult } from '../../../common/models/result';
+import { AuthDataService } from '../../../common/services/auth-data.service';
 
 @Component({
   selector: 'app-login',
@@ -25,15 +26,15 @@ import { ToastModule } from 'primeng/toast';
     ButtonModule,
     RouterLink,
     ReactiveFormsModule,
-    ToastModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  providers: [MessageService],
 })
 export class LoginComponent {
-  authService = inject(AuthService);
-  messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly authDataService = inject(AuthDataService);
 
   loginButttonLoading: boolean = false;
 
@@ -46,15 +47,23 @@ export class LoginComponent {
   });
 
   login(): void {
-    this.authService.login(
-      this.loginFormGroup.value.email!,
-      this.loginFormGroup.value.password!
-    );
+    this.authService
+      .login(
+        this.loginFormGroup.value.email!,
+        this.loginFormGroup.value.password!
+      )
+      .subscribe((result) => {
+        if (!isResult(result)) {
+          this.authDataService.setAuthData(result);
+          this.router.navigateByUrl('manager');
+          return;
+        }
 
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Błąd',
-      detail: 'Taki użytkownik nie istnieje',
-    });
+        this.toastService.displayToast(
+          'error',
+          'Błąd',
+          result.message || 'Wystąpił błąd podczas logowania'
+        );
+      });
   }
 }

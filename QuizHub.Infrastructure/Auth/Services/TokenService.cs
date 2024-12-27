@@ -27,7 +27,7 @@ public class TokenService : RefreshTokenService<TokenRequest, LoginResponse>
             o.AccessTokenValidity = TimeSpan.FromSeconds(_tokenConfiguration.GetTokenConfiguration().AccessTokenExpirationSeconds);
             o.RefreshTokenValidity = TimeSpan.FromSeconds(_tokenConfiguration.GetTokenConfiguration().RefreshTokenExpirationSeconds);
 
-            o.Endpoint("/auth/refresh", ep => { });
+            o.Endpoint("/auth/refresh", ep => {});
         });
     }
 

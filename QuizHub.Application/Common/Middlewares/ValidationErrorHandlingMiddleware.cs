@@ -23,19 +23,19 @@ public class ValidationErrorHandlingMiddleware
         {
             List<string> errors = ex.Failures!.Select(f => f.ErrorMessage).ToList();
 
-            var result = Result.Error(String.Join(", ", errors));
+            var result = Result.Error(string.Join(", ", errors));
 
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.StatusCode = StatusCodes.Status200OK;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(result);
         }
-        //catch (Exception ex)
-        //{
-        //    var result = Result.Error(ex.Message);
+        catch (Exception ex)
+        {
+            var result = Result.Error(ex.Message);
 
-        //    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        //    context.Response.ContentType = "application/json";
-        //    await context.Response.WriteAsJsonAsync(result);
-        //}
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(result);
+        }
     }
 }

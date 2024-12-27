@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-manager-header',
@@ -11,6 +12,8 @@ import { MenuModule } from 'primeng/menu';
   styleUrl: './manager-header.component.scss',
 })
 export class ManagerHeaderComponent implements OnInit {
+  private readonly authService = inject(AuthService);
+
   items: MenuItem[] | undefined;
 
   ngOnInit() {
@@ -22,6 +25,7 @@ export class ManagerHeaderComponent implements OnInit {
           {
             label: 'Wyloguj się',
             icon: 'pi pi-sign-out',
+            command: () => this.authService.signOut(),
           },
         ],
       },
