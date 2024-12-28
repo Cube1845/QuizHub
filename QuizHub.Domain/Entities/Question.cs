@@ -1,16 +1,14 @@
 ﻿using QuizHub.Domain.Enums;
-using QuizHub.Domain.Models;
-using System.Collections.ObjectModel;
 
 namespace QuizHub.Domain.Entities;
 
-public class Question
+public class Question(Guid id, Guid questionBaseId, string content, QuestionType questionType)
 {
-    public Guid Id { get; set; }
-    public Guid QuestionBaseId { get; set; }
+    public Guid Id { get; set; } = id;
+    public Guid QuestionBaseId { get; set; } = questionBaseId;
     public QuestionBase QuestionBase { get; set; } = null!;
-    public string Content { get; set; } = string.Empty;
-    public QuestionType QuestionType { get; set; }
-    public QuestionImage ContentImage { get; set; } = null!;
+    public string Content { get; set; } = content;
+    public QuestionType QuestionType { get; set; } = questionType;
+    public QuestionImage? Image { get; set; } = null!;
     public ICollection<Answer> Answers { get; set; } = [];
 }

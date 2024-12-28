@@ -5,7 +5,7 @@ namespace QuizHub.Application.Common.Abstract;
 
 public abstract class IdentifiedEndpointWithoutRequest<TResponse> : EndpointWithoutRequest<TResponse>
 {
-    public Guid GetUserId()
+    protected Guid GetUserId()
     {
         var nameIdentifier = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 

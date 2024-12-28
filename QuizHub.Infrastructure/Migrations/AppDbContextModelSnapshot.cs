@@ -226,7 +226,7 @@ namespace QuizHub.Infrastructure.Migrations
             modelBuilder.Entity("QuizHub.Domain.Entities.QuestionImage", b =>
                 {
                     b.HasOne("QuizHub.Domain.Entities.Question", "Question")
-                        .WithOne("ContentImage")
+                        .WithOne("Image")
                         .HasForeignKey("QuizHub.Domain.Entities.QuestionImage", "QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -247,16 +247,14 @@ namespace QuizHub.Infrastructure.Migrations
 
             modelBuilder.Entity("QuizHub.Domain.Entities.Answer", b =>
                 {
-                    b.Navigation("Image")
-                        .IsRequired();
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("QuizHub.Domain.Entities.Question", b =>
                 {
                     b.Navigation("Answers");
 
-                    b.Navigation("ContentImage")
-                        .IsRequired();
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("QuizHub.Domain.Entities.QuestionBase", b =>

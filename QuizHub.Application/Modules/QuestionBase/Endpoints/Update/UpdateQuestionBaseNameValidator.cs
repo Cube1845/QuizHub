@@ -9,7 +9,7 @@ public class UpdateQuestionBaseNameValidator : ValidatorWithIdParser<UpdateQuest
         RuleFor(x => x.QuestionBaseId)
             .NotEmpty()
             .NotNull()
-            .Must(IsGuidFormat).WithMessage("Niepoprawne id");
+            .Must(IsGuidFormat).WithMessage(IncorrectIdMessage);
 
         RuleFor(x => x.UpdatedName)
             .NotEmpty()

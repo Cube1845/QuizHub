@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     //Auth
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     //Question bases
     public DbSet<QuestionBase> QuestionBases { get; set; }
     public DbSet<Question> Questions { get; set; }
@@ -40,7 +41,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
             e.HasMany(x => x.Answers).WithOne(x => x.Question);
-            e.HasOne(x => x.ContentImage).WithOne(x => x.Question);
+            e.HasOne(x => x.Image).WithOne(x => x.Question);
         });
 
         builder.Entity<QuestionImage>(e =>

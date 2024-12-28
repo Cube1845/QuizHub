@@ -9,6 +9,6 @@ public class DeleteQuestionBaseValidator : ValidatorWithIdParser<DeleteQuestionB
         RuleFor(x => x.QuestionBaseId)
             .NotNull()
             .NotEmpty()
-            .Must(IsGuidFormat).WithMessage("Niepoprawne id");
+            .Must(IsGuidFormat).WithMessage(IncorrectIdMessage);
     }
 }
