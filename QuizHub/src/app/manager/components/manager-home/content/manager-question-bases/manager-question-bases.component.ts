@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { QuestionBaseService } from '../../../../services/question-base.service';
 import { PolishWordVariationService } from '../../../../services/polish-word-variation.service';
@@ -31,7 +31,7 @@ import { ToastService } from '../../../../../common/services/toast.service';
   styleUrl: './manager-question-bases.component.scss',
   providers: [ConfirmationService, DialogService],
 })
-export class ManagerQuestionBasesComponent implements OnDestroy {
+export class ManagerQuestionBasesComponent implements OnInit, OnDestroy {
   private readonly questionBaseService = inject(QuestionBaseService);
   private readonly polishWordVariationService = inject(
     PolishWordVariationService
@@ -45,7 +45,7 @@ export class ManagerQuestionBasesComponent implements OnDestroy {
 
   ref: DynamicDialogRef | undefined;
 
-  constructor() {
+  ngOnInit(): void {
     this.questionBases = this.questionBaseService.getUserQuestionBasesData();
   }
 

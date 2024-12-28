@@ -28,7 +28,9 @@ export class AuthService {
       password: password,
     };
 
-    return this.http.post<Result>(this.apiUrl + '/auth/register', body);
+    return this.http.post<Result>(this.apiUrl + '/auth/register', body, {
+      headers: { skipAuth: 'true' },
+    });
   }
 
   login(email: string, password: string): Observable<Result | AuthData> {
@@ -37,7 +39,9 @@ export class AuthService {
       password: password,
     };
 
-    return this.http.post<Result>(this.apiUrl + '/auth/login', body);
+    return this.http.post<Result>(this.apiUrl + '/auth/login', body, {
+      headers: { skipAuth: 'true' },
+    });
   }
 
   signOut(): void {

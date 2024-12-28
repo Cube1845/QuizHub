@@ -3,7 +3,7 @@ using FastEndpoints.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QuizHub.Application.Interfaces;
+using QuizHub.Application.Common.Interfaces;
 using QuizHub.Infrastructure.Auth.Config;
 using QuizHub.Infrastructure.Auth.Services;
 using QuizHub.Infrastructure.Data;
@@ -18,6 +18,8 @@ public static class DependencyInjection
         {
             options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
         });
+
+        services.AddHttpContextAccessor();
 
         services.AddScoped<IAppDbContext, AppDbContext>();
 

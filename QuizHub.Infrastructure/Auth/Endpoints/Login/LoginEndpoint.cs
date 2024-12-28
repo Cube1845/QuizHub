@@ -3,6 +3,7 @@ using FastEndpoints.Security;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using QuizHub.Application.Common.Models;
 using QuizHub.Infrastructure.Auth.Services;
+using System.Security.Claims;
 
 namespace QuizHub.Infrastructure.Auth.Endpoints.Login;
 
@@ -37,7 +38,7 @@ public class LoginEndpoint(AuthRepository authRepository, PasswordHashService pa
 
         Response = await CreateTokenWith<TokenService>(user.Id.ToString(), u =>
         {
-            u.Claims.Add(new("UserId", user.Id.ToString()));
+            u.Claims.Add(new(ClaimTypes.NameIdentifier, user.Id.ToString()));
         });
     }
 }
