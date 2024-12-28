@@ -7,8 +7,10 @@ namespace QuizHub.Infrastructure.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options), IAppDbContext
 {
+    //Auth
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    //Question bases
     public DbSet<QuestionBase> QuestionBases { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<QuestionImage> QuestionImages { get; set; }

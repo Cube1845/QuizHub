@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Http;
 using QuizHub.Application.Common.Models;
 using QuizHub.Infrastructure.Auth.Services;
 using System.Security.Claims;

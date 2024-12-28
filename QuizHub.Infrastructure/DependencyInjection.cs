@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using FastEndpoints.Security;
+using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,7 @@ public static class DependencyInjection
         services
             .AddAuthenticationJwtBearer(s => s.SigningKey = configuration["JwtSettings:SecretKey"]!)
             .AddAuthorization()
-            .AddFastEndpoints();
+            .AddFastEndpoints().SwaggerDocument();
 
         services.Configure<JwtCreationOptions>(o => o.SigningKey = configuration["JwtSettings:SecretKey"]!);
 

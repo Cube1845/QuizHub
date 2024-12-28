@@ -1,11 +1,13 @@
 ﻿using FastEndpoints;
 using FastEndpoints.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using QuizHub.Application.Common.Models;
 using QuizHub.Infrastructure.Auth.Config;
 using QuizHub.Infrastructure.Auth.Endpoints.Login;
 using QuizHub.Infrastructure.Auth.Entities;
 using QuizHub.Infrastructure.Data;
+using System.Security.Claims;
 
 namespace QuizHub.Infrastructure.Auth.Services;
 
@@ -89,6 +91,7 @@ public class TokenService : RefreshTokenService<TokenRequest, LoginResponse>
 
     public override Task SetRenewalPrivilegesAsync(TokenRequest request, UserPrivileges privileges)
     {
+        privileges.Claims.Add(new(ClaimTypes.NameIdentifier, request.UserId));
         return Task.CompletedTask;
     }
 }

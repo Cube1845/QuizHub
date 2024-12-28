@@ -1,6 +1,6 @@
 ﻿using QuizHub.Application.Modules.QuestionBase.Models;
 
-namespace QuizHub.Application.Modules.QuestionBase.Get;
+namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Get;
 
 public record GetQuestionBasesResponse(List<QuestionBaseData> QuestionBases)
 {

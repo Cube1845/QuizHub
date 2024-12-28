@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using QuizHub.Application.Common.Abstract;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.QuestionBase.Models;
+using System.Security.Claims;
 
-namespace QuizHub.Application.Modules.QuestionBase.Get;
+namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Get;
 
 public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpointWithoutRequest<Result<GetQuestionBasesResponse>>
 {
@@ -12,7 +14,7 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpoin
 
     public override void Configure()
     {
-        Get("/question/bases");
+        Get("question-base");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -22,11 +24,12 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpoin
         var questionBases = await _context.QuestionBases
             .Include(questionBase => questionBase.Questions)
             .Where(questionBase => questionBase.OwnerId == userId)
-            .ToListAsync();
+            .ToListAsync(ct);
 
         if (questionBases == null || questionBases.Count == 0)
         {
-            await SendOkAsync(Result<GetQuestionBasesResponse>.Success(new([])));
+            await SendOkAsync(Result<GetQuestionBasesResponse>.Success(new([])), ct);
+            return;
         }
 
         List<QuestionBaseData> data = questionBases!.Select(questionBase =>
@@ -38,6 +41,6 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpoin
             );
         }).ToList();
 
-        await SendOkAsync(Result<GetQuestionBasesResponse>.Success(data));
+        await SendOkAsync(Result<GetQuestionBasesResponse>.Success(data), ct);
     }
 }
