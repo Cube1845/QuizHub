@@ -1,14 +1,14 @@
-﻿using QuizHub.Application.Common.Abstract;
+﻿using QuizHub.Application.Common.Extensions;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Delete;
 
-public class DeleteQuestionBaseValidator : ValidatorWithIdParser<DeleteQuestionBaseRequest>
+public class DeleteQuestionBaseValidator : Validator<DeleteQuestionBaseRequest>
 {
     public DeleteQuestionBaseValidator()
     {
         RuleFor(x => x.QuestionBaseId)
             .NotNull()
             .NotEmpty()
-            .Must(IsGuidFormat).WithMessage(IncorrectIdMessage);
+            .MustBeCorrectGuid();
     }
 }

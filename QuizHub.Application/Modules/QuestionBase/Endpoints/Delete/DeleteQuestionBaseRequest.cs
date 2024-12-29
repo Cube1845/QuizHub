@@ -1,3 +1,3 @@
 ﻿namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Delete;
 
-public record DeleteQuestionBaseRequest(string QuestionBaseId);
+public record DeleteQuestionBaseRequest(Guid QuestionBaseId);

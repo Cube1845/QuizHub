@@ -17,19 +17,14 @@ public class UpdateQuestionBaseNameEndpoint(IAppDbContext context) : IdentifiedE
     public override async Task HandleAsync(UpdateQuestionBaseNameRequest req, CancellationToken ct)
     {
         var questionBase = await _context.QuestionBases
-            .FirstOrDefaultAsync(qb => qb.Id == Guid.Parse(req.QuestionBaseId), ct);
+            .FirstOrDefaultAsync(qb => 
+                qb.Id == req.QuestionBaseId &&
+                qb.OwnerId == GetUserId()
+            , ct);
 
         if (questionBase == null)
         {
-            await SendOkAsync(Result.Error("Taka baza pytań nie istnieje"), ct);
-            return;
-        }
-
-        var userId = GetUserId();
-
-        if (questionBase.OwnerId != userId)
-        {
-            await SendOkAsync(Result.Error("Ta baza pytań nie należy do ciebie"), ct);
+            await SendOkAsync(Result.Error("Błąd danych"), ct);
             return;
         }
 

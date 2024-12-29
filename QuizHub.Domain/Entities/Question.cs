@@ -2,13 +2,13 @@
 
 namespace QuizHub.Domain.Entities;
 
-public class Question(Guid id, Guid questionBaseId, string content, QuestionType questionType)
+public class Question(Guid id, Guid questionBaseId, string content, QuestionType questionType, Guid? imageId = null)
 {
     public Guid Id { get; set; } = id;
     public Guid QuestionBaseId { get; set; } = questionBaseId;
     public QuestionBase QuestionBase { get; set; } = null!;
     public string Content { get; set; } = content;
     public QuestionType QuestionType { get; set; } = questionType;
-    public QuestionImage? Image { get; set; } = null!;
+    public Guid? ImageId { get; set; } = imageId;
     public ICollection<Answer> Answers { get; set; } = [];
 }

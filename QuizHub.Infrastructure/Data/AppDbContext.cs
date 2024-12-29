@@ -14,9 +14,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     //Question bases
     public DbSet<QuestionBase> QuestionBases { get; set; }
     public DbSet<Question> Questions { get; set; }
-    public DbSet<QuestionImage> QuestionImages { get; set; }
     public DbSet<Answer> Answers { get; set; }
-    public DbSet<AnswerImage> AnswerImages { get; set; }
+    public DbSet<Image> Images { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -41,21 +40,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
             e.HasMany(x => x.Answers).WithOne(x => x.Question);
-            e.HasOne(x => x.Image).WithOne(x => x.Question);
-        });
-
-        builder.Entity<QuestionImage>(e =>
-        {
-            e.HasKey(x => x.Id);
         });
 
         builder.Entity<Answer>(e =>
         {
             e.HasKey(x => x.Id);
-            e.HasOne(x => x.Image).WithOne(x => x.Answer);
         });
 
-        builder.Entity<AnswerImage>(e =>
+        builder.Entity<Image>(e =>
         {
             e.HasKey(x => x.Id);
         });

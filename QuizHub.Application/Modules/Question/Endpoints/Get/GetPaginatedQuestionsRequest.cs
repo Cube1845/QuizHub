@@ -1,9 +1,9 @@
 ﻿namespace QuizHub.Application.Modules.Question.Endpoints.Get;
 
-public class GetPaginatedQuestionsRequest(string questionBaseId, int pageNumber, int pageSize)
+public class GetPaginatedQuestionsRequest(Guid questionBaseId, int pageNumber, int pageSize)
 {
     [QueryParam]
-    public string QuestionBaseId { get; set; } = questionBaseId;
+    public Guid QuestionBaseId { get; set; } = questionBaseId;
     [QueryParam]
     public int PageNumber { get; set; } = pageNumber;
     [QueryParam]

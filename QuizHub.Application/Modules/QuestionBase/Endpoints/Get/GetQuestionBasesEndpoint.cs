@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QuizHub.Application.Common.Abstract;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.QuestionBase.Models;
-using System.Security.Claims;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Get;
 
@@ -32,15 +30,21 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpoin
             return;
         }
 
-        List<QuestionBaseData> data = questionBases!.Select(questionBase =>
+        List<QuestionBaseData> data = ConvertToQuestionBaseDataList(questionBases);
+
+        await SendOkAsync(Result<GetQuestionBasesResponse>.Success(data), ct);
+    }
+
+    public List<QuestionBaseData> ConvertToQuestionBaseDataList(List<Domain.Entities.QuestionBase> questionBaseList)
+    {
+        return questionBaseList.Select(questionBase =>
         {
             return new QuestionBaseData(
-                questionBase.Id.ToString(),
+                questionBase.Id,
                 questionBase.Name,
                 questionBase.Questions.Count
             );
         }).ToList();
-
-        await SendOkAsync(Result<GetQuestionBasesResponse>.Success(data), ct);
     }
+}
 }

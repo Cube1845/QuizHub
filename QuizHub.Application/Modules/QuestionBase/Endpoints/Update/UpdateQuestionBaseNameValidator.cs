@@ -1,15 +1,16 @@
 ﻿using QuizHub.Application.Common.Abstract;
+using QuizHub.Application.Common.Extensions;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Update;
 
-public class UpdateQuestionBaseNameValidator : ValidatorWithIdParser<UpdateQuestionBaseNameRequest>
+public class UpdateQuestionBaseNameValidator : Validator<UpdateQuestionBaseNameRequest>
 {
     public UpdateQuestionBaseNameValidator()
     {
         RuleFor(x => x.QuestionBaseId)
             .NotEmpty()
             .NotNull()
-            .Must(IsGuidFormat).WithMessage(IncorrectIdMessage);
+            .MustBeCorrectGuid();
 
         RuleFor(x => x.UpdatedName)
             .NotEmpty()

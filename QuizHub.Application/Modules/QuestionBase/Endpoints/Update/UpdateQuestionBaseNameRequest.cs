@@ -1,3 +1,3 @@
 ﻿namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Update;
 
-public record UpdateQuestionBaseNameRequest(string QuestionBaseId, string UpdatedName);
+public record UpdateQuestionBaseNameRequest(Guid QuestionBaseId, string UpdatedName);

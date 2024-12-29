@@ -2,4 +2,4 @@
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Add;
 
-public record AddQuestionRequest(string QuestionBaseId, UnidentifiedQuestion Question);
+public record AddQuestionRequest(Guid QuestionBaseId, UnidentifiedQuestion Question);

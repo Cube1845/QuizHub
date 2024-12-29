@@ -1,15 +1,15 @@
-﻿using QuizHub.Application.Common.Abstract;
+﻿using QuizHub.Application.Common.Extensions;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Get;
 
-public class GetPaginatedQuestionsValidator : ValidatorWithIdParser<GetPaginatedQuestionsRequest>
+public class GetPaginatedQuestionsValidator : Validator<GetPaginatedQuestionsRequest>
 {
     public GetPaginatedQuestionsValidator()
     {
         RuleFor(x => x.QuestionBaseId)
             .NotNull()
             .NotEmpty()
-            .Must(IsGuidFormat).WithMessage(IncorrectIdMessage);
+            .MustBeCorrectGuid();
 
         RuleFor(x => x.PageNumber)
             .NotNull()

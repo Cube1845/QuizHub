@@ -28,7 +28,7 @@ public class AddQuestionBaseEndpoint(IAppDbContext context) : IdentifiedEndpoint
         await _context.QuestionBases.AddAsync(questionBase, ct);
         await _context.SaveChangesAsync(ct);
 
-        AddQuestionBaseResponse data = new(questionBase.Id.ToString());
+        AddQuestionBaseResponse data = new(questionBase.Id);
 
         await SendOkAsync(Result<AddQuestionBaseResponse>.Success(data), ct);
     }

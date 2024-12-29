@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using QuizHub.Application.Common.Abstract;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Entities;
 using QuizHub.Domain.Models;
+using static FastEndpoints.Ep;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Add;
 
-public class AddQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<AddQuestionRequest, Result<AddQuestionResponse>>
+public class AddQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<AddQuestionRequest, Result>
 {
     private readonly IAppDbContext _context = context;
 
@@ -20,48 +22,70 @@ public class AddQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<Add
 
     public override async Task HandleAsync(AddQuestionRequest req, CancellationToken ct)
     {
-        Guid questionBaseId = Guid.Parse(req.QuestionBaseId);
+        var questionBaseCorrect = await _context.QuestionBases
+            .AnyAsync(questionBase => 
+                questionBase.Id == req.QuestionBaseId &&
+                questionBase.OwnerId == GetUserId()
+            , ct);
 
-        var questionBaseExists = await _context.QuestionBases
-            .AnyAsync(questionBase => questionBase.Id == questionBaseId, ct);
-
-        if (!questionBaseExists)
+        if (!questionBaseCorrect)
         {
-            await SendOkAsync(Result<AddQuestionResponse>.Error("Taka baza pytań nie istnieje"), ct);
+            await SendOkAsync(Result.Error("Błąd danych"), ct);
             return;
         }
-        
-        var answersDb = req.Question.Answers.ToAnswersDb(ct);
-        var questionDb = req.Question.ToQuestionDb(questionBaseId, ct);
+
+        var contentImageId = await AddImageIfNotNullAndGetIdAsync(req.Question.Image, ct);
+
+        var questionDb = ConvertToQuestionDb(req.Question, req.QuestionBaseId, contentImageId);
 
         _context.Questions.Add(questionDb);
 
-        if (req.Question.Image != null)
+        foreach (var answer in req.Question.Answers)
         {
-            var questionImageDb = await req.Question.Image.ToQuestionImageDbAsync(questionDb.Id ,ct);
-            _context.QuestionImages.Add(questionImageDb!);
-        }
+            var answerImageId = await AddImageIfNotNullAndGetIdAsync(answer.Image, ct);
 
-        AnswerImage? answerImageDb;
-
-        for (int i = 0; i < answersDb.Count; i++)
-        {
-            answerImageDb = null;
-
-            answersDb[i].QuestionId = questionDb.Id;
-            _context.Answers.Add(answersDb[i]);
-
-            if (req.Question.Answers[i].Image != null)
-            {
-                answerImageDb = await req.Question.Answers[i].Image.ToAnswerImageDbAsync(answersDb[i].Id, ct);
-                _context.AnswerImages.Add(answerImageDb!);
-            }
+            var answerDb = ConvertToAnswerDb(answer, questionDb.Id, answerImageId);
+            _context.Answers.Add(answerDb);
         }
 
         await _context.SaveChangesAsync(ct);
 
-        var data = new AddQuestionResponse(questionDb.Id.ToString());
+        await SendOkAsync(Result.Success(), ct);
+    }
 
-        await SendOkAsync(Result<AddQuestionResponse>.Success(data), ct);
+    private async Task<Guid?> AddImageIfNotNullAndGetIdAsync(IFormFile? image, CancellationToken ct = default)
+    {
+        Guid? imageId = null;
+
+        if (image != null)
+        {
+            var imageDb = await image.ToImageDb(ct);
+            _context.Images.Add(imageDb);
+
+            imageId = imageDb.Id;
+        }
+
+        return imageId;
+    }
+
+    private Domain.Entities.Question ConvertToQuestionDb(UnidentifiedQuestion question, Guid questionBaseId, Guid? imageId)
+    {
+        return new Domain.Entities.Question(
+            Guid.Empty,
+            questionBaseId,
+            question.Content,
+            question.QuestionType,
+            imageId
+        );
+    }
+
+    private Answer ConvertToAnswerDb(UnidentifiedAnswer answer, Guid questionId, Guid? imageId)
+    {
+        return new Answer(
+            questionId,
+            answer.Content,
+            answer.IsCorrect,
+            imageId
+        );
     }
 }

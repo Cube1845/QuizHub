@@ -19,20 +19,13 @@ public class DeleteQuestionBaseEndpoint(IAppDbContext context) : IdentifiedEndpo
     {
         var questionBase = await _context.QuestionBases
             .FirstOrDefaultAsync(questionBase =>
-                questionBase.Id == Guid.Parse(req.QuestionBaseId)
+                questionBase.Id == req.QuestionBaseId &&
+                questionBase.OwnerId == GetUserId()
             , ct);
 
         if (questionBase == null)
         {
-            await SendOkAsync(Result.Error("Nie istnieje taka baza pytań"), ct);
-            return;
-        }
-
-        var userId = GetUserId();
-
-        if (questionBase.OwnerId != userId)
-        {
-            await SendOkAsync(Result.Error("Ta baza pytań nie należy do ciebie"), ct);
+            await SendOkAsync(Result.Error("Błąd danych"), ct);
             return;
         }
 
