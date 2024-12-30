@@ -5,7 +5,7 @@ namespace QuizHub.Application.Modules.Question.Extensions;
 
 public static class IFormFileExtensions
 {
-    public static async Task<Image> ToImageDb(this IFormFile imageFile, CancellationToken ct = default)
+    public static async Task<Image> ToImageDbAsync(this IFormFile imageFile, CancellationToken ct = default)
     {
         using var memoryStream = new MemoryStream();
         await imageFile.CopyToAsync(memoryStream, ct);

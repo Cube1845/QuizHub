@@ -8,4 +8,11 @@ public class Answer(Guid questionId, string? content, bool isCorrect, Guid? imag
     public string? Content { get; set; } = content;
     public bool IsCorrect { get; set; } = isCorrect;
     public Guid? ImageId { get; set; } = imageId;
+
+    public void Update(string? content, bool isCorrect, Guid? imageId)
+    {
+        Content = content;
+        IsCorrect = isCorrect;
+        ImageId = imageId;
+    }
 }

@@ -11,4 +11,11 @@ public class Question(Guid id, Guid questionBaseId, string content, QuestionType
     public QuestionType QuestionType { get; set; } = questionType;
     public Guid? ImageId { get; set; } = imageId;
     public ICollection<Answer> Answers { get; set; } = [];
+
+    public void Update(string content, QuestionType questionType, Guid? imageId)
+    {
+        Content = content;
+        QuestionType = questionType;
+        ImageId = imageId;
+    }
 }

@@ -47,4 +47,3 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpoin
         }).ToList();
     }
 }
-}

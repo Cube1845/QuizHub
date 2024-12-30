@@ -2,7 +2,7 @@
 
 namespace QuizHub.Application.Modules.Question.Extensions;
 
-public static class QuestionBaseExtensions
+public static class DbSetExtensions
 {
     public static async Task<Domain.Entities.Question?> GetQuestionWithIncludedAnswersAsync(
         this DbSet<Domain.Entities.QuestionBase> questionBases,

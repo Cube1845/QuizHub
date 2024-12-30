@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
 
         services.AddScoped<IAppDbContext, AppDbContext>();
+        services.AddScoped<IImageService, ImageService>();
 
         services.AddScoped<AuthRepository>();
         services.AddScoped<PasswordHashService>();
