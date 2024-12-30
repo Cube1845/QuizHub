@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './manager-main-page.component.html',
-  styleUrl: './manager-main-page.component.scss'
+  styleUrl: './manager-main-page.component.scss',
 })
-export class ManagerMainPageComponent {
-
-}
+export class ManagerMainPageComponent {}

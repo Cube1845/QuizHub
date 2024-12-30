@@ -10,14 +10,17 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuestionService } from '../../../../../services/question.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
 import { ImageModule } from 'primeng/image';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
 import { Question } from '../../../../../models/question';
 import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
+import { NgStyle } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
+import { PaginatorOptions } from '../../../../../models/paginatorOptions';
+import { ToastService } from '../../../../../../common/services/toast.service';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -32,21 +35,22 @@ import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
     InputGroupAddonModule,
     ReactiveFormsModule,
     ConfirmDialogModule,
-    ToastModule,
     ImageModule,
+    NgStyle,
+    PaginatorModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
-  providers: [ConfirmationService, MessageService, DialogService],
+  providers: [ConfirmationService, DialogService],
 })
 export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly questionBaseService = inject(QuestionBaseService);
   private readonly questionService = inject(QuestionService);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
+  private readonly toastService = inject(ToastService);
 
   ref: DynamicDialogRef | undefined;
 
@@ -55,6 +59,8 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   questions: Question[] | null = null;
 
   searchFormControl = new FormControl<string>('', Validators.required);
+
+  paginatorOptions: PaginatorOptions | undefined;
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -68,6 +74,8 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
         this.questionBaseService.getQuestionsFromUserQuestionBase(
           this.questionBaseId!
         );
+
+      this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
     });
   }
 
@@ -109,7 +117,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.ref = this.dialogService.open(QuestionEditDialogComponent, {
       header: 'Edytuj pytanie',
       width: '72rem',
-      height: '45rem',
+      height: '46rem',
       modal: true,
       data: {
         question: this.questions![questionIndex],
@@ -129,7 +137,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
     this.ref = this.dialogService.open(QuestionEditDialogComponent, {
       header: 'Dodaj pytanie',
       width: '72rem',
-      height: '45rem',
+      height: '46rem',
       modal: true,
     });
 
@@ -164,11 +172,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
 
     this.questions!.splice(index, 1);
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sukces',
-      detail: 'Usunięto pytanie',
-    });
+    this.toastService.displayToast('success', 'Sukces', 'Usunięto pytanie');
   }
 
   saveQuestion(question: Question, questionIndex: number): void {
@@ -176,11 +180,7 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
 
     this.questions![questionIndex] = question;
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sukces',
-      detail: 'Zapisano pytanie',
-    });
+    this.toastService.displayToast('success', 'Sukces', 'Zapisano pytanie');
   }
 
   addQuestion(questionToAdd: UndefinedQuestion): void {
@@ -198,15 +198,16 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
         };
       }),
       image: questionToAdd.image,
+      questionType: questionToAdd.questionType,
       id: '',
     };
 
     this.questions!.push(question);
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sukces',
-      detail: 'Dodano pytanie',
-    });
+    this.toastService.displayToast('success', 'Sukces', 'Dodano pytanie');
+  }
+
+  onPageChange(event: any) {
+    const pageNumber = event.page;
   }
 }

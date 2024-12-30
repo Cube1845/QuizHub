@@ -1,0 +1,20 @@
+:host {
+    ::ng-deep {
+        .import-button {
+            background: transparent;
+            color: var(--p-primary-color);
+
+            &:hover {
+                background: var(--p-button-outlined-primary-hover-background);
+                border: 1px solid var(--p-primary-color);
+                color: var(--p-primary-color);
+            }
+        }
+    }
+
+    .button-box {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+    }
+}

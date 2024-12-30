@@ -10,9 +10,6 @@
 
     h1 {
         color: var(--p-text-color);
-        font-size: 40px;
-        padding: 0px;
-        margin: 0;
         flex: 1;
     }
 
@@ -29,11 +26,9 @@
         flex: 1;
         display: flex;
         justify-content: end;
-        margin-right: 20px;
     }
 
     .user-icon {
-        font-size: 20px;
         color: var(--p-text-color);
     }
 }

@@ -1,12 +1,12 @@
 :host {
     $panel-size: 210px;
 
-    margin: 15px;
-    padding: 0;
-    display: flex;
-    flex-direction: row;
-    align-content: flex-start;
-    flex-wrap: wrap;
+    .container {
+        display: flex;
+        flex-direction: row;
+        align-content: flex-start;
+        flex-wrap: wrap;
+    }
     
     .question-base-panel {
         background: var(--p-zinc-800);
@@ -14,25 +14,15 @@
         width: $panel-size;
         height: $panel-size;
         border-radius: var(--p-border-radius-lg);
-        margin: 16px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         transition: 0.2s;
-        
-        h1 {
-            font-size: 28px;
-        }
+        word-break: break-all;
 
         p {
-            font-size: 18px;
             color: var(--p-zinc-400);
-        }
-
-        h1, p {
-            padding: 0px;
-            margin: 0px;
         }
 
         &:hover {
@@ -48,8 +38,7 @@
 
     .clickable-icon {
         position: absolute;
-        font-size: 1.2rem;
-        color: var(--p-text-color);
+        color: var(--p-zinc-500);
         transition: 0.1s;
         bottom: 10px;
 
@@ -66,5 +55,9 @@
 
     .edit-icon {
         right: 38px;
+    }
+
+    .download-icon {
+        right: 66px;
     }
 }

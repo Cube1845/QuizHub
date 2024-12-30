@@ -1,20 +1,18 @@
-<p-toast position="bottom-left" [life]="3000" />
-
 <div class="container">
-    <h1>Logowanie</h1>
-    <div class="auth-data-input-box" [formGroup]="loginFormGroup">
-        <p-floatLabel>
+    <h1 class="text-6xl m-0 mb-4">Logowanie</h1>
+    <div class="auth-data-input-box m-0" [formGroup]="loginFormGroup">
+        <p-floatLabel class="mb-4">
             <input id="email" type="text" pInputText class="auth-data-input" formControlName="email" />
             <label for="email">Email</label>
         </p-floatLabel>
 
-        <p-floatLabel>
+        <p-floatLabel class="mb-4">
             <p-password id="password" [toggleMask]="true" [feedback]="false" [style]="{'width':'500px'}" [inputStyle]="{'width':'500px'}" formControlName="password" />
             <label for="password" class="auth-data-input">Hasło</label>
         </p-floatLabel>
 
-        <p-button label="Zaloguj się" [outlined]="true" [disabled]="loginFormGroup.invalid" [loading]="loginButttonLoading" (click)="login()" />
+        <p-button label="Zaloguj się" [outlined]="true" [disabled]="loginFormGroup.invalid" [loading]="loginButttonLoading" (click)="login()" class="my-4" />
 
-        <a routerLink="../register">Nie masz konta? Zarejestruj się</a>
+        <a routerLink="../register" class="mt-4">Nie masz konta? Zarejestruj się</a>
     </div>
 </div>

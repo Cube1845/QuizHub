@@ -3,7 +3,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -13,8 +13,8 @@ import {
 import { AuthService } from '../../services/auth.service';
 import { passwordsMatchValidator } from '../../../manager/validators/passwords-match-validator';
 import { environment } from '../../../../environments/environment.development';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ToastService } from '../../../common/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -26,15 +26,14 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     RouterLink,
     ReactiveFormsModule,
-    ToastModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
-  providers: [MessageService],
 })
 export class RegisterComponent {
-  authService = inject(AuthService);
-  messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
 
   registerButttonLoading: boolean = false;
 
@@ -57,15 +56,49 @@ export class RegisterComponent {
   );
 
   register(): void {
-    this.authService.register(
-      this.registerFormGroup.value.email!,
-      this.registerFormGroup.value.password!
-    );
+    let apiResponsed = false;
 
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Błąd',
-      detail: 'Taki użytkownik już istnieje',
-    });
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.registerButttonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
+    this.authService
+      .register(
+        this.registerFormGroup.value.email!,
+        this.registerFormGroup.value.password!
+      )
+      .subscribe(
+        (result) => {
+          apiResponsed = true;
+          this.registerButttonLoading = false;
+
+          if (result.isSuccess) {
+            this.router.navigateByUrl('login');
+
+            this.toastService.displayToast(
+              'success',
+              'Sukces',
+              'Zarajestrowano, teraz się zaloguj'
+            );
+          } else {
+            this.toastService.displayToast(
+              'error',
+              'Błąd',
+              result.message || 'Wystąpił błąd podczas rejestracji'
+            );
+          }
+        },
+        () => {
+          this.registerButttonLoading = false;
+
+          this.toastService.displayToast(
+            'error',
+            'Błąd',
+            'Wystąpił błąd z serwerem'
+          );
+        }
+      );
   }
 }
