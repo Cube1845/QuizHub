@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { QuestionBaseData } from '../../common/models/questionBaseData';
-import { Question } from '../../common/models/question';
 import { v4 as uuidv4 } from 'uuid';
+import { QuestionBaseData } from '../models/questionBaseData';
+import { Question } from '../models/question';
 
 @Injectable({
   providedIn: 'root',
@@ -413,6 +413,6 @@ export class QuestionBaseService {
       ];
     }
 
-    return null;
+    return [];
   }
 }

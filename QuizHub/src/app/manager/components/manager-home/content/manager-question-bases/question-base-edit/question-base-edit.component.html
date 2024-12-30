@@ -7,7 +7,7 @@
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
 
         <p-button [outlined]="true" [style]="{'margin-left': '15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [disabled]="searchFormControl.invalid"></p-button>
-        <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="currentEditedQuestionIndex = -1; questionDialogVisible = true"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-left': '15px', width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="showCreatingQuestionDialog()"></p-button>
     </div>
 
     <div class="question-box">
@@ -18,24 +18,35 @@
         }
 
         @for (question of questions; track $index) {
-            <div class="question-panel" (click)="currentEditedQuestionIndex = $index; openQuestionEditor($index, $event)">
+            <div class="question-panel" (click)="openQuestionEditor($index, $event)">
                 <div class="question-content">
-                    @if (question.image != null) {
-                        <p-image [src]="question.image" alt="Obraz do treści" height="150" [preview]="true" class="independent-cilck-action"></p-image>
+                    @if (question.image != null && !!question.image.displayUrl) {
+                        <p-image [src]="question.image.displayUrl" preview="true" height="200"></p-image>
                     }
+
                     <h1>{{ question.content }}</h1>
                 </div>
                 <div class="answer-box">
-                    <div class="answer-row">
+                    <div class="answer-row" style="margin-bottom: 5px;">
                         <div class="answer-column">
                             @if (question.answers[0].isCorrect) {
                                 <h2 style="color: var(--p-primary-color)">Odpowiedź A:</h2>
+
+                                @if (question.answers[0].image != null && !!question.answers[0].image.displayUrl) {
+                                    <p-image [src]="question.answers[0].image.displayUrl" preview="true" height="160"></p-image>
+                                }
+
                                 <p style="color: var(--p-primary-color)">
                                     <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
                                     {{ question.answers[0].content }}
                                 </p>
                             } @else {
                                 <h2>Odpowiedź A:</h2>
+
+                                @if (question.answers[0].image != null && !!question.answers[0].image.displayUrl) {
+                                    <p-image [src]="question.answers[0].image.displayUrl" preview="true" height="160"></p-image>
+                                }
+
                                 <p>
                                     <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
                                     {{ question.answers[0].content }}
@@ -45,12 +56,22 @@
                         <div class="answer-column">
                             @if (question.answers[1].isCorrect) {
                                 <h2 style="color: var(--p-primary-color)">Odpowiedź B:</h2>
+
+                                @if (question.answers[1].image != null && !!question.answers[1].image.displayUrl) {
+                                    <p-image [src]="question.answers[1].image.displayUrl" preview="true" height="160"></p-image>
+                                }
+
                                 <p style="color: var(--p-primary-color)">
                                     <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
                                     {{ question.answers[1].content }}
                                 </p>
                             } @else {
                                 <h2>Odpowiedź B:</h2>
+
+                                @if (question.answers[1].image != null && !!question.answers[1].image.displayUrl) {
+                                    <p-image [src]="question.answers[1].image.displayUrl" preview="true" height="160"></p-image>
+                                }
+
                                 <p>
                                     <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
                                     {{ question.answers[1].content }}
@@ -64,12 +85,22 @@
                             <div class="answer-column">
                                 @if (question.answers[2].isCorrect) {
                                     <h2 style="color: var(--p-primary-color)">Odpowiedź C:</h2>
+
+                                    @if (question.answers.length >= 3 && question.answers[2].image != null && !!question.answers[2].image.displayUrl) {
+                                        <p-image [src]="question.answers[2].image.displayUrl" preview="true" height="160"></p-image>
+                                    }
+
                                     <p style="color: var(--p-primary-color)">
                                         <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
                                         {{ question.answers[2].content }}
                                     </p>
                                 } @else {
                                     <h2>Odpowiedź C:</h2>
+
+                                    @if (question.answers.length >= 3 && question.answers[2].image != null && !!question.answers[2].image.displayUrl) {
+                                        <p-image [src]="question.answers[2].image.displayUrl" preview="true" height="160"></p-image>
+                                    }
+
                                     <p>
                                         <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
                                         {{ question.answers[2].content }}
@@ -81,12 +112,22 @@
                                 <div class="answer-column">
                                     @if (question.answers[3].isCorrect) {
                                         <h2 style="color: var(--p-primary-color)">Odpowiedź D:</h2>
+
+                                        @if (question.answers.length == 4 && question.answers[3].image != null && !!question.answers[3].image.displayUrl) {
+                                            <p-image [src]="question.answers[3].image.displayUrl" preview="true" height="160"></p-image>
+                                        }
+
                                         <p style="color: var(--p-primary-color)">
                                             <i class="pi pi-check-circle" style="font-size: 0.8rem; color: var(--p-primary-color)"></i>
                                             {{ question.answers[3].content }}
                                         </p>
                                     } @else {
                                         <h2>Odpowiedź D:</h2>
+
+                                        @if (question.answers.length == 4 && question.answers[3].image != null && !!question.answers[3].image.displayUrl) {
+                                            <p-image [src]="question.answers[3].image.displayUrl" preview="true" height="160"></p-image>
+                                        }
+
                                         <p>
                                             <i class="pi pi-times-circle" style="font-size: 0.8rem"></i>
                                             {{ question.answers[3].content }}
@@ -105,94 +146,3 @@
         }
     </div>
 </div>
-
-<p-dialog [modal]="true" [style]="{ width: 'auto', height: 'auto' }" [(visible)]="imagePreviewVisible" [closable]="true" [draggable]="false" [resizable]="false" (onHide)="imagePreviewUrl = null">
-    @if (imagePreviewVisible) {
-        <p-image [src]="this.imagePreviewUrl!" alt="Image Preview" [style]="{ height: 'auto', width: '25rem', margin: '5px'}"></p-image>
-    }
-</p-dialog>
-
-<p-dialog [formGroup]="questionFormGroup" [header]="getDialogHeader()" [modal]="true" [visible]="questionDialogVisible" [closable]="false" [draggable]="false" [resizable]="false" [style]="{ width: '72rem', height: '45rem' }">
-    <div class="question-input-box">
-        <div class="question-content-box">
-            <p-floatLabel>
-                <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="90" formControlName="content"/>
-                <label for="quesiton-content">Pytanie</label>
-            </p-floatLabel>
-
-            <app-image-panel formControlName="contentImage" (onDisplayPreview)="displayImagePreview($event)"/>
-        </div>
-
-        <div class="question-answer-row">
-            <div class="dialog-single-answer-box">
-                <p-inputGroup>
-                    <p-floatLabel [style]="{width: '100%'}">
-                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[0]"/>
-                        <label for="quesiton-content">Odpowiedź A</label>
-                        <p-inputGroupAddon>
-                            <p-checkbox
-                                [formControl]="questionFormGroup.controls.correctAnswers.controls[0]"
-                                [binary]="true" 
-                                />
-                        </p-inputGroupAddon>
-                    </p-floatLabel>
-                </p-inputGroup>
-            </div>
-            <div class="dialog-single-answer-box">
-                <p-inputGroup>
-                    <p-floatLabel [style]="{width: '100%'}">
-                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[1]"/>
-                        <label for="quesiton-content">Odpowiedź B</label>
-                        <p-inputGroupAddon>
-                            <p-checkbox
-                                [formControl]="questionFormGroup.controls.correctAnswers.controls[1]"
-                                [binary]="true"
-                                />
-                        </p-inputGroupAddon>
-                    </p-floatLabel>
-                </p-inputGroup>
-            </div>
-        </div>
-
-        <div class="question-answer-row">
-            <div class="dialog-single-answer-box">
-                <p-inputGroup>
-                    <p-floatLabel [style]="{width: '100%'}">
-                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[2]"/>
-                        <label for="quesiton-content">Odpowiedź C</label>
-                        <p-inputGroupAddon>
-                            <p-checkbox
-                                [formControl]="questionFormGroup.controls.correctAnswers.controls[2]"
-                                [binary]="true"
-                                />
-                        </p-inputGroupAddon>
-                    </p-floatLabel>
-                </p-inputGroup>
-            </div>
-            <div class="dialog-single-answer-box">
-                <p-inputGroup>
-                    <p-floatLabel [style]="{width: '100%'}">
-                        <input id="quesiton-content" type="text" pInputText [style]="{width: '100%'}" maxlength="40" class="input-border-radius-left-only" [formControl]="questionFormGroup.controls.answers.controls[3]"/>
-                        <label for="quesiton-content">Odpowiedź D</label>
-                        <p-inputGroupAddon>
-                            <p-checkbox
-                                [formControl]="questionFormGroup.controls.correctAnswers.controls[3]"
-                                [binary]="true"
-                                />
-                        </p-inputGroupAddon>
-                    </p-floatLabel>
-                </p-inputGroup>
-            </div>
-        </div>
-    </div>
-    
-    <div class="question-buttons-box">
-        @if (currentEditedQuestionIndex >= 0) {
-            <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="closeEditDialog()" class="dialog-button"/>
-            <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="saveQuestion()" class="dialog-button"/>
-        } @else {
-            <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="closeEditDialog()" class="dialog-button"/>
-            <p-button label="Zapisz" severity="primary" [outlined]="true" [disabled]="questionFormGroup.invalid" (click)="addQuestion()" class="dialog-button"/>
-        }
-    </div>
-</p-dialog>

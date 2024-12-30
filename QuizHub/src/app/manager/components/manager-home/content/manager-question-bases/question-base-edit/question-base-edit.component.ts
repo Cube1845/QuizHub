@@ -1,6 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Question } from '../../../../../../common/models/question';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -9,23 +8,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { requireOneSelectedAnswerValidator } from '../../../../../../common/validators/require-one-selected-answer-validator';
-import { correctAnswerSelectionValidator } from '../../../../../../common/validators/correct-answer-selection-validator';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuestionService } from '../../../../../services/question.service';
-import { Answer } from '../../../../../../common/models/answer';
-import { enforceSequentialAnswersValidator } from '../../../../../../common/validators/enforce-sequential-answers-validator';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-import { Image } from 'primeng/image';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ImagePanelComponent } from './image-panel/image-panel.component';
+import { ImageModule } from 'primeng/image';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
+import { Question } from '../../../../../models/question';
+import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -41,72 +33,26 @@ import { ImagePanelComponent } from './image-panel/image-panel.component';
     ReactiveFormsModule,
     ConfirmDialogModule,
     ToastModule,
-    Image,
-    ImagePanelComponent,
+    ImageModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
   providers: [ConfirmationService, MessageService, DialogService],
 })
-export class QuestionBaseEditComponent implements OnInit {
+export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
-  questionBaseService = inject(QuestionBaseService);
-  questionService = inject(QuestionService);
-  confirmationService = inject(ConfirmationService);
-  messageService = inject(MessageService);
-  router = inject(Router);
-  dialogService = inject(DialogService);
+  private readonly questionBaseService = inject(QuestionBaseService);
+  private readonly questionService = inject(QuestionService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+  private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+
+  ref: DynamicDialogRef | undefined;
 
   questionBaseId!: string | null;
 
-  questionDialogVisible!: boolean;
-  currentEditedQuestionIndex: number = -1;
-
-  imagePreviewVisible!: boolean;
-  imagePreviewUrl!: string | null;
-
-  questions!: Question[] | null;
-
-  questionFormGroup = new FormGroup(
-    {
-      content: new FormControl<string>('', [
-        Validators.required,
-        Validators.minLength(3),
-      ]),
-      contentImage: new FormControl<File | null>(null),
-      answers: new FormGroup<FormControl<string | null>[]>(
-        [
-          new FormControl<string>('', [
-            Validators.required,
-            Validators.minLength(3),
-          ]),
-          new FormControl<string>('', [
-            Validators.required,
-            Validators.minLength(3),
-          ]),
-          new FormControl<string>('', Validators.minLength(3)),
-          new FormControl<string>('', Validators.minLength(3)),
-        ],
-        enforceSequentialAnswersValidator()
-      ),
-      correctAnswers: new FormGroup<FormControl<boolean | null>[]>(
-        [
-          new FormControl<boolean>(false),
-          new FormControl<boolean>(false),
-          new FormControl<boolean>(false),
-          new FormControl<boolean>(false),
-        ],
-        requireOneSelectedAnswerValidator()
-      ),
-      answerImages: new FormGroup([
-        new FormControl<File | null>(null),
-        new FormControl<File | null>(null),
-        new FormControl<File | null>(null),
-        new FormControl<File | null>(null),
-      ]),
-    },
-    correctAnswerSelectionValidator()
-  );
+  questions: Question[] | null = null;
 
   searchFormControl = new FormControl<string>('', Validators.required);
 
@@ -125,6 +71,12 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
+  }
+
   goBack(): void {
     this.router.navigateByUrl('manager/question-bases');
   }
@@ -136,46 +88,57 @@ export class QuestionBaseEditComponent implements OnInit {
     );
   }
 
-  getDialogHeader(): string {
-    if (this.currentEditedQuestionIndex >= 0) {
-      return 'Edytuj pytanie';
-    }
-
-    return 'Dodaj pytanie';
-  }
-
   openQuestionEditor(index: number, event: MouseEvent) {
     const clickedElement = event.target as HTMLElement;
-    const isMainComponent =
-      clickedElement.closest('.independent-cilck-action') !== null;
+    const isNotMainComponent =
+      clickedElement.closest('.independent-cilck-action') != null;
 
-    if (isMainComponent) {
+    const isNotImage = clickedElement.closest('.p-image-preview-mask') != null;
+
+    const isNotMask = clickedElement.closest('.p-overlay-mask') != null;
+
+    if (isNotMainComponent || isNotImage || isNotMask) {
       event.stopPropagation();
       return;
     }
 
-    const answerValues = this.questions![index].answers.map(
-      (answer) => answer.content
-    );
+    this.showEditQuestionDialog(index);
+  }
 
-    const correctAnswers = this.questions![index].answers.map(
-      (answer) => answer.isCorrect
-    );
-
-    while (answerValues.length < 4) {
-      answerValues.push('');
-      correctAnswers.push(false);
-    }
-
-    this.questionFormGroup.setValue({
-      content: this.questions![index].content,
-      contentImage: null,
-      answers: answerValues,
-      correctAnswers: correctAnswers,
-      answerImages: [null, null, null, null],
+  showEditQuestionDialog(questionIndex: number): void {
+    this.ref = this.dialogService.open(QuestionEditDialogComponent, {
+      header: 'Edytuj pytanie',
+      width: '72rem',
+      height: '45rem',
+      modal: true,
+      data: {
+        question: this.questions![questionIndex],
+        questionIndex: questionIndex,
+      },
     });
 
-    this.questionDialogVisible = true;
+    this.ref.onClose.subscribe((result) => {
+      if (result != null) {
+        this.saveQuestion(result.question, result.questionIndex);
+        return;
+      }
+    });
+  }
+
+  showCreatingQuestionDialog(): void {
+    this.ref = this.dialogService.open(QuestionEditDialogComponent, {
+      header: 'Dodaj pytanie',
+      width: '72rem',
+      height: '45rem',
+      modal: true,
+    });
+
+    this.ref.onClose.subscribe((result) => {
+      if (result != null) {
+        this.addQuestion(result);
+        return;
+      }
+    });
   }
 
   displayQuestionRemovalModal(event: Event, index: number): void {
@@ -200,6 +163,7 @@ export class QuestionBaseEditComponent implements OnInit {
     this.questionService.removeQuestion(this.questions![index].id);
 
     this.questions!.splice(index, 1);
+
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
@@ -207,77 +171,10 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
-  private getAnswerId(questionIndex: number, answerIndex: number): string {
-    if (this.questions![questionIndex].answers.length > answerIndex) {
-      return this.questions![questionIndex].answers[answerIndex].id;
-    }
+  saveQuestion(question: Question, questionIndex: number): void {
+    this.questionService.editQuestion(question, question.id);
 
-    return '';
-  }
-
-  displayImagePreview(url: string): void {
-    this.imagePreviewUrl = url;
-    this.imagePreviewVisible = true;
-  }
-
-  private buildQuestionFromQuestionFormGroup(): Question {
-    const controls = this.questionFormGroup.controls; //change
-
-    let lastAnswerIndex = 0;
-
-    for (let i = 0; i < 4; i++) {
-      if (
-        this.questionFormGroup.controls.answers.controls[i].value != null ||
-        this.questionFormGroup.controls.answerImages.controls[i].value != null
-      ) {
-        lastAnswerIndex++;
-      }
-    }
-
-    const answers: Answer[] = [];
-
-    for (let i = 0; i < lastAnswerIndex; i++) {
-      answers.push({
-        content: this.questionFormGroup.controls.answers.controls[i].value,
-        id: this.getAnswerId(this.currentEditedQuestionIndex, i),
-        image: this.questionFormGroup.controls.answerImages.controls[i].value,
-        isCorrect:
-          this.questionFormGroup.controls.correctAnswers.controls[i].value!,
-      });
-    }
-
-    const image = this.questionFormGroup.value.contentImage!;
-
-    const question: Question = {
-      content: this.questionFormGroup.controls.content.value!,
-      answers: answers,
-      image: image,
-      id: this.questions![this.currentEditedQuestionIndex].id,
-    };
-
-    return question;
-  }
-
-  saveQuestion(): void {
-    const currentQuestion = this.questions![this.currentEditedQuestionIndex]; //change
-
-    const question = this.buildQuestionFromQuestionFormGroup();
-
-    this.questionService.editQuestion(
-      question,
-      this.questions![this.currentEditedQuestionIndex].id
-    );
-
-    this.questions![this.currentEditedQuestionIndex].content =
-      this.questionFormGroup.controls.content.value!;
-
-    this.questions![this.currentEditedQuestionIndex].answers = question.answers;
-
-    this.questions![this.currentEditedQuestionIndex].image = question.image;
-
-    this.questionDialogVisible = false;
-    this.questionFormGroup.reset();
-    this.currentEditedQuestionIndex = -1;
+    this.questions![questionIndex] = question;
 
     this.messageService.add({
       severity: 'success',
@@ -286,49 +183,30 @@ export class QuestionBaseEditComponent implements OnInit {
     });
   }
 
-  addQuestion(): void {
-    //change that to questionDTO something \/
+  addQuestion(questionToAdd: UndefinedQuestion): void {
+    this.questionService.addQuestion(questionToAdd);
 
-    var answers: Answer[] = this.questionFormGroup.controls.answers.controls
-      .filter((fc) => fc.value != '')
-      .map((fc, index) => {
-        if (fc.value! != '') {
-          return {
-            content: fc.value!,
-            isCorrect:
-              this.questionFormGroup.controls.correctAnswers.controls[index]
-                .value!,
-            image: null, //here
-            id: '',
-          };
-        }
-        return null!;
-      });
-
-    const question: Question = {
-      content: this.questionFormGroup.controls.content.value!,
-      answers: answers,
-      image: null,
+    //temporary solution before API
+    let question: Question = {
+      content: questionToAdd.content,
+      answers: questionToAdd.answers.map((undefinedAnswer) => {
+        return {
+          content: undefinedAnswer.content,
+          image: undefinedAnswer.image,
+          isCorrect: undefinedAnswer.isCorrect,
+          id: '',
+        };
+      }),
+      image: questionToAdd.image,
       id: '',
     };
 
-    this.questionService.addQuestion(question);
-
     this.questions!.push(question);
-
-    this.questionDialogVisible = false;
-    this.questionFormGroup.reset();
 
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
       detail: 'Dodano pytanie',
     });
-  }
-
-  closeEditDialog(): void {
-    this.questionDialogVisible = false;
-    this.questionFormGroup.reset();
-    this.currentEditedQuestionIndex = -1;
   }
 }
