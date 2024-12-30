@@ -7,7 +7,7 @@ public static class IFormFileExtensions
 {
     public static async Task<Image> ToImageDbAsync(this IFormFile imageFile, CancellationToken ct = default)
     {
-        using var memoryStream = new MemoryStream();
+        using MemoryStream memoryStream = new();
         await imageFile.CopyToAsync(memoryStream, ct);
 
         var baseImage = new Image

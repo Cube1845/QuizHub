@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Abstract;
+using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
-using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Entities;
 using QuizHub.Domain.Models;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Add;
 
-public class AddQuestionEndpoint(IAppDbContext context, IImageService imageService) : IdentifiedEndpoint<AddQuestionRequest, Result>
+public class AddQuestionEndpoint(IAppDbContext context, IImageService imageService) : Endpoint<AddQuestionRequest, Result>
 {
     private readonly IAppDbContext _context = context;
     private readonly IImageService _imageService = imageService;
@@ -22,10 +21,12 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
 
     public override async Task HandleAsync(AddQuestionRequest req, CancellationToken ct)
     {
+        var userId = this.GetUserId();
+
         var questionBaseCorrect = await _context.QuestionBases
-            .AnyAsync(questionBase => 
+            .AnyAsync(questionBase =>
                 questionBase.Id == req.QuestionBaseId &&
-                questionBase.OwnerId == GetUserId()
+                questionBase.OwnerId == userId
             , ct);
 
         if (!questionBaseCorrect)
@@ -38,14 +39,14 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
 
         var questionDb = ConvertToQuestionDb(req.Question, req.QuestionBaseId, contentImageId);
 
-        _context.Questions.Add(questionDb);
+        await _context.Questions.AddAsync(questionDb, ct);
 
         foreach (var answer in req.Question.Answers)
         {
             var answerImageId = await AddImageIfNotNullAndGetIdWithoutSavingAsync(answer.Image, ct);
 
             var answerDb = ConvertToAnswerDb(answer, questionDb.Id, answerImageId);
-            _context.Answers.Add(answerDb);
+            await _context.Answers.AddAsync(answerDb, ct);
         }
 
         await _context.SaveChangesAsync(ct);
@@ -55,9 +56,12 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
 
     private async Task<Guid?> AddImageIfNotNullAndGetIdWithoutSavingAsync(IFormFile? image, CancellationToken ct = default)
     {
-        return image != null ?
-            await _imageService.AddImageAndGetIdWithoutSavingAsync(image, ct) :
-            null;
+        if (image == null)
+        {
+            return null;
+        }
+
+        return await _imageService.AddImageAndGetIdWithoutSavingAsync(image, ct);
     }
 
     private Domain.Entities.Question ConvertToQuestionDb(UnidentifiedQuestion question, Guid questionBaseId, Guid? imageId)

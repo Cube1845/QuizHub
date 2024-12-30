@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Abstract;
+using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.QuestionBase.Models;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Get;
 
-public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpointWithoutRequest<Result<GetQuestionBasesResponse>>
+public class GetQuestionBasesEndpoint(IAppDbContext context) : EndpointWithoutRequest<Result<GetQuestionBasesResponse>>
 {
     private readonly IAppDbContext _context = context;
 
@@ -17,7 +17,7 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : IdentifiedEndpoin
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = GetUserId();
+        var userId = this.GetUserId();
 
         var questionBases = await _context.QuestionBases
             .Include(questionBase => questionBase.Questions)

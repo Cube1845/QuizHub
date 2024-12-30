@@ -1,15 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Abstract;
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
-using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Get;
 
-public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService imageService) : IdentifiedEndpoint<GetPaginatedQuestionsRequest, Result<GetPaginatedQuestionsResponse>>
+public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService imageService) : Endpoint<GetPaginatedQuestionsRequest, Result<GetPaginatedQuestionsResponse>>
 {
     private readonly IAppDbContext _context = context;
     private readonly IImageService _imageService = imageService;
@@ -39,10 +36,12 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
 
     private async Task<PaginatedData<IdentifiedQuestion>> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct = default)
     {
+        var userId = this.GetUserId();
+
         var questionsDb = await _context.QuestionBases
             .Where(questionBase =>
                 questionBase.Id == questionBaseId &&
-                questionBase.OwnerId == GetUserId()
+                questionBase.OwnerId == userId
             )
             .Include(questionBase => questionBase.Questions)
             .ThenInclude(question => question.Answers)
@@ -53,18 +52,16 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
         var totalItems = await _context.QuestionBases
             .Where(questionBase =>
                 questionBase.Id == questionBaseId &&
-                questionBase.OwnerId == GetUserId()
+                questionBase.OwnerId == userId
             )
-            .Include(questionBase => questionBase.Questions)
-            .ThenInclude(question => question.Answers)
             .SelectMany(questionBase => questionBase.Questions)
             .CountAsync();
 
-        var identifiedQuestions = new List<IdentifiedQuestion>();
+        List<IdentifiedQuestion> identifiedQuestions = [];
 
         foreach (var question in questionsDb)
         {
-            var answers = new List<IdentifiedAnswer>();
+            List<IdentifiedAnswer> answers = [];
 
             foreach (var answer in question.Answers)
             {
@@ -74,7 +71,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
                     Content = answer.Content,
                     IsCorrect = answer.IsCorrect,
                     Image = answer.ImageId != null ?
-                        await imageService.GetImageByIdAsync(answer.ImageId!.Value, ct) :
+                        await _imageService.GetImageByIdAsync(answer.ImageId!.Value, ct) :
                         null
                 });
             }
@@ -85,7 +82,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
                 Content = question.Content,
                 QuestionType = question.QuestionType,
                 Image = question.ImageId != null ?
-                        await imageService.GetImageByIdAsync(question.ImageId!.Value, ct) :
+                        await _imageService.GetImageByIdAsync(question.ImageId!.Value, ct) :
                         null,
                 Answers = answers
             };
@@ -93,6 +90,6 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
             identifiedQuestions.Add(questionToAdd);
         }
 
-        return PaginatedData<IdentifiedQuestion>.ToPaginatedData(identifiedQuestions, totalItems);
+        return new PaginatedData<IdentifiedQuestion>(identifiedQuestions, totalItems);
     }
 }

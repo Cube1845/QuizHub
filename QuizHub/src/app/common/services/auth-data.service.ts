@@ -13,14 +13,11 @@ export class AuthDataService {
   }
 
   clearAuthData(): void {
-    sessionStorage.removeItem('userId');
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('accessExpiryDateTime');
-    sessionStorage.removeItem('refreshToken');
+    sessionStorage.clear();
   }
 
   getAuthData(): AuthData {
-    let data: AuthData = {
+    const data: AuthData = {
       userId: sessionStorage.getItem('userId'),
       accessToken: sessionStorage.getItem('accessToken'),
       accessExpiryDateTime: sessionStorage.getItem('accessExpiryDateTime'),

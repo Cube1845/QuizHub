@@ -23,7 +23,7 @@ export class AuthService {
   private readonly authDataService = inject(AuthDataService);
 
   register(email: string, password: string): Observable<Result> {
-    let body: AuthRequest = {
+    const body: AuthRequest = {
       email: email,
       password: password,
     };
@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<Result | AuthData> {
-    let body: AuthRequest = {
+    const body: AuthRequest = {
       email: email,
       password: password,
     };

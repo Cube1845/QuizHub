@@ -7,7 +7,6 @@ public class DeleteQuestionBaseValidator : Validator<DeleteQuestionBaseRequest>
     public DeleteQuestionBaseValidator()
     {
         RuleFor(x => x.QuestionBaseId)
-            .NotNull()
             .NotEmpty()
             .MustBeCorrectGuid();
     }

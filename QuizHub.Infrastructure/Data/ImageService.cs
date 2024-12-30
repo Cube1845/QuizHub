@@ -12,14 +12,21 @@ public class ImageService(AppDbContext context) : IImageService
 
     public async Task<Image?> GetImageByIdAsync(Guid imageId, CancellationToken ct = default)
     {
-        return await _context.Images.FirstOrDefaultAsync(image => image.Id == imageId, ct);
+        return await _context.Images.FindAsync(imageId, ct);
     }
 
     public async Task<Guid> AddImageAndGetIdWithoutSavingAsync(IFormFile image, CancellationToken ct = default)
     {
         var imageDb = await image.ToImageDbAsync(ct);
-        _context.Images.Add(imageDb);
+        await _context.Images.AddAsync(imageDb, ct);
 
         return imageDb.Id;
+    }
+
+    public async Task RemoveImageWithoutSavingAsync(Guid imageId, CancellationToken ct = default)
+    {
+        await _context.Images
+            .Where(image => image.Id == imageId)
+            .ExecuteDeleteAsync(ct);
     }
 }

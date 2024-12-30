@@ -9,7 +9,7 @@ public static class QueryableExtensions
 
         if (totalCount < ((pageNumber - 1) * pageSize) + 1)
         {
-            throw new Exception("Nie ma takiej strony");
+            return Enumerable.Empty<T>().AsQueryable();
         }
 
         return queryable.Skip((pageNumber - 1) * pageSize).Take(pageSize);

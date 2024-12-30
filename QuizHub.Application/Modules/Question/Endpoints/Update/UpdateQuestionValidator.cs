@@ -1,5 +1,4 @@
-﻿using QuizHub.Application.Common.Abstract;
-using QuizHub.Application.Common.Extensions;
+﻿using QuizHub.Application.Common.Extensions;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Update;
 
@@ -8,7 +7,6 @@ public class UpdateQuestionValidator : Validator<UpdateQuestionRequest>
     public UpdateQuestionValidator()
     {
         RuleFor(x => x.QuestionBaseId)
-            .NotNull()
             .NotEmpty()
             .MustBeCorrectGuid();
 
@@ -16,7 +14,6 @@ public class UpdateQuestionValidator : Validator<UpdateQuestionRequest>
             .NotNull();
 
         RuleFor(x => x.Question.Id)
-            .NotNull()
             .NotEmpty()
             .MustBeCorrectGuid();
 

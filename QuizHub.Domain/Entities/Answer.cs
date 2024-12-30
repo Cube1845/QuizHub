@@ -4,7 +4,7 @@ public class Answer(Guid questionId, string? content, bool isCorrect, Guid? imag
 {
     public Guid Id { get; set; }
     public Guid QuestionId { get; set; } = questionId;
-    public Question Question { get; set; } = null!;
+    public Question? Question { get; set; }
     public string? Content { get; set; } = content;
     public bool IsCorrect { get; set; } = isCorrect;
     public Guid? ImageId { get; set; } = imageId;

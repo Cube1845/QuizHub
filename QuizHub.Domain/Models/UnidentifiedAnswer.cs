@@ -6,5 +6,5 @@ public class UnidentifiedAnswer
 {
     public string? Content { get; set; }
     public bool IsCorrect { get; set; }
-    public IFormFile? Image { get; set; } = null!;
+    public IFormFile? Image { get; set; }
 }

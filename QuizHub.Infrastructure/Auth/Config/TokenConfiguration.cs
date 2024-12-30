@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Options;
 
 namespace QuizHub.Infrastructure.Auth.Config;
 
-public class TokenConfiguration(IConfiguration configuration)
+public class TokenConfiguration(IOptions<TokenOptions> tokenOptions)
 {
-    private readonly IConfiguration _configuration = configuration;
+    private readonly TokenOptions _tokenOptions = tokenOptions.Value;
 
     public TokenOptions GetTokenConfiguration()
     {
-        var tokenOptions = new TokenOptions();
-        _configuration.GetSection(TokenOptions.Jwt).Bind(tokenOptions);
-
-        return tokenOptions;
+        return _tokenOptions;
     }
 }

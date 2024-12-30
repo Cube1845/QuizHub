@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Abstract;
+﻿using Microsoft.EntityFrameworkCore;
+using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Delete;
 
-public class DeleteQuestionBaseEndpoint(IAppDbContext context) : IdentifiedEndpoint<DeleteQuestionBaseRequest, Result>
+public class DeleteQuestionBaseEndpoint(IAppDbContext context) : Endpoint<DeleteQuestionBaseRequest, Result>
 {
     private readonly IAppDbContext _context = context;
 
@@ -17,10 +16,12 @@ public class DeleteQuestionBaseEndpoint(IAppDbContext context) : IdentifiedEndpo
 
     public override async Task HandleAsync(DeleteQuestionBaseRequest req, CancellationToken ct)
     {
+        var userId = this.GetUserId();
+
         var questionBase = await _context.QuestionBases
             .FirstOrDefaultAsync(questionBase =>
                 questionBase.Id == req.QuestionBaseId &&
-                questionBase.OwnerId == GetUserId()
+                questionBase.OwnerId == userId
             , ct);
 
         if (questionBase == null)

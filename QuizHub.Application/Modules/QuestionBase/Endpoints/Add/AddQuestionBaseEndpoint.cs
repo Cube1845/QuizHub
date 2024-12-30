@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using QuizHub.Application.Common.Abstract;
+﻿using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
-using QuizHub.Domain.Entities;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Add;
 
-public class AddQuestionBaseEndpoint(IAppDbContext context) : IdentifiedEndpoint<AddQuestionBaseRequest, Result<AddQuestionBaseResponse>>
+public class AddQuestionBaseEndpoint(IAppDbContext context) : Endpoint<AddQuestionBaseRequest, Result<AddQuestionBaseResponse>>
 {
     private readonly IAppDbContext _context = context;
 
@@ -17,7 +15,7 @@ public class AddQuestionBaseEndpoint(IAppDbContext context) : IdentifiedEndpoint
 
     public override async Task HandleAsync(AddQuestionBaseRequest req, CancellationToken ct)
     {
-        var userId = GetUserId();
+        var userId = this.GetUserId();
 
         var questionBase = new Domain.Entities.QuestionBase()
         {

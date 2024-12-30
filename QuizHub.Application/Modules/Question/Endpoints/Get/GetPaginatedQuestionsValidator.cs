@@ -7,7 +7,6 @@ public class GetPaginatedQuestionsValidator : Validator<GetPaginatedQuestionsReq
     public GetPaginatedQuestionsValidator()
     {
         RuleFor(x => x.QuestionBaseId)
-            .NotNull()
             .NotEmpty()
             .MustBeCorrectGuid();
 

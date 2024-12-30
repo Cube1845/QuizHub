@@ -8,7 +8,6 @@ public class AddQuestionValidator : Validator<AddQuestionRequest>
     {
         RuleFor(x => x.QuestionBaseId)
             .NotEmpty()
-            .NotNull()
             .MustBeCorrectGuid();
 
         RuleFor(x => x.Question)

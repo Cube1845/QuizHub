@@ -7,10 +7,10 @@ public class RefreshToken
     public string Token { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime ExpiryDate { get; set; }
-    public AppUser Owner { get; set; } = null!;
+    public AppUser? Owner { get; set; }
 
     public bool IsExpired(DateTime now)
     {
-        return now >= ExpiryDate;
+        return ExpiryDate <= now;
     }
 }

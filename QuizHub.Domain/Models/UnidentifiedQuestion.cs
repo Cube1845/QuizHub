@@ -7,6 +7,6 @@ public class UnidentifiedQuestion
 {
     public string Content { get; set; } = string.Empty;
     public QuestionType QuestionType { get; set; }
-    public IFormFile? Image { get; set; } = null!;
+    public IFormFile? Image { get; set; }
     public List<UnidentifiedAnswer> Answers { get; set; } = [];
 }

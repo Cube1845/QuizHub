@@ -11,7 +11,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationDI(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddExceptionHandler<ValidationExceptionHandler>();
+        services.AddExceptionHandler<ExceptionHandler>();
         services.AddProblemDetails();
 
         return services;

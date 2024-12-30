@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Abstract;
+using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.Question.Extensions;
+using QuizHub.Domain.Entities;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Delete;
 
-public class DeleteQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<DeleteQuestionRequest, Result>
+public class DeleteQuestionEndpoint(IAppDbContext context, IImageService imageService) : Endpoint<DeleteQuestionRequest, Result>
 {
     private readonly IAppDbContext _context = context;
+    private readonly IImageService _imageService = imageService;
 
     public override void Configure()
     {
@@ -17,8 +19,10 @@ public class DeleteQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<
 
     public override async Task HandleAsync(DeleteQuestionRequest req, CancellationToken ct)
     {
+        var userId = this.GetUserId();
+
         var question = await _context.QuestionBases
-            .GetQuestionWithIncludedAnswersAsync(GetUserId(), req.QuestionBaseId, req.QuestionId, ct);
+            .GetQuestionWithIncludedAnswersAsync(userId, req.QuestionBaseId, req.QuestionId, ct);
 
         if (question == null)
         {
@@ -30,9 +34,7 @@ public class DeleteQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<
         {
             if (answer.ImageId != null)
             {
-                _context.Images
-                    .Where(i => i.Id == answer.ImageId)
-                    .ExecuteDelete();
+                await _imageService.RemoveImageWithoutSavingAsync(answer.ImageId!.Value, ct);
             }
 
             _context.Answers.Remove(answer);
@@ -40,9 +42,7 @@ public class DeleteQuestionEndpoint(IAppDbContext context) : IdentifiedEndpoint<
 
         if (question.ImageId != null)
         {
-            _context.Images
-                .Where(i => i.Id == question.ImageId)
-                .ExecuteDelete();
+            await _imageService.RemoveImageWithoutSavingAsync(question.ImageId!.Value, ct);
         }
 
         _context.Questions.Remove(question);

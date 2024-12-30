@@ -21,20 +21,14 @@ public class LoginEndpoint(AuthRepository authRepository, PasswordHashService pa
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        var user = await _authRepository.GetUser(req.Email, ct);
-
-        var userExists = user != null;
-
-        if (!userExists)
-        {
-            throw new Exception("Nie znaleziono konta z takim adresem email");
-        }
+        var user = await _authRepository.GetUser(req.Email, ct) ??
+            throw new Exception("Niepoprawny email lub hasło");
 
         var passwordCorrect = _passwordHashService.VerifyPassword(req.Password, user!.PasswordHash);
 
         if (!passwordCorrect)
         {
-            throw new Exception("Niepoprawne hasło");
+            throw new Exception("Niepoprawny email lub hasło");
         }
 
         Response = await CreateTokenWith<TokenService>(user.Id.ToString(), u =>

@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Abstract;
+using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Update;
 
-public class UpdateQuestionBaseNameEndpoint(IAppDbContext context) : IdentifiedEndpoint<UpdateQuestionBaseNameRequest, Result>
+public class UpdateQuestionBaseNameEndpoint(IAppDbContext context) : Endpoint<UpdateQuestionBaseNameRequest, Result>
 {
     private readonly IAppDbContext _context = context;
 
@@ -16,10 +16,12 @@ public class UpdateQuestionBaseNameEndpoint(IAppDbContext context) : IdentifiedE
 
     public override async Task HandleAsync(UpdateQuestionBaseNameRequest req, CancellationToken ct)
     {
+        var userId = this.GetUserId();
+
         var questionBase = await _context.QuestionBases
             .FirstOrDefaultAsync(qb => 
                 qb.Id == req.QuestionBaseId &&
-                qb.OwnerId == GetUserId()
+                qb.OwnerId == userId
             , ct);
 
         if (questionBase == null)

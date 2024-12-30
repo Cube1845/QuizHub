@@ -20,7 +20,7 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
         });
 
-        services.AddHttpContextAccessor();
+        services.Configure<TokenOptions>(configuration.GetSection(TokenOptions.Jwt));
 
         services.AddScoped<IAppDbContext, AppDbContext>();
         services.AddScoped<IImageService, ImageService>();
