@@ -1,49 +1,35 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
+import { Component, inject, OnInit } from '@angular/core';
 import { QuestionBaseService } from '../../../../services/question-base.service';
 import { PolishWordVariationService } from '../../../../services/polish-word-variation.service';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionBaseNameEditDialogComponent } from './dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import { QuestionBaseData } from '../../../../models/questionBaseData';
 import { QuestionBaseAddingMethodDialogComponent } from './dialogs/question-base-adding-method-dialog/question-base-adding-method-dialog.component';
 import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-base-dialog/import-question-base-dialog.component';
 import { ToastService } from '../../../../../common/services/toast.service';
+import { GlobalDialogService } from '../../../../../common/services/global-dialog.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-manager-question-bases',
   standalone: true,
-  imports: [
-    DialogModule,
-    ButtonModule,
-    InputTextModule,
-    FloatLabelModule,
-    ReactiveFormsModule,
-    ConfirmDialogModule,
-  ],
+  imports: [ButtonModule, InputTextModule, FloatLabelModule],
   templateUrl: './manager-question-bases.component.html',
   styleUrl: './manager-question-bases.component.scss',
-  providers: [ConfirmationService, DialogService],
 })
-export class ManagerQuestionBasesComponent implements OnInit, OnDestroy {
+export class ManagerQuestionBasesComponent implements OnInit {
   private readonly questionBaseService = inject(QuestionBaseService);
   private readonly polishWordVariationService = inject(
     PolishWordVariationService
   );
   private readonly router = inject(Router);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
+  private readonly globalDialogService = inject(GlobalDialogService);
 
   questionBases: QuestionBaseData[] | null = null;
-
-  ref: DynamicDialogRef | undefined;
 
   ngOnInit(): void {
     this.questionBases = this.questionBaseService.getUserQuestionBasesData();
@@ -62,84 +48,78 @@ export class ManagerQuestionBasesComponent implements OnInit, OnDestroy {
   displayQuestionBaseNameEditDialog(event: Event, index: number): void {
     event.stopPropagation();
 
-    this.ref = this.dialogService.open(QuestionBaseNameEditDialogComponent, {
-      header: 'Edytuj nazwę bazy pytań',
-      width: '30rem',
-      height: '19rem',
-      modal: true,
-      data: { index: index, currentName: this.questionBases![index].name },
-    });
-
-    this.ref.onClose.subscribe((result) => {
-      if (result != null) {
-        this.saveQuestionBaseName(result.name, result.questionBaseIndex);
-        return;
-      }
-    });
+    this.globalDialogService
+      .displayDialog(QuestionBaseNameEditDialogComponent, {
+        header: 'Edytuj nazwę bazy pytań',
+        width: '25rem',
+        modal: true,
+        data: { index: index, currentName: this.questionBases![index].name },
+      })
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result != null) {
+          this.saveQuestionBaseName(result.name, result.questionBaseIndex);
+          return;
+        }
+      });
   }
 
   displayQuestionBaseImportingDialog(): void {
-    this.ref = this.dialogService.open(ImportQuestionBaseDialogComponent, {
-      header: 'Zaimportuj bazę pytań z pliku',
-      width: '25rem',
-      height: '16rem',
-      modal: true,
-      closable: true,
-    });
+    this.globalDialogService
+      .displayDialog(ImportQuestionBaseDialogComponent, {
+        header: 'Zaimportuj bazę pytań z pliku',
+        modal: true,
+        closable: true,
+      })
+      .subscribe((result) => {
+        if (result == null) {
+          return;
+        }
 
-    this.ref.onClose.subscribe((result) => {
-      if (result == null) {
-        return;
-      }
-
-      this.questionBaseService.importQuestionBaseFile(result);
-    });
+        this.questionBaseService.importQuestionBaseFile(result);
+      });
   }
 
   displayQuestionBaseAddingMethodDialog(): void {
-    this.ref = this.dialogService.open(
-      QuestionBaseAddingMethodDialogComponent,
-      {
+    this.globalDialogService
+      .displayDialog(QuestionBaseAddingMethodDialogComponent, {
         header: 'Jak chcesz dodać bazę pytań?',
         modal: true,
         closable: true,
-      }
-    );
+      })
+      .subscribe((result) => {
+        if (result == null) {
+          return;
+        }
 
-    this.ref.onClose.subscribe((result) => {
-      if (result === null) {
-        return;
-      }
+        if (result) {
+          this.displayQuestionBaseCreatingDialog();
+          return;
+        }
 
-      if (result) {
-        this.displayQuestionBaseCreatingDialog();
-        return;
-      }
-
-      this.displayQuestionBaseImportingDialog();
-    });
+        this.displayQuestionBaseImportingDialog();
+      });
   }
 
   displayQuestionBaseCreatingDialog(): void {
-    this.ref = this.dialogService.open(QuestionBaseNameEditDialogComponent, {
-      header: 'Dodaj bazę pytań',
-      width: '30rem',
-      height: '19rem',
-      modal: true,
-    });
-
-    this.ref.onClose.subscribe((result) => {
-      if (result != null) {
-        this.createQuestionBase(result);
-        return;
-      }
-    });
+    this.globalDialogService
+      .displayDialog(QuestionBaseNameEditDialogComponent, {
+        header: 'Dodaj bazę pytań',
+        width: '25rem',
+        modal: true,
+      })
+      .subscribe((result) => {
+        if (result != null) {
+          this.createQuestionBase(result);
+          return;
+        }
+      });
   }
 
   displayQuestionBaseRemovalModal(event: Event, index: number): void {
     event.stopPropagation();
 
-    this.confirmationService.confirm({
+    this.globalDialogService.displayConfirmationDialog({
       target: event.target as EventTarget,
       message: 'Na pewno chcesz usunąć tę bazę pytań?',
       header: 'Potwierdzenie',
@@ -191,7 +171,7 @@ export class ManagerQuestionBasesComponent implements OnInit, OnDestroy {
   displayDownloadingQuestionBaseModal(event: Event, index: number): void {
     event.stopPropagation();
 
-    this.confirmationService.confirm({
+    this.globalDialogService.displayConfirmationDialog({
       target: event.target as EventTarget,
       message: 'Na pewno chcesz pobrać tę bazę pytań do pliku?',
       header: 'Potwierdzenie',
@@ -206,11 +186,5 @@ export class ManagerQuestionBasesComponent implements OnInit, OnDestroy {
 
       accept: () => this.downloadQuestionBase(index),
     });
-  }
-
-  ngOnDestroy() {
-    if (this.ref) {
-      this.ref.close();
-    }
   }
 }
