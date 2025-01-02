@@ -1,38 +1,89 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
 import { QuestionBaseData } from '../models/questionBaseData';
 import { Question } from '../models/question';
 import { QuestionType } from '../enums/questionType';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
+import { map, Observable, switchMap } from 'rxjs';
+import {
+  handleResultPatternResponse,
+  Result,
+} from '../../common/models/result';
+import { ToastService } from '../../common/services/toast.service';
+
+type AddQuestionBaseResponse = {
+  questionBaseId: string;
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionBaseService {
-  getUserQuestionBasesData(): QuestionBaseData[] {
-    return [
-      {
-        name: 'Baza pytań 1',
-        questionCount: 3,
-        id: 'fac1a691-6ae4-45d5-a4d6-797e7a3540ac',
-      },
-      {
-        name: 'Baza pytań 2',
-        questionCount: 5,
-        id: 'e03fdc2f-fddd-4c54-a865-ea9f3311c553',
-      },
-    ];
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
+
+  private readonly toastService = inject(ToastService);
+
+  displayErrorToast(detail: string): void {
+    this.toastService.displayToast('error', 'Błąd', detail);
   }
 
-  createUserQuestionBase(name: string): void {
-    return;
+  getUserQuestionBasesData(): Observable<QuestionBaseData[]> {
+    return this.http
+      .get<Result<QuestionBaseData[]>>(this.apiUrl + '/question-base')
+      .pipe(
+        handleResultPatternResponse<QuestionBaseData[], QuestionBaseData[]>(
+          (value: QuestionBaseData[]) => value,
+          (detail: string) => this.displayErrorToast(detail)
+        )
+      );
   }
 
-  editQuestionBaseName(name: string, questionBaseId: string): void {
-    return;
+  createUserQuestionBase(name: string): Observable<string> {
+    const body = {
+      name: name,
+    };
+
+    return this.http
+      .post<Result<AddQuestionBaseResponse>>(
+        this.apiUrl + '/question-base',
+        body
+      )
+      .pipe(
+        handleResultPatternResponse<AddQuestionBaseResponse, string>(
+          (value: AddQuestionBaseResponse) => value.questionBaseId,
+          (detail: string) => this.displayErrorToast(detail)
+        )
+      );
   }
 
-  removeQuestionBase(questionBaseId: string): void {
-    return;
+  editQuestionBaseName(
+    updatedName: string,
+    questionBaseId: string
+  ): Observable<boolean> {
+    const body = {
+      updatedName: updatedName,
+      questionBaseId: questionBaseId,
+    };
+
+    return this.http.put<Result>(this.apiUrl + '/question-base', body).pipe(
+      handleResultPatternResponse<null, boolean>(
+        () => true,
+        (detail: string) => this.displayErrorToast(detail)
+      )
+    );
+  }
+
+  removeQuestionBase(questionBaseId: string): Observable<boolean> {
+    return this.http
+      .delete<Result>(this.apiUrl + '/question-base/' + questionBaseId)
+      .pipe(
+        handleResultPatternResponse<null, boolean>(
+          () => true,
+          (detail: string) => this.displayErrorToast(detail)
+        )
+      );
   }
 
   exportQuestionBaseFile(questionBaseId: string): void {

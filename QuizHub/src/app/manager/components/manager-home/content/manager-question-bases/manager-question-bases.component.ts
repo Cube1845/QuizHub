@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { QuestionBaseService } from '../../../../services/question-base.service';
 import { PolishWordVariationService } from '../../../../services/polish-word-variation.service';
 import { ButtonModule } from 'primeng/button';
@@ -11,16 +11,16 @@ import { QuestionBaseAddingMethodDialogComponent } from './dialogs/question-base
 import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-base-dialog/import-question-base-dialog.component';
 import { ToastService } from '../../../../../common/services/toast.service';
 import { GlobalDialogService } from '../../../../../common/services/global-dialog.service';
-import { take } from 'rxjs';
+import { SpinnerComponent } from '../../../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-manager-question-bases',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, FloatLabelModule],
+  imports: [ButtonModule, InputTextModule, FloatLabelModule, SpinnerComponent],
   templateUrl: './manager-question-bases.component.html',
   styleUrl: './manager-question-bases.component.scss',
 })
-export class ManagerQuestionBasesComponent implements OnInit {
+export class ManagerQuestionBasesComponent {
   private readonly questionBaseService = inject(QuestionBaseService);
   private readonly polishWordVariationService = inject(
     PolishWordVariationService
@@ -31,8 +31,10 @@ export class ManagerQuestionBasesComponent implements OnInit {
 
   questionBases: QuestionBaseData[] | null = null;
 
-  ngOnInit(): void {
-    this.questionBases = this.questionBaseService.getUserQuestionBasesData();
+  constructor() {
+    this.questionBaseService
+      .getUserQuestionBasesData()
+      .subscribe((data) => (this.questionBases = data));
   }
 
   goToQuestionEditor(questionBaseId: string) {
@@ -55,7 +57,6 @@ export class ManagerQuestionBasesComponent implements OnInit {
         modal: true,
         data: { index: index, currentName: this.questionBases![index].name },
       })
-      .pipe(take(1))
       .subscribe((result) => {
         if (result != null) {
           this.saveQuestionBaseName(result.name, result.questionBaseIndex);
@@ -137,29 +138,44 @@ export class ManagerQuestionBasesComponent implements OnInit {
   }
 
   removeQuestionBase(index: number): void {
-    this.questionBaseService.removeQuestionBase(this.questionBases![index].id);
-
-    this.questionBases?.splice(index, 1);
-
-    this.toastService.displayToast('success', 'Sukces', 'Usunięto bazę pytań');
+    this.questionBaseService
+      .removeQuestionBase(this.questionBases![index].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.questionBases?.splice(index, 1);
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto bazę pytań'
+          );
+        }
+      });
   }
 
   createQuestionBase(name: string): void {
-    this.questionBaseService.createUserQuestionBase(name);
-
-    this.router.navigateByUrl('manager/question-base-edit/newuuid');
+    this.questionBaseService
+      .createUserQuestionBase(name)
+      .subscribe((newId) =>
+        this.router.navigateByUrl('manager/question-base-edit/' + newId)
+      );
   }
 
   saveQuestionBaseName(updatedName: string, questionBaseIndex: number): void {
-    this.questionBaseService.editQuestionBaseName(
-      updatedName,
-      this.questionBases![questionBaseIndex].id
-    );
+    if (updatedName == this.questionBases![questionBaseIndex].name) {
+      return;
+    }
 
-    //temporary, till API
-    this.questionBases![questionBaseIndex].name = updatedName;
-
-    this.toastService.displayToast('success', 'Sukces', 'Zapisano nazwę');
+    this.questionBaseService
+      .editQuestionBaseName(
+        updatedName,
+        this.questionBases![questionBaseIndex].id
+      )
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.questionBases![questionBaseIndex].name = updatedName;
+          this.toastService.displayToast('success', 'Sukces', 'Zapisano nazwę');
+        }
+      });
   }
 
   downloadQuestionBase(index: number): void {

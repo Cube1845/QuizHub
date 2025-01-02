@@ -30,14 +30,14 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : EndpointWithoutRe
             return;
         }
 
-        List<QuestionBaseData> data = ConvertToQuestionBaseDataList(questionBases);
+        GetQuestionBasesResponse data = ConvertToQuestionBaseDataList(questionBases);
 
         await SendOkAsync(Result<GetQuestionBasesResponse>.Success(data), ct);
     }
 
-    public List<QuestionBaseData> ConvertToQuestionBaseDataList(List<Domain.Entities.QuestionBase> questionBaseList)
+    public GetQuestionBasesResponse ConvertToQuestionBaseDataList(List<Domain.Entities.QuestionBase> questionBaseList)
     {
-        return questionBaseList.Select(questionBase =>
+        List<QuestionBaseData> data = questionBaseList.Select(questionBase =>
         {
             return new QuestionBaseData(
                 questionBase.Id,
@@ -45,5 +45,7 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : EndpointWithoutRe
                 questionBase.Questions.Count
             );
         }).ToList();
+
+        return new GetQuestionBasesResponse(data);
     }
 }
