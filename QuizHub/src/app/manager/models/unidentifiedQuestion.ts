@@ -1,10 +1,10 @@
 import { QuestionType } from '../enums/questionType';
 import { DisplayableImage } from './displayableImage';
-import { UndefinedAnswer } from './undefinedAnswer';
+import { UnidentifiedAnswer } from './unidentifiedAnswer';
 
-export type UndefinedQuestion = {
+export type UnidentifiedQuestion = {
   content: string;
-  answers: UndefinedAnswer[];
+  answers: UnidentifiedAnswer[];
   image: DisplayableImage | null;
   questionType: QuestionType;
 };

@@ -9,7 +9,7 @@ public static class QueryableExtensions
 
         if (totalCount < ((pageNumber - 1) * pageSize) + 1)
         {
-            return Enumerable.Empty<T>().AsQueryable();
+            return queryable.Where(q => false);
         }
 
         return queryable.Skip((pageNumber - 1) * pageSize).Take(pageSize);

@@ -5,12 +5,12 @@ export class PaginatorOptions {
   totalItems: number;
 
   constructor(
-    first: number,
+    page: number,
     rows: number,
     totalItems: number,
     rowsPerPage: number[]
   ) {
-    this.first = first;
+    this.first = rows * page;
     this.rows = rows;
     this.totalItems = totalItems;
     this.rowsPerPage = rowsPerPage;
@@ -18,5 +18,9 @@ export class PaginatorOptions {
 
   setFirst(pageNumber: number): void {
     this.first = this.rows * pageNumber;
+  }
+
+  getLastPageNumberAfterAddition(): number {
+    return Math.ceil((this.totalItems + 1) / this.rows);
   }
 }

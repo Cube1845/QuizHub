@@ -1,6 +1,4 @@
-import { inject } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { ToastService } from '../services/toast.service';
 
 export class Result<T = null> {
   value!: T;
@@ -13,7 +11,7 @@ export function isResult<T>(obj: any): obj is Result<T> {
 }
 
 export function handleResultPatternResponse<T, U>(
-  successHandlingFunction: (value: T) => U,
+  successMappingFunction: (value: T) => U,
   errorHandlingFunction: (message: string) => void
 ) {
   return (source: Observable<Result<T>>): Observable<U> =>
@@ -21,7 +19,7 @@ export function handleResultPatternResponse<T, U>(
       catchError((err) => of(err)),
       map((result: Result<T>) => {
         if (result.isSuccess) {
-          return successHandlingFunction(result.value);
+          return successMappingFunction(result.value);
         } else {
           errorHandlingFunction(result.message!);
           return null as U;

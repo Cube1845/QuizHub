@@ -47,7 +47,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
             .ThenInclude(question => question.Answers)
             .SelectMany(questionBase => questionBase.Questions)
             .GetPage(pageNumber, pageSize)
-            .ToListAsync();
+            .ToListAsync(ct);
 
         var totalItems = await _context.QuestionBases
             .Where(questionBase =>
@@ -55,7 +55,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
                 questionBase.OwnerId == userId
             )
             .SelectMany(questionBase => questionBase.Questions)
-            .CountAsync();
+            .CountAsync(ct);
 
         List<IdentifiedQuestion> identifiedQuestions = [];
 

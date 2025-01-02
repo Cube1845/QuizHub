@@ -26,10 +26,10 @@ import { requireFirstTwoAnswersValidator } from '../../../../../../validators/re
 import { Question } from '../../../../../../models/question';
 import { DisplayableImage } from '../../../../../../models/displayableImage';
 import { Answer } from '../../../../../../models/answer';
-import { UndefinedQuestion } from '../../../../../../models/undefinedQuestion';
-import { UndefinedAnswer } from '../../../../../../models/undefinedAnswer';
 import { QuestionType } from '../../../../../../enums/questionType';
 import { SelectButton } from 'primeng/selectbutton';
+import { UnidentifiedQuestion } from '../../../../../../models/unidentifiedQuestion';
+import { UnidentifiedAnswer } from '../../../../../../models/unidentifiedAnswer';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -233,7 +233,7 @@ export class QuestionEditDialogComponent implements OnInit {
     return question;
   }
 
-  private buildUndefinedQuestionFromQuestionFormGroup(): UndefinedQuestion {
+  private buildUndefinedQuestionFromQuestionFormGroup(): UnidentifiedQuestion {
     const controls = this.questionFormGroup.controls;
 
     let lastAnswerIndex = 0;
@@ -247,7 +247,7 @@ export class QuestionEditDialogComponent implements OnInit {
       }
     }
 
-    const answers: UndefinedAnswer[] = [];
+    const answers: UnidentifiedAnswer[] = [];
 
     for (let i = 0; i < lastAnswerIndex; i++) {
       answers.push({
@@ -260,7 +260,7 @@ export class QuestionEditDialogComponent implements OnInit {
     const image: DisplayableImage | null =
       this.questionFormGroup.value.contentImage!;
 
-    const question: UndefinedQuestion = {
+    const question: UnidentifiedQuestion = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: image,

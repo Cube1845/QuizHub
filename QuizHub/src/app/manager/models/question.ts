@@ -1,7 +1,7 @@
 import { Answer } from './answer';
-import { UndefinedQuestion } from './undefinedQuestion';
+import { UnidentifiedQuestion } from './unidentifiedQuestion';
 
-export type Question = UndefinedQuestion & {
+export type Question = UnidentifiedQuestion & {
   answers: Answer[];
   id: string;
 };

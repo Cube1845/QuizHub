@@ -1,8 +1,6 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionBaseService } from '../../../../../services/question-base.service';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -10,13 +8,10 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuestionService } from '../../../../../services/question.service';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ImageModule } from 'primeng/image';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
 import { Question } from '../../../../../models/question';
-import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
+import { UnidentifiedQuestion } from '../../../../../models/unidentifiedQuestion';
 import { NgStyle } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
@@ -41,13 +36,14 @@ import { GlobalDialogService } from '../../../../../../common/services/global-di
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
 })
-export class QuestionBaseEditComponent implements OnInit {
+export class QuestionBaseEditComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly questionBaseService = inject(QuestionBaseService);
   private readonly questionService = inject(QuestionService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly globalDialogService = inject(GlobalDialogService);
+
+  private readonly paginatorItemsPerPage = [10, 20, 30];
 
   questionBaseId!: string | null;
 
@@ -57,7 +53,7 @@ export class QuestionBaseEditComponent implements OnInit {
 
   paginatorOptions: PaginatorOptions | undefined;
 
-  ngOnInit() {
+  constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -65,12 +61,21 @@ export class QuestionBaseEditComponent implements OnInit {
 
       this.questionBaseId = paramMap.get('id');
 
-      this.questions =
-        this.questionBaseService.getQuestionsFromUserQuestionBase(
-          this.questionBaseId!
-        );
-
-      this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
+      this.questionService
+        .getQuestionsFromUserQuestionBase(
+          this.questionBaseId!,
+          1,
+          this.paginatorItemsPerPage[0]
+        )
+        .subscribe((data) => {
+          this.questions = data.data;
+          this.paginatorOptions = new PaginatorOptions(
+            0,
+            this.paginatorItemsPerPage[0],
+            data.totalItems,
+            this.paginatorItemsPerPage
+          );
+        });
     });
   }
 
@@ -168,28 +173,34 @@ export class QuestionBaseEditComponent implements OnInit {
     this.toastService.displayToast('success', 'Sukces', 'Zapisano pytanie');
   }
 
-  addQuestion(questionToAdd: UndefinedQuestion): void {
-    this.questionService.addQuestion(questionToAdd);
+  addQuestion(questionToAdd: UnidentifiedQuestion): void {
+    this.questionService
+      .addQuestion(questionToAdd, this.questionBaseId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          const lastPageNumber =
+            this.paginatorOptions!.getLastPageNumberAfterAddition();
 
-    //temporary solution before API
-    let question: Question = {
-      content: questionToAdd.content,
-      answers: questionToAdd.answers.map((undefinedAnswer) => {
-        return {
-          content: undefinedAnswer.content,
-          image: undefinedAnswer.image,
-          isCorrect: undefinedAnswer.isCorrect,
-          id: '',
-        };
-      }),
-      image: questionToAdd.image,
-      questionType: questionToAdd.questionType,
-      id: '',
-    };
+          this.questionService
+            .getQuestionsFromUserQuestionBase(
+              this.questionBaseId!,
+              lastPageNumber,
+              this.paginatorOptions!.rows
+            )
+            .subscribe((data) => {
+              this.questions = data.data;
 
-    this.questions!.push(question);
+              this.paginatorOptions!.totalItems = data.totalItems;
+              this.paginatorOptions!.setFirst(lastPageNumber);
 
-    this.toastService.displayToast('success', 'Sukces', 'Dodano pytanie');
+              this.toastService.displayToast(
+                'success',
+                'Sukces',
+                'Dodano pytanie'
+              );
+            });
+        }
+      });
   }
 
   onPageChange(event: any) {
