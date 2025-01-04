@@ -1,9 +1,31 @@
 import { Injectable } from '@angular/core';
+import { ImageResponse } from '../../common/models/imageResponse';
+import { DisplayableImage } from '../models/displayableImage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
+  private imageResponseToFile(
+    imageResponse: ImageResponse | null
+  ): DisplayableImage | null {
+    if (imageResponse == null) {
+      return null;
+    }
+
+    const file: DisplayableImage = new File(
+      [imageResponse.data],
+      imageResponse.name,
+      {
+        type: imageResponse.contentType,
+      }
+    );
+
+    file.displayUrl = this.getImageUrl(file);
+
+    return file;
+  }
+
   getResizedCanvas(
     reject: (reason?: any) => void,
     img: HTMLImageElement,

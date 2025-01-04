@@ -11,15 +11,10 @@ public class AddQuestionValidator : Validator<AddQuestionRequest>
             .MustBeCorrectGuid();
 
         RuleFor(x => x.Question)
-            .NotNull()
-            .Must(x => x.Answers.All(a => a.Content != null || a.Image != null))
-                .WithMessage("Pytanie nie może mieć pustych odpowiedzi");
-
+            .NotNull();
         RuleFor(x => x.Question.Answers)
             .NotNull()
             .Must(x => x.Count >= 2 && x.Count <= 4)
-                .WithMessage("Pytanie musi mieć przynajmniej 2 odpowiedzi")
-            .Must(x => x.All(a => a.Content != null || a.Image != null))
-                .WithMessage("Pytanie nie może mieć pustych odpowiedzi");
+                .WithMessage("Pytanie musi mieć przynajmniej 2 odpowiedzi");
     }
 }

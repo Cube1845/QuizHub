@@ -175,7 +175,12 @@ export class QuestionBaseEditComponent {
 
   addQuestion(questionToAdd: UnidentifiedQuestion): void {
     this.questionService
-      .addQuestion(questionToAdd, this.questionBaseId!)
+      .addQuestion(
+        questionToAdd,
+        this.questionBaseId!,
+        questionToAdd.image,
+        questionToAdd.answers.map((answer) => answer.image)
+      )
       .subscribe((isSuccess) => {
         if (isSuccess) {
           const lastPageNumber =

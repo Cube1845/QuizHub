@@ -10,6 +10,8 @@ import {
   Result,
 } from '../../common/models/result';
 import { PaginatedData } from '../../common/models/paginatedData';
+import { UnidentifiedQuestionWithNoImage } from '../models/unidentifiedQuestionWithNoImage';
+import { ImageService } from './image.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +20,7 @@ export class QuestionService {
   private readonly toastService = inject(ToastService);
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
+  private readonly imageService = inject(ImageService);
 
   displayErrorToast(detail: string): void {
     this.toastService.displayToast('error', 'Błąd', detail);
@@ -51,10 +54,27 @@ export class QuestionService {
   }
 
   addQuestion(
-    question: UnidentifiedQuestion,
-    questionBaseId: string
+    question: UnidentifiedQuestionWithNoImage,
+    questionBaseId: string,
+    contentImage: File | null,
+    answerImages: (File | null)[]
   ): Observable<boolean> {
     const formData = new FormData();
+    formData.append('questionBaseId', questionBaseId);
+    formData.append('question', JSON.stringify(question));
+
+    if (contentImage != null) {
+      formData.append('contentImage', contentImage);
+    }
+
+    answerImages.forEach((file, index) => {
+      if (file != null) {
+        formData.append(`answerImages[${index}]`, file);
+        return;
+      }
+
+      formData.append(`answerImages[${index}]`, null!);
+    });
 
     return this.http.post<Result>(this.apiUrl + '/question', formData).pipe(
       handleResultPatternResponse<null, boolean>(

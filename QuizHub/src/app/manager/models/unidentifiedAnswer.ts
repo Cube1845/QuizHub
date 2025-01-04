@@ -1,7 +1,6 @@
 import { DisplayableImage } from './displayableImage';
+import { UnidentifiedAnswerWithNoImage } from './unidentifiedAnswerWithNoImage';
 
-export type UnidentifiedAnswer = {
-  content: string | null;
-  isCorrect: boolean;
+export type UnidentifiedAnswer = UnidentifiedAnswerWithNoImage & {
   image: DisplayableImage | null;
 };

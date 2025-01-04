@@ -2,9 +2,16 @@
 
 namespace QuizHub.Domain.Models;
 
-public class UnidentifiedAnswer
+public class UnidentifiedAnswer : UnidentifiedAnswerWithNoImage
 {
-    public string? Content { get; set; }
-    public bool IsCorrect { get; set; }
     public IFormFile? Image { get; set; }
+
+    public UnidentifiedAnswer() {}
+
+    public UnidentifiedAnswer(UnidentifiedAnswerWithNoImage answer, IFormFile? contentImage)
+    {
+        Content = answer.Content;
+        IsCorrect = answer.IsCorrect;
+        Image = contentImage;
+    }
 }

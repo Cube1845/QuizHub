@@ -35,13 +35,15 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
             return;
         }
 
-        var contentImageId = await AddImageIfNotNullAndGetIdWithoutSavingAsync(req.Question.Image, ct);
+        UnidentifiedQuestion question = new(req.Question, req.ContentImage, req.AnswerImages!);
 
-        var questionDb = ConvertToQuestionDb(req.Question, req.QuestionBaseId, contentImageId);
+        var contentImageId = await AddImageIfNotNullAndGetIdWithoutSavingAsync(question.Image, ct);
+
+        var questionDb = ConvertToQuestionDb(question, req.QuestionBaseId, contentImageId);
 
         await _context.Questions.AddAsync(questionDb, ct);
 
-        foreach (var answer in req.Question.Answers)
+        foreach (var answer in question.Answers)
         {
             var answerImageId = await AddImageIfNotNullAndGetIdWithoutSavingAsync(answer.Image, ct);
 
@@ -50,6 +52,7 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
         }
 
         await _context.SaveChangesAsync(ct);
+        await _imageService.SaveChangesAsync(ct);
 
         await SendOkAsync(Result.Success(), ct);
     }
