@@ -1,29 +1,67 @@
-import { Injectable } from '@angular/core';
-import { ImageResponse } from '../../common/models/imageResponse';
+import { inject, Injectable } from '@angular/core';
+import { GetQuestionDTO } from '../models/getQuestionDto';
+import { HttpClient } from '@angular/common/http';
+import { Question } from '../models/question';
 import { DisplayableImage } from '../models/displayableImage';
+import { environment } from '../../../environments/environment.development';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
-  private imageResponseToFile(
-    imageResponse: ImageResponse | null
-  ): DisplayableImage | null {
-    if (imageResponse == null) {
-      return null;
-    }
+  private readonly http = inject(HttpClient);
 
-    const file: DisplayableImage = new File(
-      [imageResponse.data],
-      imageResponse.name,
-      {
-        type: imageResponse.contentType,
-      }
-    );
+  private readonly apiUrl = environment.apiUrl;
 
-    file.displayUrl = this.getImageUrl(file);
+  async convertGetQuestionDtoToRegularQuestion(
+    dto: GetQuestionDTO
+  ): Promise<Question> {
+    const question: Question = {
+      id: dto.id,
+      content: dto.content,
+      questionType: dto.questionType,
+      image:
+        dto.imageId == null ? null : await this.getImageFromApi(dto.imageId),
+      answers: await Promise.all(
+        dto.answers.map(async (answer) => {
+          return {
+            content: answer.content,
+            isCorrect: answer.isCorrect,
+            id: answer.id,
+            image:
+              answer.imageId == null
+                ? null
+                : await this.getImageFromApi(answer.imageId),
+          };
+        })
+      ),
+    };
 
-    return file;
+    return question;
+  }
+
+  private async getImageFromApi(
+    imageId: string
+  ): Promise<DisplayableImage | null> {
+    return this.http
+      .get<File>(this.apiUrl + '/image/' + imageId)
+      .pipe(
+        map((file) => {
+          const displayableImage: DisplayableImage = file;
+          displayableImage.displayUrl = this.getImageUrl(displayableImage);
+
+          return displayableImage;
+        })
+      )
+      .toPromise()
+      .then((responseFile) => {
+        if (responseFile == null || responseFile == undefined) {
+          return null;
+        }
+
+        return responseFile;
+      });
   }
 
   getResizedCanvas(

@@ -70,9 +70,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
                     Id = answer.Id,
                     Content = answer.Content,
                     IsCorrect = answer.IsCorrect,
-                    Image = answer.ImageId != null ?
-                        await _imageService.GetImageByIdAsync(answer.ImageId!.Value, ct) :
-                        null
+                    ImageId = answer.ImageId
                 });
             }
 
@@ -81,9 +79,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context, IImageService 
                 Id = question.Id,
                 Content = question.Content,
                 QuestionType = question.QuestionType,
-                Image = question.ImageId != null ?
-                        await _imageService.GetImageByIdAsync(question.ImageId!.Value, ct) :
-                        null,
+                ImageId = question.ImageId,
                 Answers = answers
             };
 

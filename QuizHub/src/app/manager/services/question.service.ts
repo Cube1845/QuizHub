@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { UnidentifiedQuestion } from '../models/unidentifiedQuestion';
 import { Question } from '../models/question';
-import { Observable } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ToastService } from '../../common/services/toast.service';
 import { HttpClient } from '@angular/common/http';
@@ -12,6 +12,7 @@ import {
 import { PaginatedData } from '../../common/models/paginatedData';
 import { UnidentifiedQuestionWithNoImage } from '../models/unidentifiedQuestionWithNoImage';
 import { ImageService } from './image.service';
+import { GetQuestionDTO } from '../models/getQuestionDto';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,7 @@ export class QuestionService {
     pageSize: number
   ): Observable<PaginatedData<Question>> {
     return this.http
-      .get<Result<PaginatedData<Question>>>(
+      .get<Result<PaginatedData<GetQuestionDTO>>>(
         this.apiUrl +
           '/question' +
           '?questionBaseId=' +
@@ -43,13 +44,25 @@ export class QuestionService {
           pageSize.toString()
       )
       .pipe(
-        handleResultPatternResponse<
-          PaginatedData<Question>,
-          PaginatedData<Question>
-        >(
-          (value) => value,
-          (detail) => this.displayErrorToast(detail)
-        )
+        switchMap((result) => {
+          if (result.isSuccess) {
+            return from(
+              Promise.all(
+                result.value.data.map((dto) =>
+                  this.imageService.convertGetQuestionDtoToRegularQuestion(dto)
+                )
+              )
+            ).pipe(
+              map((convertedData) => ({
+                totalItems: result.value.totalItems,
+                data: convertedData,
+              }))
+            );
+          } else {
+            this.displayErrorToast(result.message!);
+            return of({ totalItems: 0, data: [] });
+          }
+        })
       );
   }
 
