@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { UnidentifiedQuestion } from '../models/unidentifiedQuestion';
 import { Question } from '../models/question';
-import { from, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ToastService } from '../../common/services/toast.service';
 import { HttpClient } from '@angular/common/http';
@@ -13,6 +12,8 @@ import { PaginatedData } from '../../common/models/paginatedData';
 import { UnidentifiedQuestionWithNoImage } from '../models/unidentifiedQuestionWithNoImage';
 import { ImageService } from './image.service';
 import { GetQuestionDTO } from '../models/getQuestionDto';
+import { Answer } from '../models/answer';
+import { DisplayableImage } from '../models/displayableImage';
 
 @Injectable({
   providedIn: 'root',
@@ -43,27 +44,7 @@ export class QuestionService {
           '&pageSize=' +
           pageSize.toString()
       )
-      .pipe(
-        switchMap((result) => {
-          if (result.isSuccess) {
-            return from(
-              Promise.all(
-                result.value.data.map((dto) =>
-                  this.imageService.convertGetQuestionDtoToRegularQuestion(dto)
-                )
-              )
-            ).pipe(
-              map((convertedData) => ({
-                totalItems: result.value.totalItems,
-                data: convertedData,
-              }))
-            );
-          } else {
-            this.displayErrorToast(result.message!);
-            return of({ totalItems: 0, data: [] });
-          }
-        })
-      );
+      .pipe(this.handlePaginatedResultPatternResponse());
   }
 
   addQuestion(
@@ -102,4 +83,93 @@ export class QuestionService {
   removeQuestion(id: string): void {}
 
   searchForQuestions(questionBaseId: string, key: string): void {}
+
+  private handlePaginatedResultPatternResponse() {
+    return (
+      source: Observable<Result<PaginatedData<GetQuestionDTO>>>
+    ): Observable<PaginatedData<Question>> =>
+      source.pipe(
+        switchMap(async (result: Result<PaginatedData<GetQuestionDTO>>) => {
+          if (!result.isSuccess) {
+            throw new Error(result.message || 'Failed to process questions');
+          }
+
+          const dtoPaginatedData = result.value;
+
+          const questions: Question[] = await Promise.all(
+            dtoPaginatedData.data.map(async (dto) => {
+              const questionImage = dto.imageId
+                ? await this.http
+                    .get(`${this.apiUrl}/image/${dto.imageId}`, {
+                      responseType: 'blob',
+                    })
+                    .toPromise()
+                    .then((blob) => {
+                      if (blob) {
+                        const displayableImage: DisplayableImage | null =
+                          new File([blob], 'image', {
+                            type: blob.type,
+                          });
+
+                        displayableImage.displayUrl =
+                          this.imageService.getImageUrl(displayableImage);
+
+                        return displayableImage;
+                      } else {
+                        return null;
+                      }
+                    })
+                : null;
+
+              const answers: Answer[] = await Promise.all(
+                dto.answers.map(async (answerDto) => {
+                  const answerImage = answerDto.imageId
+                    ? await this.http
+                        .get(`${this.apiUrl}/image/${answerDto.imageId}`, {
+                          responseType: 'blob',
+                        })
+                        .toPromise()
+                        .then((blob) => {
+                          if (blob) {
+                            const displayableImage: DisplayableImage | null =
+                              new File([blob], 'image', {
+                                type: blob.type,
+                              });
+
+                            displayableImage.displayUrl =
+                              this.imageService.getImageUrl(displayableImage);
+
+                            return displayableImage;
+                          } else {
+                            return null;
+                          }
+                        })
+                    : null;
+
+                  return {
+                    id: answerDto.id,
+                    content: answerDto.content,
+                    isCorrect: answerDto.isCorrect,
+                    image: answerImage,
+                  };
+                })
+              );
+
+              return {
+                id: dto.id,
+                content: dto.content,
+                questionType: dto.questionType,
+                image: questionImage,
+                answers,
+              };
+            })
+          );
+
+          return {
+            data: questions,
+            totalItems: dtoPaginatedData.totalItems,
+          };
+        })
+      );
+  }
 }
