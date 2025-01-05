@@ -14,56 +14,6 @@ export class ImageService {
 
   private readonly apiUrl = environment.apiUrl;
 
-  async convertGetQuestionDtoToRegularQuestion(
-    dto: GetQuestionDTO
-  ): Promise<Question> {
-    const question: Question = {
-      id: dto.id,
-      content: dto.content,
-      questionType: dto.questionType,
-      image:
-        dto.imageId == null ? null : await this.getImageFromApi(dto.imageId),
-      answers: await Promise.all(
-        dto.answers.map(async (answer) => {
-          return {
-            content: answer.content,
-            isCorrect: answer.isCorrect,
-            id: answer.id,
-            image:
-              answer.imageId == null
-                ? null
-                : await this.getImageFromApi(answer.imageId),
-          };
-        })
-      ),
-    };
-
-    return question;
-  }
-
-  private async getImageFromApi(
-    imageId: string
-  ): Promise<DisplayableImage | null> {
-    return this.http
-      .get<File>(this.apiUrl + '/image/' + imageId)
-      .pipe(
-        map((file) => {
-          const displayableImage: DisplayableImage = file;
-          displayableImage.displayUrl = this.getImageUrl(displayableImage);
-
-          return displayableImage;
-        })
-      )
-      .toPromise()
-      .then((responseFile) => {
-        if (responseFile == null || responseFile == undefined) {
-          return null;
-        }
-
-        return responseFile;
-      });
-  }
-
   getResizedCanvas(
     reject: (reason?: any) => void,
     img: HTMLImageElement,

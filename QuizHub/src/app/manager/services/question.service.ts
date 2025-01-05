@@ -80,7 +80,26 @@ export class QuestionService {
 
   editQuestion(question: Question, id: string): void {}
 
-  removeQuestion(id: string): void {}
+  removeQuestion(
+    questionBaseId: string,
+    questionId: string
+  ): Observable<boolean> {
+    return this.http
+      .delete<Result>(
+        this.apiUrl +
+          '/question' +
+          '?questionBaseId=' +
+          questionBaseId +
+          '&questionId=' +
+          questionId
+      )
+      .pipe(
+        handleResultPatternResponse<null, boolean>(
+          () => true,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
 
   searchForQuestions(questionBaseId: string, key: string): void {}
 
@@ -91,7 +110,8 @@ export class QuestionService {
       source.pipe(
         switchMap(async (result: Result<PaginatedData<GetQuestionDTO>>) => {
           if (!result.isSuccess) {
-            throw new Error(result.message || 'Failed to process questions');
+            this.displayErrorToast(result.message || 'Wystąpił błąd');
+            return null!;
           }
 
           const dtoPaginatedData = result.value;
@@ -107,7 +127,7 @@ export class QuestionService {
                     .then((blob) => {
                       if (blob) {
                         const displayableImage: DisplayableImage | null =
-                          new File([blob], 'image', {
+                          new File([blob], 'Obraz', {
                             type: blob.type,
                           });
 

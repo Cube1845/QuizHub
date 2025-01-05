@@ -158,11 +158,19 @@ export class QuestionBaseEditComponent {
   }
 
   removeQuestion(index: number): void {
-    this.questionService.removeQuestion(this.questions![index].id);
-
-    this.questions!.splice(index, 1);
-
-    this.toastService.displayToast('success', 'Sukces', 'Usunięto pytanie');
+    this.questionService
+      .removeQuestion(this.questionBaseId!, this.questions![index].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.questions!.splice(index, 1);
+          this.paginatorOptions!.totalItems--;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto pytanie'
+          );
+        }
+      });
   }
 
   saveQuestion(question: Question, questionIndex: number): void {
