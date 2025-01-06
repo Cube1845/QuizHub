@@ -17,6 +17,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { ToastService } from '../../../../../../common/services/toast.service';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
+import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -32,6 +33,7 @@ import { GlobalDialogService } from '../../../../../../common/services/global-di
     ImageModule,
     NgStyle,
     PaginatorModule,
+    SpinnerComponent,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
@@ -51,7 +53,13 @@ export class QuestionBaseEditComponent {
 
   searchFormControl = new FormControl<string>('', Validators.required);
 
-  paginatorOptions: PaginatorOptions | undefined;
+  paginatorOptions: PaginatorOptions = new PaginatorOptions(
+    1,
+    this.paginatorItemsPerPage[0],
+    0,
+    this.paginatorItemsPerPage,
+    () => this.getQuestionsAndSetThem(1)
+  );
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -61,22 +69,21 @@ export class QuestionBaseEditComponent {
 
       this.questionBaseId = paramMap.get('id');
 
-      this.questionService
-        .getQuestionsFromUserQuestionBase(
-          this.questionBaseId!,
-          1,
-          this.paginatorItemsPerPage[0]
-        )
-        .subscribe((data) => {
-          this.questions = data.data;
-          this.paginatorOptions = new PaginatorOptions(
-            0,
-            this.paginatorItemsPerPage[0],
-            data.totalItems,
-            this.paginatorItemsPerPage
-          );
-        });
+      this.getQuestionsAndSetThem(1);
     });
+  }
+
+  getQuestionsAndSetThem(pageNumber: number): void {
+    this.questionService
+      .getQuestionsFromUserQuestionBase(
+        this.questionBaseId!,
+        pageNumber,
+        this.paginatorItemsPerPage[0]
+      )
+      .subscribe((data) => {
+        this.questions = data.data;
+        this.paginatorOptions.totalItems = data.totalItems;
+      });
   }
 
   goBack(): void {
@@ -217,6 +224,8 @@ export class QuestionBaseEditComponent {
   }
 
   onPageChange(event: any) {
-    const pageNumber = event.page;
+    const pageNumber = event.page + 1;
+    this.getQuestionsAndSetThem(pageNumber);
+    this.paginatorOptions.setFirst(pageNumber);
   }
 }

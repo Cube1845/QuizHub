@@ -1,6 +1,7 @@
 :host {
-    display: flex;
     $panel-size: 217px;
+
+    display: flex;
     max-height: calc(100vh - 56.5px);
     overflow: auto;
     width: 100%;
