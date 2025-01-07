@@ -35,7 +35,7 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
             return;
         }
 
-        UnidentifiedQuestion question = new(req.Question, req.ContentImage, req.AnswerImages!);
+        UnidentifiedQuestion question = new(req.Question, req.ContentImage, req.AnswerImages);
 
         var contentImageId = await AddImageIfNotNullAndGetIdWithoutSavingAsync(question.Image, ct);
 

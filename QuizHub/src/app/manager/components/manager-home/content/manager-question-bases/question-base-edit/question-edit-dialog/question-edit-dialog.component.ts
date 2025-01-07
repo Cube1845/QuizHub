@@ -9,7 +9,6 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -24,12 +23,19 @@ import {
 import { ImagePreviewComponent } from './image-preview/image-preview.component';
 import { requireFirstTwoAnswersValidator } from '../../../../../../validators/require-first-two-answers-validator';
 import { Question } from '../../../../../../models/question';
-import { DisplayableImage } from '../../../../../../models/displayableImage';
+import {
+  DisplayableImage,
+  DisplayableImageWithChangeTracker,
+} from '../../../../../../models/displayableImage';
 import { Answer } from '../../../../../../models/answer';
 import { QuestionType } from '../../../../../../enums/questionType';
 import { SelectButton } from 'primeng/selectbutton';
 import { UnidentifiedQuestion } from '../../../../../../models/unidentifiedQuestion';
 import { UnidentifiedAnswer } from '../../../../../../models/unidentifiedAnswer';
+import { QuestionUpdateDTO } from '../../../../../../models/questionUpdateDTO';
+import { AnswerUpdateDTO } from '../../../../../../models/answerUpdateDTO';
+import { ImageEditionState } from '../../../../../../enums/imageEditionState';
+import { GlobalDialogService } from '../../../../../../../common/services/global-dialog.service';
 
 @Component({
   selector: 'app-question-edit-dialog',
@@ -47,12 +53,11 @@ import { UnidentifiedAnswer } from '../../../../../../models/unidentifiedAnswer'
   ],
   templateUrl: './question-edit-dialog.component.html',
   styleUrl: './question-edit-dialog.component.scss',
-  providers: [DialogService],
 })
 export class QuestionEditDialogComponent implements OnInit {
-  private readonly ref = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
-  private readonly dialogService = inject(DialogService);
+  private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly ref = inject(DynamicDialogRef);
 
   questionTypes: any[] = [
     { label: 'Pojedyncza odpowiedź', value: QuestionType.SingleAnswer },
@@ -64,8 +69,6 @@ export class QuestionEditDialogComponent implements OnInit {
 
   dialogType: 'edit' | 'add' = this.questionIndex == null ? 'add' : 'edit';
 
-  imageDisplayRef: DynamicDialogRef | undefined;
-
   questionFormGroup = new FormGroup(
     {
       content: new FormControl<string>('', [
@@ -73,7 +76,9 @@ export class QuestionEditDialogComponent implements OnInit {
         Validators.minLength(3),
         Validators.maxLength(120),
       ]),
-      contentImage: new FormControl<DisplayableImage | null>(null),
+      contentImage: new FormControl<DisplayableImageWithChangeTracker | null>(
+        null
+      ),
       answers: new FormGroup<FormControl<string | null>[]>([
         new FormControl<string>('', [
           Validators.minLength(3),
@@ -101,11 +106,13 @@ export class QuestionEditDialogComponent implements OnInit {
         ],
         requireOneSelectedAnswerValidator()
       ),
-      answerImages: new FormGroup<FormControl<DisplayableImage | null>[]>([
-        new FormControl<DisplayableImage | null>(null),
-        new FormControl<DisplayableImage | null>(null),
-        new FormControl<DisplayableImage | null>(null),
-        new FormControl<DisplayableImage | null>(null),
+      answerImages: new FormGroup<
+        FormControl<DisplayableImageWithChangeTracker | null>[]
+      >([
+        new FormControl<DisplayableImageWithChangeTracker | null>(null),
+        new FormControl<DisplayableImageWithChangeTracker | null>(null),
+        new FormControl<DisplayableImageWithChangeTracker | null>(null),
+        new FormControl<DisplayableImageWithChangeTracker | null>(null),
       ]),
       questionType: new FormControl<QuestionType | null>(
         QuestionType.SingleAnswer,
@@ -186,15 +193,15 @@ export class QuestionEditDialogComponent implements OnInit {
     });
   }
 
-  private getAnswerId(answerIndex: number): string {
+  private getAnswerId(answerIndex: number): string | null {
     if (!!this.question && this.question.answers.length > answerIndex) {
       return this.question!.answers[answerIndex].id;
     }
 
-    return '';
+    return null;
   }
 
-  private buildQuestionFromQuestionFormGroup(): Question {
+  private buildQuestionFromQuestionFormGroup(): QuestionUpdateDTO {
     const controls = this.questionFormGroup.controls;
 
     let lastAnswerIndex = 0;
@@ -208,7 +215,7 @@ export class QuestionEditDialogComponent implements OnInit {
       }
     }
 
-    const answers: Answer[] = [];
+    const answers: AnswerUpdateDTO[] = [];
 
     for (let i = 0; i < lastAnswerIndex; i++) {
       answers.push({
@@ -216,21 +223,67 @@ export class QuestionEditDialogComponent implements OnInit {
         id: this.getAnswerId(i),
         image: controls.answerImages.controls[i].value,
         isCorrect: controls.correctAnswers.controls[i].value!,
+        imageEditionState: this.getImageStateForAnswer(i),
       });
     }
 
     const image: DisplayableImage | null =
       this.questionFormGroup.value.contentImage!;
 
-    const question: Question = {
+    const question: QuestionUpdateDTO = {
       content: this.questionFormGroup.controls.content.value!,
       answers: answers,
       image: image,
       questionType: this.questionFormGroup.controls.questionType.value!,
-      id: this.question?.id || '',
+      id: this.question!.id,
+      imageEditionState: this.getImageStateForContentImage(),
     };
 
     return question;
+  }
+
+  getImageStateForAnswer(answerIndex: number): ImageEditionState {
+    if (this.question!.answers.length <= answerIndex) {
+      if (
+        this.questionFormGroup.controls.answerImages.controls[answerIndex] !=
+        null
+      ) {
+        return ImageEditionState.Modified;
+      }
+
+      return ImageEditionState.Untouched;
+    }
+
+    if (
+      this.question!.answers[answerIndex].image != null &&
+      this.questionFormGroup.controls.answerImages.controls[answerIndex]
+        .value == null
+    ) {
+      return ImageEditionState.Removed;
+    } else if (
+      !this.questionFormGroup.controls.answerImages.controls[answerIndex].value
+        ?.wasChangedSinceAssigning
+    ) {
+      return ImageEditionState.Untouched;
+    }
+
+    return ImageEditionState.Modified;
+  }
+
+  getImageStateForContentImage(): ImageEditionState {
+    if (
+      this.question!.image != null &&
+      this.questionFormGroup.controls.contentImage.value == null
+    ) {
+      return ImageEditionState.Removed;
+    } else if (
+      !this.questionFormGroup.controls.contentImage.value
+        ?.wasChangedSinceAssigning
+    ) {
+      return ImageEditionState.Untouched;
+    }
+
+    return ImageEditionState.Modified;
   }
 
   private buildUndefinedQuestionFromQuestionFormGroup(): UnidentifiedQuestion {
@@ -271,7 +324,7 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   displayImagePreview(imageUrl: string): void {
-    this.imageDisplayRef = this.dialogService.open(ImagePreviewComponent, {
+    this.globalDialogService.displayDialog(ImagePreviewComponent, {
       width: 'auto',
       height: 'auto',
       modal: true,
@@ -285,13 +338,29 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   save(): void {
-    this.ref.close({
-      question: this.buildQuestionFromQuestionFormGroup(),
+    const question = this.buildQuestionFromQuestionFormGroup();
+
+    const response = {
+      question: question,
+      contentImage:
+        question.imageEditionState == ImageEditionState.Modified
+          ? this.questionFormGroup.controls.contentImage.value
+          : null,
+      answerImages: question.answers.map((answer, i) => {
+        return answer.imageEditionState == ImageEditionState.Modified
+          ? this.questionFormGroup.controls.answerImages.controls[i].value
+          : null;
+      }),
       questionIndex: this.questionIndex,
-    });
+    };
+
+    this.questionFormGroup.reset();
+
+    this.ref.close(response);
   }
 
   close(): void {
+    this.questionFormGroup.reset();
     this.ref.close(null);
   }
 }

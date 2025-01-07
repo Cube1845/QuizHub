@@ -18,6 +18,10 @@ import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { ToastService } from '../../../../../../common/services/toast.service';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
+import { QuestionUpdateDTO } from '../../../../../models/questionUpdateDTO';
+import { ImageEditionState } from '../../../../../enums/imageEditionState';
+import { DisplayableImage } from '../../../../../models/displayableImage';
+import { Answer } from '../../../../../models/answer';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -126,7 +130,12 @@ export class QuestionBaseEditComponent {
       })
       .subscribe((result) => {
         if (result != null) {
-          this.saveQuestion(result.question, result.questionIndex);
+          this.saveQuestion(
+            result.question,
+            result.contentImage,
+            result.answerImages,
+            result.questionIndex
+          );
           return;
         }
       });
@@ -180,12 +189,52 @@ export class QuestionBaseEditComponent {
       });
   }
 
-  saveQuestion(question: Question, questionIndex: number): void {
-    this.questionService.editQuestion(question, question.id);
+  saveQuestion(
+    questionDto: QuestionUpdateDTO,
+    contentImage: DisplayableImage | null,
+    answerImages: (DisplayableImage | null)[],
+    questionIndex: number
+  ): void {
+    this.questionService
+      .editQuestion(
+        questionDto,
+        this.questionBaseId!,
+        contentImage,
+        answerImages
+      )
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          const question: Question = {
+            content: questionDto.content,
+            questionType: questionDto.questionType,
+            image:
+              questionDto.imageEditionState == ImageEditionState.Modified
+                ? contentImage
+                : questionDto.image,
+            id: questionDto.id,
+            answers: questionDto.answers.map((answer, i) => {
+              const mappedAnswer: Answer = {
+                content: answer.content,
+                isCorrect: answer.isCorrect,
+                image:
+                  answer.imageEditionState == ImageEditionState.Modified
+                    ? answerImages[i]
+                    : answer.image,
+                id: answer.id,
+              };
 
-    this.questions![questionIndex] = question;
+              return mappedAnswer;
+            }),
+          };
 
-    this.toastService.displayToast('success', 'Sukces', 'Zapisano pytanie');
+          this.questions![questionIndex] = question;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Zapisano pytanie'
+          );
+        }
+      });
   }
 
   addQuestion(questionToAdd: UnidentifiedQuestion): void {
@@ -211,7 +260,7 @@ export class QuestionBaseEditComponent {
               this.questions = data.data;
 
               this.paginatorOptions!.totalItems = data.totalItems;
-              this.paginatorOptions!.setFirst(lastPageNumber);
+              this.paginatorOptions!.setPage(lastPageNumber);
 
               this.toastService.displayToast(
                 'success',
@@ -226,6 +275,6 @@ export class QuestionBaseEditComponent {
   onPageChange(event: any) {
     const pageNumber = event.page + 1;
     this.getQuestionsAndSetThem(pageNumber);
-    this.paginatorOptions.setFirst(pageNumber);
+    this.paginatorOptions.setPage(pageNumber);
   }
 }

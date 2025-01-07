@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
+using QuizHub.Domain.Models;
 
-namespace QuizHub.Domain.Models;
+namespace QuizHub.Application.Modules.Question.Endpoints.Update.Models;
 
-public class UnidentifiedQuestion : UnidentifiedQuestionWithNoImage
+public class IdentifiedQuestionMappedUpdateDTO : IdentifiedQuestionUpdateDTO
 {
     public IFormFile? Image { get; set; }
-    public new List<UnidentifiedAnswer> Answers { get; set; } = [];
+    public new List<IdentifiedAnswerMappedUpdateDTO> Answers { get; set; } = [];
 
-    public UnidentifiedQuestion() { }
-
-    public UnidentifiedQuestion(UnidentifiedQuestionWithNoImage question, IFormFile? contentImage, List<IFormFile?>? answerImages)
+    public IdentifiedQuestionMappedUpdateDTO(IdentifiedQuestionUpdateDTO question, IFormFile? contentImage, List<IFormFile?>? answerImages)
     {
         answerImages = MakeAnswerImageListTheSameLengthAsAnswers(answerImages, question.Answers.Count);
 
+        Id = question.Id;
         Content = question.Content;
         QuestionType = question.QuestionType;
+        ImageEditionState = question.ImageEditionState;
         Answers = question.Answers.Select((answerWithNoimage, i) =>
-            new UnidentifiedAnswer(answerWithNoimage, answerImages[i]))
+            new IdentifiedAnswerMappedUpdateDTO(answerWithNoimage, answerImages[i]))
         .ToList();
         Image = contentImage;
     }

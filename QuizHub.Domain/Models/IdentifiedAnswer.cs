@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using QuizHub.Domain.Entities;
-
-namespace QuizHub.Domain.Models;
+﻿namespace QuizHub.Domain.Models;
 
 public class IdentifiedAnswer() : UnidentifiedAnswerWithNoImage
 {

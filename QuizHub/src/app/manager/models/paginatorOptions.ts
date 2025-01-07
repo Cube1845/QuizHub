@@ -29,7 +29,7 @@ export class PaginatorOptions {
     this.onRowsChange();
   }
 
-  setFirst(pageNumber: number): void {
+  setPage(pageNumber: number): void {
     this.first = this._rows * (pageNumber - 1);
   }
 

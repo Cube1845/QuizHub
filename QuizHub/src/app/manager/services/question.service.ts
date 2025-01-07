@@ -14,6 +14,7 @@ import { ImageService } from './image.service';
 import { GetQuestionDTO } from '../models/getQuestionDto';
 import { Answer } from '../models/answer';
 import { DisplayableImage } from '../models/displayableImage';
+import { QuestionUpdateDTO } from '../models/questionUpdateDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +55,7 @@ export class QuestionService {
     answerImages: (File | null)[]
   ): Observable<boolean> {
     const formData = new FormData();
+
     formData.append('questionBaseId', questionBaseId);
     formData.append('question', JSON.stringify(question));
 
@@ -78,7 +80,38 @@ export class QuestionService {
     );
   }
 
-  editQuestion(question: Question, id: string): void {}
+  editQuestion(
+    question: QuestionUpdateDTO,
+    questionBaseId: string,
+    contentImage: File | null,
+    answerImages: (File | null)[]
+  ): Observable<boolean> {
+    const formData = new FormData();
+
+    formData.append('questionBaseId', questionBaseId);
+
+    formData.append('question', JSON.stringify(question));
+
+    if (contentImage != null) {
+      formData.append('contentImage', contentImage);
+    }
+
+    answerImages.forEach((file, index) => {
+      if (file != null) {
+        formData.append(`answerImages[${index}]`, file);
+        return;
+      }
+
+      formData.append(`answerImages[${index}]`, 'null');
+    });
+
+    return this.http.put<Result>(this.apiUrl + '/question', formData).pipe(
+      handleResultPatternResponse<null, boolean>(
+        () => true,
+        (detail) => this.displayErrorToast(detail)
+      )
+    );
+  }
 
   removeQuestion(
     questionBaseId: string,
