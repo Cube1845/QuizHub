@@ -22,6 +22,8 @@ import { QuestionUpdateDTO } from '../../../../../models/questionUpdateDTO';
 import { ImageEditionState } from '../../../../../enums/imageEditionState';
 import { DisplayableImage } from '../../../../../models/displayableImage';
 import { Answer } from '../../../../../models/answer';
+import { QuestionBaseService } from '../../../../../services/question-base.service';
+import { QuestionBaseNameEditDialogComponent } from '../dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -48,6 +50,7 @@ export class QuestionBaseEditComponent {
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly questionBaseService = inject(QuestionBaseService);
 
   private readonly paginatorItemsPerPage = [10, 20, 30];
 
@@ -272,7 +275,71 @@ export class QuestionBaseEditComponent {
       });
   }
 
-  onPageChange(event: any) {
+  displayQuestionBaseRemovalModal(event: Event): void {
+    this.globalDialogService.displayConfirmationDialog({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz usunąć tę bazę pytań?',
+      header: 'Potwierdzenie',
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      defaultFocus: 'reject',
+
+      accept: () => this.removeThisQuestionBase(),
+    });
+  }
+
+  removeThisQuestionBase(): void {
+    this.questionBaseService
+      .removeQuestionBase(this.questionBaseId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.goBack();
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto bazę pytań'
+          );
+        }
+      });
+  }
+
+  displayQuestionBaseNameEditModal(): void {
+    this.globalDialogService
+      .displayDialog(QuestionBaseNameEditDialogComponent, {
+        header: 'Edytuj nazwę bazy pytań',
+        width: '25rem',
+        modal: true,
+        data: { index: -1, currentName: 'Baza pytań' }, // change here
+      })
+      .subscribe((result) => {
+        if (result != null) {
+          this.saveThisQuestionBaseName(result.name);
+          return;
+        }
+      });
+  }
+
+  saveThisQuestionBaseName(updatedName: string): void {
+    this.questionBaseService
+      .editQuestionBaseName(updatedName, this.questionBaseId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Zmieniono nazwę'
+          );
+          //here change
+        }
+      });
+  }
+
+  onPageChange(event: any): void {
     const pageNumber = event.page + 1;
     this.getQuestionsAndSetThem(pageNumber);
     this.paginatorOptions.setPage(pageNumber);

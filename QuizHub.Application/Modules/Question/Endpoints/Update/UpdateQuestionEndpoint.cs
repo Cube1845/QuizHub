@@ -35,7 +35,15 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
             return;
         }
 
-        IdentifiedQuestionMappedUpdateDTO question = new(req.Question, req.ContentImage, req.AnswerImages);
+        var processedAnswerImageFiles = new List<IFormFile?>(
+        [
+            req.AnswerImage1,
+            req.AnswerImage2,
+            req.AnswerImage3,
+            req.AnswerImage4
+        ]);
+
+        IdentifiedQuestionMappedUpdateDTO question = new(req.Question, req.ContentImage, processedAnswerImageFiles);
         
         foreach (var answer in question.Answers)
         {

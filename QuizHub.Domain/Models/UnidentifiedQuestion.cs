@@ -9,32 +9,13 @@ public class UnidentifiedQuestion : UnidentifiedQuestionWithNoImage
 
     public UnidentifiedQuestion() { }
 
-    public UnidentifiedQuestion(UnidentifiedQuestionWithNoImage question, IFormFile? contentImage, List<IFormFile?>? answerImages)
+    public UnidentifiedQuestion(UnidentifiedQuestionWithNoImage question, IFormFile? contentImage, List<IFormFile?> answerImages)
     {
-        answerImages = MakeAnswerImageListTheSameLengthAsAnswers(answerImages, question.Answers.Count);
-
         Content = question.Content;
         QuestionType = question.QuestionType;
         Answers = question.Answers.Select((answerWithNoimage, i) =>
             new UnidentifiedAnswer(answerWithNoimage, answerImages[i]))
         .ToList();
         Image = contentImage;
-    }
-
-    private List<IFormFile?> MakeAnswerImageListTheSameLengthAsAnswers(List<IFormFile?>? answerImages, int answersLength)
-    {
-        var answerImagesList = new List<IFormFile?>();
-
-        if (answerImages != null)
-        {
-            answerImagesList.AddRange(answerImages);
-        }
-
-        while (answerImagesList.Count < answersLength)
-        {
-            answerImagesList.Add(null);
-        }
-
-        return answerImagesList;
     }
 }

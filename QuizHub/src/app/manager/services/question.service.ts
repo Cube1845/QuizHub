@@ -98,11 +98,11 @@ export class QuestionService {
 
     answerImages.forEach((file, index) => {
       if (file != null) {
-        formData.append(`answerImages[${index}]`, file);
+        formData.append(`answerImage${index + 1}`, file);
         return;
       }
 
-      formData.append(`answerImages[${index}]`, 'null');
+      formData.append(`answerImage${index + 1}`, null!);
     });
 
     return this.http.put<Result>(this.apiUrl + '/question', formData).pipe(
@@ -185,7 +185,7 @@ export class QuestionService {
                         .then((blob) => {
                           if (blob) {
                             const displayableImage: DisplayableImage | null =
-                              new File([blob], 'image', {
+                              new File([blob], 'Obraz', {
                                 type: blob.type,
                               });
 

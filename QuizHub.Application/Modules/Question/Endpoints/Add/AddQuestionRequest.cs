@@ -7,4 +7,7 @@ public record AddQuestionRequest
     (Guid QuestionBaseId,
     UnidentifiedQuestionWithNoImage Question,
     IFormFile? ContentImage,
-    List<IFormFile?>? AnswerImages);
+    IFormFile? AnswerImage1,
+    IFormFile? AnswerImage2,
+    IFormFile? AnswerImage3,
+    IFormFile? AnswerImage4);

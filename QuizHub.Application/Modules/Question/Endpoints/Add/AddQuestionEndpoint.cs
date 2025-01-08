@@ -35,7 +35,15 @@ public class AddQuestionEndpoint(IAppDbContext context, IImageService imageServi
             return;
         }
 
-        UnidentifiedQuestion question = new(req.Question, req.ContentImage, req.AnswerImages);
+        var processedAnswerImageFiles = new List<IFormFile?>(
+        [
+            req.AnswerImage1,
+            req.AnswerImage2,
+            req.AnswerImage3,
+            req.AnswerImage4
+        ]);
+
+        UnidentifiedQuestion question = new(req.Question, req.ContentImage, processedAnswerImageFiles);
 
         var contentImageId = await AddImageIfNotNullAndGetIdWithoutSavingAsync(question.Image, ct);
 
