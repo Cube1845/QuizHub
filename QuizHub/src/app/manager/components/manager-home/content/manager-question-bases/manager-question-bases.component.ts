@@ -60,7 +60,6 @@ export class ManagerQuestionBasesComponent {
       .subscribe((result) => {
         if (result != null) {
           this.saveQuestionBaseName(result.name, result.questionBaseIndex);
-          return;
         }
       });
   }
@@ -112,7 +111,6 @@ export class ManagerQuestionBasesComponent {
       .subscribe((result) => {
         if (result != null) {
           this.createQuestionBase(result);
-          return;
         }
       });
   }

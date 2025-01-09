@@ -16,6 +16,16 @@ import { Answer } from '../models/answer';
 import { DisplayableImage } from '../models/displayableImage';
 import { QuestionUpdateDTO } from '../models/questionUpdateDTO';
 
+type GetPaginatedQuestionsResponse = {
+  data: PaginatedData<GetQuestionDTO>;
+  questionBaseName: string;
+};
+
+type GetPaginatedQuestionsMappedResponse = {
+  data: PaginatedData<Question>;
+  questionBaseName: string;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -33,9 +43,9 @@ export class QuestionService {
     questionBaseId: string,
     pageNumber: number,
     pageSize: number
-  ): Observable<PaginatedData<Question>> {
+  ): Observable<GetPaginatedQuestionsMappedResponse> {
     return this.http
-      .get<Result<PaginatedData<GetQuestionDTO>>>(
+      .get<Result<GetPaginatedQuestionsResponse>>(
         this.apiUrl +
           '/question' +
           '?questionBaseId=' +
@@ -65,11 +75,11 @@ export class QuestionService {
 
     answerImages.forEach((file, index) => {
       if (file != null) {
-        formData.append(`answerImages[${index}]`, file);
+        formData.append(`answerImage${index + 1}`, file);
         return;
       }
 
-      formData.append(`answerImages[${index}]`, null!);
+      formData.append(`answerImage${index + 1}`, null!);
     });
 
     return this.http.post<Result>(this.apiUrl + '/question', formData).pipe(
@@ -138,16 +148,16 @@ export class QuestionService {
 
   private handlePaginatedResultPatternResponse() {
     return (
-      source: Observable<Result<PaginatedData<GetQuestionDTO>>>
-    ): Observable<PaginatedData<Question>> =>
+      source: Observable<Result<GetPaginatedQuestionsResponse>>
+    ): Observable<GetPaginatedQuestionsMappedResponse> =>
       source.pipe(
-        switchMap(async (result: Result<PaginatedData<GetQuestionDTO>>) => {
+        switchMap(async (result: Result<GetPaginatedQuestionsResponse>) => {
           if (!result.isSuccess) {
             this.displayErrorToast(result.message || 'Wystąpił błąd');
             return null!;
           }
 
-          const dtoPaginatedData = result.value;
+          const dtoPaginatedData = result.value.data;
 
           const questions: Question[] = await Promise.all(
             dtoPaginatedData.data.map(async (dto) => {
@@ -218,10 +228,15 @@ export class QuestionService {
             })
           );
 
-          return {
-            data: questions,
-            totalItems: dtoPaginatedData.totalItems,
+          const response: GetPaginatedQuestionsMappedResponse = {
+            data: {
+              data: questions,
+              totalItems: dtoPaginatedData.totalItems,
+            },
+            questionBaseName: result.value.questionBaseName,
           };
+
+          return response;
         })
       );
   }

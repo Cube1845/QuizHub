@@ -55,6 +55,7 @@ export class QuestionBaseEditComponent {
   private readonly paginatorItemsPerPage = [10, 20, 30];
 
   questionBaseId!: string | null;
+  questionBaseName!: string | null;
 
   questions: Question[] | null = null;
 
@@ -69,6 +70,11 @@ export class QuestionBaseEditComponent {
   );
 
   constructor() {
+    this.questionBaseService.onQuestionBaseNameSent$.subscribe((name) => {
+      this.questionBaseName = name;
+      console.log(this.questionBaseName);
+    });
+
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -87,9 +93,10 @@ export class QuestionBaseEditComponent {
         pageNumber,
         this.paginatorItemsPerPage[0]
       )
-      .subscribe((data) => {
-        this.questions = data.data;
-        this.paginatorOptions.totalItems = data.totalItems;
+      .subscribe((response) => {
+        this.questions = response.data.data;
+        this.paginatorOptions.totalItems = response.data.totalItems;
+        this.questionBaseName = response.questionBaseName;
       });
   }
 
@@ -139,7 +146,6 @@ export class QuestionBaseEditComponent {
             result.answerImages,
             result.questionIndex
           );
-          return;
         }
       });
   }
@@ -153,7 +159,6 @@ export class QuestionBaseEditComponent {
       .subscribe((result) => {
         if (result != null) {
           this.addQuestion(result);
-          return;
         }
       });
   }
@@ -259,10 +264,10 @@ export class QuestionBaseEditComponent {
               lastPageNumber,
               this.paginatorOptions!.rows
             )
-            .subscribe((data) => {
-              this.questions = data.data;
+            .subscribe((response) => {
+              this.questions = response.data.data;
 
-              this.paginatorOptions!.totalItems = data.totalItems;
+              this.paginatorOptions!.totalItems = response.data.totalItems;
               this.paginatorOptions!.setPage(lastPageNumber);
 
               this.toastService.displayToast(
@@ -314,12 +319,11 @@ export class QuestionBaseEditComponent {
         header: 'Edytuj nazwę bazy pytań',
         width: '25rem',
         modal: true,
-        data: { index: -1, currentName: 'Baza pytań' }, // change here
+        data: { index: -1, currentName: this.questionBaseName },
       })
       .subscribe((result) => {
         if (result != null) {
           this.saveThisQuestionBaseName(result.name);
-          return;
         }
       });
   }
@@ -329,12 +333,12 @@ export class QuestionBaseEditComponent {
       .editQuestionBaseName(updatedName, this.questionBaseId!)
       .subscribe((isSuccess) => {
         if (isSuccess) {
+          this.questionBaseName = updatedName;
           this.toastService.displayToast(
             'success',
             'Sukces',
             'Zmieniono nazwę'
           );
-          //here change
         }
       });
   }

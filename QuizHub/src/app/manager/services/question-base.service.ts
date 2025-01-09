@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { QuestionBaseData } from '../models/questionBaseData';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import {
   handleResultPatternResponse,
   Result,
@@ -21,6 +21,9 @@ export class QuestionBaseService {
   private readonly apiUrl = environment.apiUrl;
 
   private readonly toastService = inject(ToastService);
+
+  private readonly questionBaseNameSentSubject = new Subject<string>();
+  onQuestionBaseNameSent$ = this.questionBaseNameSentSubject.asObservable();
 
   displayErrorToast(detail: string): void {
     this.toastService.displayToast('error', 'Błąd', detail);

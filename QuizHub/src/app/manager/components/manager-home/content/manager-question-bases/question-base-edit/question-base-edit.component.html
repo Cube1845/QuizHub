@@ -1,4 +1,7 @@
 <div class="container m-0">
+    <div class="question-base-name-bar m-0 p-0">
+        <h2 class="m-0 py-1">{{ questionBaseName || 'Baza pytań' }}</h2>
+    </div>
     <div class="top-bar m-0 p-3">
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
 
@@ -32,7 +35,7 @@
                             <h1 class="text-3xl line-height-1 m-0 pb-4">{{ question.content }}</h1>
                         </div>
                         <div class="answer-box">
-                            <div class="answer-row m-0" [ngStyle]="{'margin-bottom': question.answers.length > 2 ? '5px' : '0'}">
+                            <div class="answer-row mx-0" [ngStyle]="{'margin-bottom': question.answers.length > 2 ? '0.25rem' : '0'}">
                                 <div class="answer-column">
                                     @if (question.answers[0].isCorrect) {
                                         <h2 style="color: var(--p-primary-color)" class="m-0 p-0 text-xl">Odpowiedź A:</h2>
