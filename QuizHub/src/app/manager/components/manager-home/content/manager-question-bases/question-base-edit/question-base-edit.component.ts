@@ -21,38 +21,33 @@ import { NgStyle } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { ToastService } from '../../../../../../common/services/toast.service';
+import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 
 @Component({
   selector: 'app-question-base-edit',
   standalone: true,
   imports: [
     ButtonModule,
-    DialogModule,
     FloatLabelModule,
     InputTextModule,
     CheckboxModule,
     InputGroupModule,
     InputGroupAddonModule,
     ReactiveFormsModule,
-    ConfirmDialogModule,
     ImageModule,
     NgStyle,
     PaginatorModule,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
-  providers: [ConfirmationService, DialogService],
 })
-export class QuestionBaseEditComponent implements OnInit, OnDestroy {
+export class QuestionBaseEditComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly questionBaseService = inject(QuestionBaseService);
   private readonly questionService = inject(QuestionService);
-  private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
-  private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
-
-  ref: DynamicDialogRef | undefined;
+  private readonly globalDialogService = inject(GlobalDialogService);
 
   questionBaseId!: string | null;
 
@@ -77,12 +72,6 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
 
       this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
     });
-  }
-
-  ngOnDestroy() {
-    if (this.ref) {
-      this.ref.close();
-    }
   }
 
   goBack(): void {
@@ -114,43 +103,39 @@ export class QuestionBaseEditComponent implements OnInit, OnDestroy {
   }
 
   showEditQuestionDialog(questionIndex: number): void {
-    this.ref = this.dialogService.open(QuestionEditDialogComponent, {
-      header: 'Edytuj pytanie',
-      width: '72rem',
-      height: '46rem',
-      modal: true,
-      data: {
-        question: this.questions![questionIndex],
-        questionIndex: questionIndex,
-      },
-    });
-
-    this.ref.onClose.subscribe((result) => {
-      if (result != null) {
-        this.saveQuestion(result.question, result.questionIndex);
-        return;
-      }
-    });
+    this.globalDialogService
+      .displayDialog(QuestionEditDialogComponent, {
+        header: 'Edytuj pytanie',
+        modal: true,
+        data: {
+          question: this.questions![questionIndex],
+          questionIndex: questionIndex,
+        },
+      })
+      .subscribe((result) => {
+        if (result != null) {
+          this.saveQuestion(result.question, result.questionIndex);
+          return;
+        }
+      });
   }
 
   showCreatingQuestionDialog(): void {
-    this.ref = this.dialogService.open(QuestionEditDialogComponent, {
-      header: 'Dodaj pytanie',
-      width: '72rem',
-      height: '46rem',
-      modal: true,
-    });
-
-    this.ref.onClose.subscribe((result) => {
-      if (result != null) {
-        this.addQuestion(result);
-        return;
-      }
-    });
+    this.globalDialogService
+      .displayDialog(QuestionEditDialogComponent, {
+        header: 'Dodaj pytanie',
+        modal: true,
+      })
+      .subscribe((result) => {
+        if (result != null) {
+          this.addQuestion(result);
+          return;
+        }
+      });
   }
 
   displayQuestionRemovalModal(event: Event, index: number): void {
-    this.confirmationService.confirm({
+    this.globalDialogService.displayConfirmationDialog({
       target: event.target as EventTarget,
       message: 'Na pewno chcesz usunąć to pytanie?',
       header: 'Potwierdzenie',

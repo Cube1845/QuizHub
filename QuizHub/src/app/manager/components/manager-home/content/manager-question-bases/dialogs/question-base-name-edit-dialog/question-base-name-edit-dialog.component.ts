@@ -24,7 +24,7 @@ export class QuestionBaseNameEditDialogComponent implements OnInit {
   questionBaseIndex: number | null = this.config.data?.index || null;
   currentName: string | null = this.config.data?.currentName || null;
 
-  addingNewQuestionBase: boolean = this.questionBaseIndex == null;
+  dialogType: 'add' | 'edit' = this.questionBaseIndex == null ? 'add' : 'edit';
 
   nameFormControl = new FormControl('', [
     Validators.required,

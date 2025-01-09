@@ -6,9 +6,9 @@
 <div class="dialog-buttons-box mx-2">
     <p-button label="Anuluj" severity="secondary" [outlined]="true" (click)="close()"/>
     <p-button 
-        [label]="addingNewQuestionBase ? 'Utwórz' : 'Zapisz'" 
+        [label]="dialogType == 'add' ? 'Utwórz' : 'Zapisz'" 
         severity="primary" [outlined]="true" 
-        (click)="addingNewQuestionBase ? addNewQuestionBase() : saveQuestionBaseName()" 
+        (click)="dialogType == 'edit' ? addNewQuestionBase() : saveQuestionBaseName()" 
         class="ml-2" 
         [disabled]="nameFormControl.invalid"
     />

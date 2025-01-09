@@ -15,7 +15,7 @@ export class ToastService {
     detail: string,
     lifeTime: number = 3000
   ): void {
-    let options: ToastData = {
+    const options: ToastData = {
       severity: severity,
       summary: summary,
       detail: detail,

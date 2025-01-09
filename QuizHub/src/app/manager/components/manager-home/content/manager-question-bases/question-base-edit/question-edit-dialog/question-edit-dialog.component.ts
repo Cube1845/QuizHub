@@ -62,7 +62,7 @@ export class QuestionEditDialogComponent implements OnInit {
   question: Question | null = this.config.data?.question;
   questionIndex: number | null = this.config.data?.questionIndex;
 
-  addingNewQuestion: boolean = this.questionIndex == null;
+  dialogType: 'edit' | 'add' = this.questionIndex == null ? 'add' : 'edit';
 
   imageDisplayRef: DynamicDialogRef | undefined;
 
@@ -172,7 +172,7 @@ export class QuestionEditDialogComponent implements OnInit {
   }
 
   setInputValues(): void {
-    if (this.addingNewQuestion) {
+    if (this.dialogType == 'add') {
       return;
     }
 

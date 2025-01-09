@@ -1,7 +1,8 @@
-<p-confirmDialog></p-confirmDialog>
 <div class="container m-0">
     <div class="top-bar m-0 p-3">
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Bazy pytań" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Usuń" icon="pi pi-trash" severity="secondary"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Edytuj nazwę" icon="pi pi-pencil"></p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
 
@@ -147,7 +148,7 @@
                         <p class="m-0 p-0 text-lg">
                             <i class="pi pi-question-circle m-0 pr-1 text-sm"></i>
 
-                            @if (question.questionType == 0) {
+                            @if (question.questionType == 1) {
                                 Pojedyncza odpowiedź
                             } @else {
                                 Wielokrotna odpowiedź

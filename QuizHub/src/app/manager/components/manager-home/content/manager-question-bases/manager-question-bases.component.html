@@ -1,7 +1,6 @@
-<p-confirmDialog></p-confirmDialog>
-<div class="container m-3">
+<div class="container m-2">
     @for (questionBase of questionBases; track $index) {
-        <div class="question-base-panel contains-delete-button m-3" (click)="goToQuestionEditor(questionBase.id)">
+        <div class="question-base-panel contains-delete-button m-2" (click)="goToQuestionEditor(questionBase.id)">
             <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ questionBase.name }}</h1>
             <p class="m-0 p-0">{{ questionBase.questionCount }} {{ getQuestionWordVariation(questionBase.questionCount) }}</p>
 
@@ -11,7 +10,7 @@
         </div>
     }
 
-    <div class="question-base-panel m-3" (click)="displayQuestionBaseAddingMethodDialog()">
+    <div class="question-base-panel m-2" (click)="displayQuestionBaseAddingMethodDialog()">
         <i class="pi pi-plus text-2xl" style="color: var(--p-zinc-200)"></i>
     </div>
 </div>
