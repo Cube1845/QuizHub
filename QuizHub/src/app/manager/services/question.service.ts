@@ -55,7 +55,7 @@ export class QuestionService {
           '&pageSize=' +
           pageSize.toString()
       )
-      .pipe(this.handlePaginatedResultPatternResponse());
+      .pipe(this.handleGetPaginatedResultPatternResponse());
   }
 
   addQuestion(
@@ -146,7 +146,7 @@ export class QuestionService {
 
   searchForQuestions(questionBaseId: string, key: string): void {}
 
-  private handlePaginatedResultPatternResponse() {
+  private handleGetPaginatedResultPatternResponse() {
     return (
       source: Observable<Result<GetPaginatedQuestionsResponse>>
     ): Observable<GetPaginatedQuestionsMappedResponse> =>
