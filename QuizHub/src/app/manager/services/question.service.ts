@@ -159,74 +159,10 @@ export class QuestionService {
 
           const dtoPaginatedData = result.value.data;
 
-          const questions: Question[] = await Promise.all(
-            dtoPaginatedData.data.map(async (dto) => {
-              const questionImage = dto.imageId
-                ? await this.http
-                    .get(`${this.apiUrl}/image/${dto.imageId}`, {
-                      responseType: 'blob',
-                    })
-                    .toPromise()
-                    .then((blob) => {
-                      if (blob) {
-                        const displayableImage: DisplayableImage | null =
-                          new File([blob], 'Obraz', {
-                            type: blob.type,
-                          });
-
-                        displayableImage.displayUrl =
-                          this.imageService.getImageUrl(displayableImage);
-
-                        return displayableImage;
-                      } else {
-                        return null;
-                      }
-                    })
-                : null;
-
-              const answers: Answer[] = await Promise.all(
-                dto.answers.map(async (answerDto) => {
-                  const answerImage = answerDto.imageId
-                    ? await this.http
-                        .get(`${this.apiUrl}/image/${answerDto.imageId}`, {
-                          responseType: 'blob',
-                        })
-                        .toPromise()
-                        .then((blob) => {
-                          if (blob) {
-                            const displayableImage: DisplayableImage | null =
-                              new File([blob], 'Obraz', {
-                                type: blob.type,
-                              });
-
-                            displayableImage.displayUrl =
-                              this.imageService.getImageUrl(displayableImage);
-
-                            return displayableImage;
-                          } else {
-                            return null;
-                          }
-                        })
-                    : null;
-
-                  return {
-                    id: answerDto.id,
-                    content: answerDto.content,
-                    isCorrect: answerDto.isCorrect,
-                    image: answerImage,
-                  };
-                })
-              );
-
-              return {
-                id: dto.id,
-                content: dto.content,
-                questionType: dto.questionType,
-                image: questionImage,
-                answers,
-              };
-            })
-          );
+          const questions: Question[] =
+            await this.mapGetQuestionDtoListToQuestionList(
+              dtoPaginatedData.data
+            );
 
           const response: GetPaginatedQuestionsMappedResponse = {
             data: {
@@ -239,5 +175,70 @@ export class QuestionService {
           return response;
         })
       );
+  }
+
+  private async mapGetQuestionDtoListToQuestionList(
+    questionDtoList: GetQuestionDTO[]
+  ): Promise<Question[]> {
+    const mappedQuestions: Question[] = await Promise.all(
+      questionDtoList.map(async (dto) => {
+        const questionImage = dto.imageId
+          ? await this.getImageFromApi(dto.imageId)
+          : null;
+
+        const answers: Answer[] = await Promise.all(
+          dto.answers.map(async (answerDto) => {
+            const answerImage = answerDto.imageId
+              ? await this.getImageFromApi(answerDto.imageId)
+              : null;
+
+            return {
+              id: answerDto.id,
+              content: answerDto.content,
+              isCorrect: answerDto.isCorrect,
+              image: answerImage,
+            };
+          })
+        );
+
+        return {
+          id: dto.id,
+          content: dto.content,
+          questionType: dto.questionType,
+          image: questionImage,
+          answers,
+        };
+      })
+    );
+
+    return mappedQuestions;
+  }
+
+  private async getImageFromApi(
+    imageId: string
+  ): Promise<DisplayableImage | null> {
+    return this.http
+      .get(`${this.apiUrl}/image/${imageId}`, {
+        responseType: 'blob',
+      })
+      .toPromise()
+      .then((blob) => {
+        if (blob) {
+          const displayableImage: DisplayableImage | null = new File(
+            [blob],
+            'Obraz',
+            {
+              type: blob.type,
+            }
+          );
+
+          displayableImage.displayUrl =
+            this.imageService.getImageUrl(displayableImage);
+
+          return displayableImage;
+        } else {
+          return null;
+        }
+      });
   }
 }
