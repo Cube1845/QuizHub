@@ -5,7 +5,7 @@ namespace QuizHub.Domain.Entities;
 public class Image
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty; // to remove
     public byte[] Data { get; set; } = [];
     public string ContentType { get; set; } = string.Empty;
 
