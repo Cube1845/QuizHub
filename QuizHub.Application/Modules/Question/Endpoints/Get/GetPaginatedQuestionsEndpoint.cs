@@ -53,11 +53,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
             .GetPage(pageNumber, pageSize)
             .ToListAsync(ct);
 
-        var totalItems = await _context.QuestionBases
-            .Where(questionBase =>
-                questionBase.Id == questionBaseId &&
-                questionBase.OwnerId == userId
-            )
+        var totalItems = await questionBaseQueryable
             .SelectMany(questionBase => questionBase.Questions)
             .CountAsync(ct);
 
