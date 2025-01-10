@@ -147,7 +147,8 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
                 var imageDb = await _imageService.GetImageByIdAsync(imageDbId!.Value, ct) ??
                     throw new Exception("Błąd danych obrazu");
 
-                imageDb.Update(await image.ToImageDbAsync(ct));
+                var imageModel = await image.ToImageDbAsync(ct);
+                imageDb.Update(imageModel.Data, imageModel.ContentType);
 
                 return imageDb.Id;
             }

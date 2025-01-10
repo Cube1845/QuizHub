@@ -2,6 +2,7 @@
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
+using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Models;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Get;
@@ -48,43 +49,17 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
         var questionBaseDb = await questionBaseQueryable
             .FirstOrDefaultAsync(ct) ?? throw new Exception("Taka baza pytań nie istnieje");
 
-        var questionsDb = await questionBaseQueryable
-            .SelectMany(questionBase => questionBase.Questions)
-            .GetPage(pageNumber, pageSize)
-            .ToListAsync(ct);
+        var questionsQueryable = questionBaseQueryable
+            .SelectMany(questionBase => questionBase.Questions);
 
-        var totalItems = await questionBaseQueryable
-            .SelectMany(questionBase => questionBase.Questions)
+        var questionsDb = questionsQueryable
+            .GetPage(pageNumber, pageSize)
+            .ToList();
+
+        var totalItems = await questionsQueryable
             .CountAsync(ct);
 
-        List<IdentifiedQuestion> identifiedQuestions = [];
-
-        foreach (var question in questionsDb)
-        {
-            List<IdentifiedAnswer> answers = [];
-
-            foreach (var answer in question.Answers)
-            {
-                answers.Add(new IdentifiedAnswer()
-                {
-                    Id = answer.Id,
-                    Content = answer.Content,
-                    IsCorrect = answer.IsCorrect,
-                    ImageId = answer.ImageId
-                });
-            }
-
-            var questionToAdd = new IdentifiedQuestion()
-            {
-                Id = question.Id,
-                Content = question.Content,
-                QuestionType = question.QuestionType,
-                ImageId = question.ImageId,
-                Answers = answers
-            };
-
-            identifiedQuestions.Add(questionToAdd);
-        }
+        var identifiedQuestions = questionsDb.ToIdentifiedQuestionList();
 
         return (new PaginatedData<IdentifiedQuestion>(identifiedQuestions, totalItems), questionBaseDb.Name);
     }
