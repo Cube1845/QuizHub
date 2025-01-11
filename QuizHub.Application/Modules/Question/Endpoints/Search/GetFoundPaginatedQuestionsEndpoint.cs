@@ -44,22 +44,27 @@ public class GetFoundPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoin
                 questionBase.OwnerId == userId
             );
 
-        if (!questionBaseQueryable.Any())
+        if (!await questionBaseQueryable.AnyAsync(ct))
         {
-            throw new Exception("Taka baza pytań nie istnieje");
+            throw new DomainException("Taka baza pytań nie istnieje");
         }
 
-        var questionsQueryable = questionBaseQueryable
+        var questionsDb = await questionBaseQueryable
             .SelectMany(questionBase => questionBase.Questions)
             .Where(question =>
                 question.Content.Contains(key)
-            );
-
-        var questionsDb = await questionsQueryable
+            )
             .GetPage(pageNumber, pageSize)
             .ToListAsync(ct);
 
-        var totalItems = await questionsQueryable.CountAsync(ct);
+        var totalItems = await _context.QuestionBases
+            .Include(questionBase => questionBase.Questions)
+            .Where(questionBase =>
+                questionBase.Id == questionBaseId &&
+                questionBase.OwnerId == userId
+            )
+            .SelectMany(questionBase => questionBase.Questions)
+            .CountAsync(ct);
 
         var identifiedQuestions = questionsDb.ToIdentifiedQuestionList();
 

@@ -1,8 +1,6 @@
 ﻿using FastEndpoints;
 using FastEndpoints.Security;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using QuizHub.Application.Common.Models;
 using QuizHub.Infrastructure.Auth.Config;
 using QuizHub.Infrastructure.Auth.Endpoints.Login;
 using QuizHub.Infrastructure.Auth.Entities;
