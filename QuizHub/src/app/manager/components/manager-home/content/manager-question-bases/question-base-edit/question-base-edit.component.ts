@@ -70,11 +70,6 @@ export class QuestionBaseEditComponent {
   );
 
   constructor() {
-    this.questionBaseService.onQuestionBaseNameSent$.subscribe((name) => {
-      this.questionBaseName = name;
-      console.log(this.questionBaseName);
-    });
-
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -105,10 +100,17 @@ export class QuestionBaseEditComponent {
   }
 
   searchForQuestions(): void {
-    this.questionService.searchForQuestions(
-      this.questionBaseId!,
-      this.searchFormControl.value!
-    );
+    this.questionService
+      .searchForQuestions(
+        this.questionBaseId!,
+        this.searchFormControl.value!,
+        1,
+        this.paginatorOptions.rows
+      )
+      .subscribe((response) => {
+        this.questions = response.data;
+        this.paginatorOptions.totalItems = response.totalItems;
+      });
   }
 
   openQuestionEditor(index: number, event: MouseEvent) {
@@ -347,5 +349,7 @@ export class QuestionBaseEditComponent {
     const pageNumber = event.page + 1;
     this.getQuestionsAndSetThem(pageNumber);
     this.paginatorOptions.setPage(pageNumber);
+
+    // add detection if questions are searched
   }
 }
