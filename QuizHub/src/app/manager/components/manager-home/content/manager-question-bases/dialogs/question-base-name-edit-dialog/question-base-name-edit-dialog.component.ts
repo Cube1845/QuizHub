@@ -21,10 +21,10 @@ export class QuestionBaseNameEditDialogComponent implements OnInit {
   private readonly ref = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
 
-  questionBaseIndex: number | null = this.config.data?.index || null;
-  currentName: string | null = this.config.data?.currentName || null;
+  currentName: string | null = null;
+  questionBaseIndex: number | null = null;
 
-  dialogType: 'add' | 'edit' = this.questionBaseIndex == null ? 'add' : 'edit';
+  dialogType!: 'add' | 'edit';
 
   nameFormControl = new FormControl('', [
     Validators.required,
@@ -33,6 +33,18 @@ export class QuestionBaseNameEditDialogComponent implements OnInit {
   ]);
 
   ngOnInit(): void {
+    const data = this.config.data;
+
+    if (data == null || data == undefined) {
+      this.dialogType = 'add';
+      return;
+    }
+
+    this.currentName = data.currentName;
+    this.questionBaseIndex = data.index;
+
+    this.dialogType = 'edit';
+
     if (this.currentName != null) {
       this.setInputValue();
     }

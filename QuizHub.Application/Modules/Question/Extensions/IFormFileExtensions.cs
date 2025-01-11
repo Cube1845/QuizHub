@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using QuizHub.Domain.Entities;
 
 namespace QuizHub.Application.Modules.Question.Extensions;
 
