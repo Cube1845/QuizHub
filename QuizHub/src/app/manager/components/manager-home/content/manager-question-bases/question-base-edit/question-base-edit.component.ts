@@ -59,7 +59,7 @@ export class QuestionBaseEditComponent {
 
   questions: Question[] | null = null;
 
-  searchFormControl = new FormControl<string>('', Validators.required);
+  searchFormControl = new FormControl<string>('');
 
   paginatorOptions: PaginatorOptions = new PaginatorOptions(
     1,
@@ -68,6 +68,8 @@ export class QuestionBaseEditComponent {
     this.paginatorItemsPerPage,
     () => this.getQuestionsAndSetThem(1)
   );
+
+  questionGetType: 'regular' | 'searched' = 'regular';
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -89,6 +91,9 @@ export class QuestionBaseEditComponent {
         this.paginatorItemsPerPage[0]
       )
       .subscribe((response) => {
+        this.searchFormControl.reset();
+        this.questionGetType = 'regular';
+
         this.questions = response.data.data;
         this.paginatorOptions.totalItems = response.data.totalItems;
         this.questionBaseName = response.questionBaseName;
@@ -99,15 +104,25 @@ export class QuestionBaseEditComponent {
     this.router.navigateByUrl('manager/question-bases');
   }
 
-  searchForQuestions(): void {
+  searchForQuestions(pageNumber: number = 1): void {
+    const key = this.searchFormControl.value;
+
+    if (key == null || key!.trim() == '') {
+      this.paginatorOptions.setPage(1);
+      this.getQuestionsAndSetThem(1);
+      return;
+    }
+
     this.questionService
       .searchForQuestions(
         this.questionBaseId!,
-        this.searchFormControl.value!,
-        1,
+        key!,
+        pageNumber,
         this.paginatorOptions.rows
       )
       .subscribe((response) => {
+        this.questionGetType = 'searched';
+
         this.questions = response.data;
         this.paginatorOptions.totalItems = response.totalItems;
       });
@@ -347,9 +362,11 @@ export class QuestionBaseEditComponent {
 
   onPageChange(event: any): void {
     const pageNumber = event.page + 1;
-    this.getQuestionsAndSetThem(pageNumber);
-    this.paginatorOptions.setPage(pageNumber);
 
-    // add detection if questions are searched
+    this.questionGetType == 'regular'
+      ? this.getQuestionsAndSetThem(pageNumber)
+      : this.searchForQuestions(pageNumber);
+
+    this.paginatorOptions.setPage(pageNumber);
   }
 }
