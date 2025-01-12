@@ -7,14 +7,12 @@ using QuizHub.Application.Modules.Question.Endpoints.Update.Models;
 using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Entities;
 using QuizHub.Domain.Enums;
-using QuizHub.Domain.Models;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Update;
 
-public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageService) : Endpoint<UpdateQuestionRequest, Result>
+public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQuestionRequest, Result>
 {
     private readonly IAppDbContext _context = context;
-    private readonly IImageService _imageService = imageService;
 
     public override void Configure()
     {
@@ -27,7 +25,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         var userId = this.GetUserId();
 
         var questionDb = await _context.QuestionBases
-            .GetQuestionWithIncludedAnswersAsync(userId, req.QuestionBaseId, req.Question.Id, ct);
+            .GetQuestionWithIncludedAnswers(userId, req.QuestionBaseId, req.Question.Id, ct);
 
         if (questionDb == null)
         {
@@ -54,7 +52,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
             
             var currentAnswerDb = questionDb.Answers.First(answerDb => answerDb.Id == answer.Id);
 
-            await ModifyExistingAnswerAsync(answer, currentAnswerDb, ct);
+            await ModifyExistingAnswer(answer, currentAnswerDb, ct);
         }
 
         if (question.Answers.Count > questionDb.Answers.Count)
@@ -71,12 +69,11 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         }
 
         var contentImageId = await
-            HandleAllCasesOfImageEditionForQuestionAndGetImageIdAsync(question, questionDb, ct);
+            HandleAllCasesOfImageEditionForQuestionAndGetImageId(question, questionDb, ct);
 
         questionDb.Update(req.Question.Content, req.Question.QuestionType, contentImageId);
 
         await _context.SaveChangesAsync(ct);
-        await _imageService.SaveChangesAsync(ct);
 
         await SendOkAsync(Result.Success(), ct);
     }
@@ -89,7 +86,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
 
             if (answer.Image != null)
             {
-                answerImageId = await _imageService.AddImageAndGetIdWithoutSavingAsync(answer.Image, ct);
+                answerImageId = await _context.Images.AddImage(answer.Image, ct);
             }
 
             Answer answerToAdd = new(questionId, answer.Content, answer.IsCorrect, answerImageId);
@@ -110,25 +107,25 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         }
     }
 
-    private async Task ModifyExistingAnswerAsync(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
+    private async Task ModifyExistingAnswer(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
     {
-        var imageId = await HandleAllCasesOfImageEditionForAnswersAndGetImageIdAsync(dto, answerDb, ct);
+        var imageId = await HandleAllCasesOfImageEditionForAnswersAndGetImageId(dto, answerDb, ct);
         answerDb.Update(dto.Content, dto.IsCorrect, imageId);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageIdAsync(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
+    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageId(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
     {   
         return await
-            HandleAllCasesOfImageEditionAndGetImageIdAsync(dto.Image, dto.ImageEditionState, answerDb.ImageId, ct);
+            HandleAllCasesOfImageEditionAndGetImageId(dto.Image, dto.ImageEditionState, answerDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageIdAsync(IdentifiedQuestionMappedUpdateDTO dto, Domain.Entities.Question questionDb, CancellationToken ct = default)
+    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageId(IdentifiedQuestionMappedUpdateDTO dto, Domain.Entities.Question questionDb, CancellationToken ct = default)
     {
         return await
-            HandleAllCasesOfImageEditionAndGetImageIdAsync(dto.Image, dto.ImageEditionState, questionDb.ImageId, ct);
+            HandleAllCasesOfImageEditionAndGetImageId(dto.Image, dto.ImageEditionState, questionDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionAndGetImageIdAsync(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct = default)
+    private async Task<Guid?> HandleAllCasesOfImageEditionAndGetImageId(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct = default)
     {
         if (imageState == ImageEditionState.Untouched)
         {
@@ -136,7 +133,9 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         }
         else if (imageState == ImageEditionState.Removed && imageDbId != null)
         {
-            await _imageService.RemoveImageWithoutSavingAsync(imageDbId!.Value, ct);
+            await _context.Images
+                    .Where(image => image.Id == imageDbId)
+                    .ExecuteDeleteAsync(ct);
 
             return null;
         }
@@ -144,17 +143,17 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         {
             if (imageDbId != null)
             {
-                var imageDb = await _imageService.GetImageByIdAsync(imageDbId!.Value, ct) ??
+                var imageDb = await _context.Images.FirstOrDefaultAsync(image => image.Id == imageDbId, ct) ??
                     throw new DomainException("Błąd danych obrazu");
 
-                var imageModel = await image.ToImageDbAsync(ct);
+                var imageModel = await image.ToImageDb(ct);
                 imageDb.Update(imageModel.Data, imageModel.ContentType);
 
                 return imageDb.Id;
             }
             else
             {
-                return await _imageService.AddImageAndGetIdWithoutSavingAsync(image, ct);
+                return await _context.Images.AddImage(image, ct);
             }
         }
 

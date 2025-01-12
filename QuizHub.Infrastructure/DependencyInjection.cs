@@ -23,7 +23,6 @@ public static class DependencyInjection
         services.Configure<TokenOptions>(configuration.GetSection(TokenOptions.Jwt));
 
         services.AddScoped<IAppDbContext, AppDbContext>();
-        services.AddScoped<IImageService, ImageService>();
 
         services.AddScoped<AuthRepository>();
         services.AddScoped<PasswordHashService>();
