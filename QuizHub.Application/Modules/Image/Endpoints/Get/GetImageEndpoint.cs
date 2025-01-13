@@ -14,7 +14,7 @@ public class GetImageEndpoint(IAppDbContext context) : Endpoint<GetImageRequest>
 
     public override async Task HandleAsync(GetImageRequest req, CancellationToken ct)
     {
-        var image = await _context.Images.FirstOrDefaultAsync(image => image.Id == req.ImageId, ct);
+        var image = await _context.Images.FindAsync([req.ImageId], ct);
 
         if (image == null)
         {

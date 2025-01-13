@@ -1,4 +1,6 @@
-﻿namespace QuizHub.Domain.Entities;
+﻿using QuizHub.Domain.Models;
+
+namespace QuizHub.Domain.Entities;
 
 public class Image
 {
