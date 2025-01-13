@@ -20,7 +20,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
     public override async Task HandleAsync(GetPaginatedQuestionsRequest req, CancellationToken ct)
     {
         var paginatedData = 
-            await GetIdentifiedQuestionsPaginatedDataAsync(req.QuestionBaseId, req.PageNumber, req.PageSize, ct);
+            await GetQuestionsPaginatedData(req.QuestionBaseId, req.PageNumber, req.PageSize, ct);
 
         if (paginatedData == null)
         {
@@ -49,7 +49,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
         return questionBaseDb.Name;
     }
 
-    private async Task<PaginatedData<IdentifiedQuestion>> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct)
+    private async Task<PaginatedData<IdentifiedQuestion>> GetQuestionsPaginatedData(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct)
     {
         var userId = User.GetId();
 
