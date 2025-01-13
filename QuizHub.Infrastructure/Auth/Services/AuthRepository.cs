@@ -4,6 +4,8 @@ using QuizHub.Infrastructure.Data;
 
 namespace QuizHub.Infrastructure.Auth.Services;
 
+// Forgot to remove this after moving auth endpoints to the infrastructure layer,
+// will be removed later as it is not needed for now
 public class AuthRepository(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
