@@ -1,9 +1,19 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { GetQuestionDTO } from '../models/getQuestionDto';
+import { HttpClient } from '@angular/common/http';
+import { Question } from '../models/question';
+import { DisplayableImage } from '../models/displayableImage';
+import { environment } from '../../../environments/environment.development';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
+  private readonly http = inject(HttpClient);
+
+  private readonly apiUrl = environment.apiUrl;
+
   getResizedCanvas(
     reject: (reason?: any) => void,
     img: HTMLImageElement,

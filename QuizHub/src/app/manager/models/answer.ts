@@ -1,5 +1,5 @@
-import { UndefinedAnswer } from './undefinedAnswer';
+import { UnidentifiedAnswer } from './unidentifiedAnswer';
 
-export type Answer = UndefinedAnswer & {
-  id: string;
+export type Answer = UnidentifiedAnswer & {
+  id: string | null;
 };

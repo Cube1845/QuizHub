@@ -1,0 +1,6 @@
+<div [ngStyle]="{ width: (spinnerSize * 1.5).toString() + 'px', height: (spinnerSize * 1.5).toString() + 'px' }" class="container">
+    @if (loading) {
+        <p-progress-spinner [strokeWidth]="spinnerWidth.toString()" fill="transparent" animationDuration="1.5s"
+            [style]="{ width: spinnerSize.toString() + 'px', height: spinnerSize.toString() + 'px' }" />
+    }
+</div>

@@ -8,7 +8,7 @@
     <p-button 
         [label]="dialogType == 'add' ? 'Utwórz' : 'Zapisz'" 
         severity="primary" [outlined]="true" 
-        (click)="dialogType == 'edit' ? addNewQuestionBase() : saveQuestionBaseName()" 
+        (click)="dialogType == 'add' ? addNewQuestionBase() : saveQuestionBaseName()" 
         class="ml-2" 
         [disabled]="nameFormControl.invalid"
     />

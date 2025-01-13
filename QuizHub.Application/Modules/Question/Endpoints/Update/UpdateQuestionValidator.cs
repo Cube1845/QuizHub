@@ -21,9 +21,7 @@ public class UpdateQuestionValidator : Validator<UpdateQuestionRequest>
             .Must(x => x.Count >= 2 && x.Count <= 4)
                 .WithMessage("Pytanie musi mieć przynajmniej 2 odpowiedzi, a maksymalnie 4")
             .Must(x => x.Any(a => a.IsCorrect))
-                .WithMessage("Pytanie musi mieć przynajmniej jedną poprawną odpowiedź")
-            .Must(x => x.All(a => a.Content != null || a.Image != null))
-                .WithMessage("Pytanie nie może mieć pustych odpowiedzi");
+                .WithMessage("Pytanie musi mieć przynajmniej jedną poprawną odpowiedź");
 
         RuleFor(x => x.Question.Answers.Select(a => a.Id))
             .MustBeCorrectGuidsOrNulls();

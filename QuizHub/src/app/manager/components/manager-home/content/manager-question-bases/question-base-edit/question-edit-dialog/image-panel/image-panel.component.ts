@@ -14,7 +14,10 @@ import { NgStyle } from '@angular/common';
 import { environment } from '../../../../../../../../../environments/environment.development';
 import { ImageService } from '../../../../../../../services/image.service';
 import { v4 as uuidv4 } from 'uuid';
-import { DisplayableImage } from '../../../../../../../models/displayableImage';
+import {
+  DisplayableImage,
+  DisplayableImageWithChangeTracker,
+} from '../../../../../../../models/displayableImage';
 
 @Component({
   selector: 'app-image-panel',
@@ -39,7 +42,7 @@ export class ImagePanelComponent implements ControlValueAccessor {
 
   uuid = uuidv4();
 
-  selectedImage!: DisplayableImage | null;
+  selectedImage!: DisplayableImageWithChangeTracker | null;
 
   @Output() onDisplayPreview = new EventEmitter<string>();
 
@@ -81,6 +84,8 @@ export class ImagePanelComponent implements ControlValueAccessor {
     this.selectedImage.displayUrl = this.imageService.getImageUrl(
       this.selectedImage
     );
+
+    this.selectedImage.wasChangedSinceAssigning = true;
 
     this.onChange(this.selectedImage);
   }

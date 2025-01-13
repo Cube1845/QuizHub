@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
-using QuizHub.Domain.Enums;
 
 namespace QuizHub.Domain.Models;
 
-public class UnidentifiedQuestion
+public class UnidentifiedQuestion : UnidentifiedQuestionWithNoImage
 {
-    public string Content { get; set; } = string.Empty;
-    public QuestionType QuestionType { get; set; }
     public IFormFile? Image { get; set; }
-    public List<UnidentifiedAnswer> Answers { get; set; } = [];
+    public new List<UnidentifiedAnswer> Answers { get; set; } = [];
+
+    public UnidentifiedQuestion() { }
+
+    public UnidentifiedQuestion(UnidentifiedQuestionWithNoImage question, IFormFile? contentImage, List<IFormFile?> answerImages)
+    {
+        Content = question.Content;
+        QuestionType = question.QuestionType;
+        Answers = question.Answers.Select((answerWithNoimage, i) =>
+            new UnidentifiedAnswer(answerWithNoimage, answerImages[i]))
+        .ToList();
+        Image = contentImage;
+    }
 }

@@ -29,4 +29,9 @@ public class ImageService(AppDbContext context) : IImageService
             .Where(image => image.Id == imageId)
             .ExecuteDeleteAsync(ct);
     }
+
+    public async Task SaveChangesAsync(CancellationToken ct = default)
+    {
+        await _context.SaveChangesAsync(ct);
+    }
 }

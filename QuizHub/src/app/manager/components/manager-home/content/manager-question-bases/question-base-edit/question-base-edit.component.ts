@@ -1,8 +1,6 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionBaseService } from '../../../../../services/question-base.service';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -10,18 +8,22 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuestionService } from '../../../../../services/question.service';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ImageModule } from 'primeng/image';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { QuestionEditDialogComponent } from './question-edit-dialog/question-edit-dialog.component';
 import { Question } from '../../../../../models/question';
-import { UndefinedQuestion } from '../../../../../models/undefinedQuestion';
+import { UnidentifiedQuestion } from '../../../../../models/unidentifiedQuestion';
 import { NgStyle } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { ToastService } from '../../../../../../common/services/toast.service';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
+import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
+import { QuestionUpdateDTO } from '../../../../../models/questionUpdateDTO';
+import { ImageEditionState } from '../../../../../enums/imageEditionState';
+import { DisplayableImage } from '../../../../../models/displayableImage';
+import { Answer } from '../../../../../models/answer';
+import { QuestionBaseService } from '../../../../../services/question-base.service';
+import { QuestionBaseNameEditDialogComponent } from '../dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -37,27 +39,42 @@ import { GlobalDialogService } from '../../../../../../common/services/global-di
     ImageModule,
     NgStyle,
     PaginatorModule,
+    SpinnerComponent,
   ],
   templateUrl: './question-base-edit.component.html',
   styleUrl: './question-base-edit.component.scss',
 })
-export class QuestionBaseEditComponent implements OnInit {
+export class QuestionBaseEditComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly questionBaseService = inject(QuestionBaseService);
   private readonly questionService = inject(QuestionService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly questionBaseService = inject(QuestionBaseService);
+
+  private readonly paginatorItemsPerPage = [10, 20, 30];
 
   questionBaseId!: string | null;
+  questionBaseName!: string | null;
 
   questions: Question[] | null = null;
 
   searchFormControl = new FormControl<string>('', Validators.required);
 
-  paginatorOptions: PaginatorOptions | undefined;
+  paginatorOptions: PaginatorOptions = new PaginatorOptions(
+    1,
+    this.paginatorItemsPerPage[0],
+    0,
+    this.paginatorItemsPerPage,
+    () => this.getQuestionsAndSetThem(1)
+  );
 
-  ngOnInit() {
+  constructor() {
+    this.questionBaseService.onQuestionBaseNameSent$.subscribe((name) => {
+      this.questionBaseName = name;
+      console.log(this.questionBaseName);
+    });
+
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -65,13 +82,22 @@ export class QuestionBaseEditComponent implements OnInit {
 
       this.questionBaseId = paramMap.get('id');
 
-      this.questions =
-        this.questionBaseService.getQuestionsFromUserQuestionBase(
-          this.questionBaseId!
-        );
-
-      this.paginatorOptions = new PaginatorOptions(0, 10, 50, [10, 20, 30]);
+      this.getQuestionsAndSetThem(1);
     });
+  }
+
+  getQuestionsAndSetThem(pageNumber: number): void {
+    this.questionService
+      .getQuestionsFromUserQuestionBase(
+        this.questionBaseId!,
+        pageNumber,
+        this.paginatorItemsPerPage[0]
+      )
+      .subscribe((response) => {
+        this.questions = response.data.data;
+        this.paginatorOptions.totalItems = response.data.totalItems;
+        this.questionBaseName = response.questionBaseName;
+      });
   }
 
   goBack(): void {
@@ -114,8 +140,12 @@ export class QuestionBaseEditComponent implements OnInit {
       })
       .subscribe((result) => {
         if (result != null) {
-          this.saveQuestion(result.question, result.questionIndex);
-          return;
+          this.saveQuestion(
+            result.question,
+            result.contentImage,
+            result.answerImages,
+            result.questionIndex
+          );
         }
       });
   }
@@ -129,7 +159,6 @@ export class QuestionBaseEditComponent implements OnInit {
       .subscribe((result) => {
         if (result != null) {
           this.addQuestion(result);
-          return;
         }
       });
   }
@@ -153,46 +182,170 @@ export class QuestionBaseEditComponent implements OnInit {
   }
 
   removeQuestion(index: number): void {
-    this.questionService.removeQuestion(this.questions![index].id);
-
-    this.questions!.splice(index, 1);
-
-    this.toastService.displayToast('success', 'Sukces', 'Usunięto pytanie');
+    this.questionService
+      .removeQuestion(this.questionBaseId!, this.questions![index].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.questions!.splice(index, 1);
+          this.paginatorOptions!.totalItems--;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto pytanie'
+          );
+        }
+      });
   }
 
-  saveQuestion(question: Question, questionIndex: number): void {
-    this.questionService.editQuestion(question, question.id);
+  saveQuestion(
+    questionDto: QuestionUpdateDTO,
+    contentImage: DisplayableImage | null,
+    answerImages: (DisplayableImage | null)[],
+    questionIndex: number
+  ): void {
+    this.questionService
+      .editQuestion(
+        questionDto,
+        this.questionBaseId!,
+        contentImage,
+        answerImages
+      )
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          const question: Question = {
+            content: questionDto.content,
+            questionType: questionDto.questionType,
+            image:
+              questionDto.imageEditionState == ImageEditionState.Modified
+                ? contentImage
+                : questionDto.image,
+            id: questionDto.id,
+            answers: questionDto.answers.map((answer, i) => {
+              const mappedAnswer: Answer = {
+                content: answer.content,
+                isCorrect: answer.isCorrect,
+                image:
+                  answer.imageEditionState == ImageEditionState.Modified
+                    ? answerImages[i]
+                    : answer.image,
+                id: answer.id,
+              };
 
-    this.questions![questionIndex] = question;
+              return mappedAnswer;
+            }),
+          };
 
-    this.toastService.displayToast('success', 'Sukces', 'Zapisano pytanie');
+          this.questions![questionIndex] = question;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Zapisano pytanie'
+          );
+        }
+      });
   }
 
-  addQuestion(questionToAdd: UndefinedQuestion): void {
-    this.questionService.addQuestion(questionToAdd);
+  addQuestion(questionToAdd: UnidentifiedQuestion): void {
+    this.questionService
+      .addQuestion(
+        questionToAdd,
+        this.questionBaseId!,
+        questionToAdd.image,
+        questionToAdd.answers.map((answer) => answer.image)
+      )
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          const lastPageNumber =
+            this.paginatorOptions!.getLastPageNumberAfterAddition();
 
-    //temporary solution before API
-    let question: Question = {
-      content: questionToAdd.content,
-      answers: questionToAdd.answers.map((undefinedAnswer) => {
-        return {
-          content: undefinedAnswer.content,
-          image: undefinedAnswer.image,
-          isCorrect: undefinedAnswer.isCorrect,
-          id: '',
-        };
-      }),
-      image: questionToAdd.image,
-      questionType: questionToAdd.questionType,
-      id: '',
-    };
+          this.questionService
+            .getQuestionsFromUserQuestionBase(
+              this.questionBaseId!,
+              lastPageNumber,
+              this.paginatorOptions!.rows
+            )
+            .subscribe((response) => {
+              this.questions = response.data.data;
 
-    this.questions!.push(question);
+              this.paginatorOptions!.totalItems = response.data.totalItems;
+              this.paginatorOptions!.setPage(lastPageNumber);
 
-    this.toastService.displayToast('success', 'Sukces', 'Dodano pytanie');
+              this.toastService.displayToast(
+                'success',
+                'Sukces',
+                'Dodano pytanie'
+              );
+            });
+        }
+      });
   }
 
-  onPageChange(event: any) {
-    const pageNumber = event.page;
+  displayQuestionBaseRemovalModal(event: Event): void {
+    this.globalDialogService.displayConfirmationDialog({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz usunąć tę bazę pytań?',
+      header: 'Potwierdzenie',
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      defaultFocus: 'reject',
+
+      accept: () => this.removeThisQuestionBase(),
+    });
+  }
+
+  removeThisQuestionBase(): void {
+    this.questionBaseService
+      .removeQuestionBase(this.questionBaseId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.goBack();
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto bazę pytań'
+          );
+        }
+      });
+  }
+
+  displayQuestionBaseNameEditModal(): void {
+    this.globalDialogService
+      .displayDialog(QuestionBaseNameEditDialogComponent, {
+        header: 'Edytuj nazwę bazy pytań',
+        width: '25rem',
+        modal: true,
+        data: { index: -1, currentName: this.questionBaseName },
+      })
+      .subscribe((result) => {
+        if (result != null) {
+          this.saveThisQuestionBaseName(result.name);
+        }
+      });
+  }
+
+  saveThisQuestionBaseName(updatedName: string): void {
+    this.questionBaseService
+      .editQuestionBaseName(updatedName, this.questionBaseId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.questionBaseName = updatedName;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Zmieniono nazwę'
+          );
+        }
+      });
+  }
+
+  onPageChange(event: any): void {
+    const pageNumber = event.page + 1;
+    this.getQuestionsAndSetThem(pageNumber);
+    this.paginatorOptions.setPage(pageNumber);
   }
 }

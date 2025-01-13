@@ -1,9 +1,7 @@
-﻿using QuizHub.Domain.Entities;
+﻿namespace QuizHub.Domain.Models;
 
-namespace QuizHub.Domain.Models;
-
-public class IdentifiedAnswer : UnidentifiedAnswer
+public class IdentifiedAnswer() : UnidentifiedAnswerWithNoImage
 {
     public Guid Id { get; set; }
-    public new Image? Image { get; set; } = null!;
+    public Guid? ImageId { get; set; }
 }

@@ -3,5 +3,4 @@ using QuizHub.Domain.Models;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Get;
 
-public class GetPaginatedQuestionsResponse(PaginatedData<IdentifiedQuestion> data)
-    : PaginatedData<IdentifiedQuestion>(data.Data, data.TotalItems);
+public record GetPaginatedQuestionsResponse(PaginatedData<IdentifiedQuestion> Data, string QuestionBaseName);
