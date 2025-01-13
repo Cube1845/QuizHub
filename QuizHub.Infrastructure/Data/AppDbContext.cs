@@ -34,6 +34,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
             e.HasMany(x => x.Questions).WithOne(x => x.QuestionBase);
+            e.HasIndex(x => new { x.Id, x.OwnerId }).IsUnique();
         });
 
         builder.Entity<Question>(e =>
