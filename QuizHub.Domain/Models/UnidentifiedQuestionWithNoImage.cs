@@ -2,9 +2,12 @@
 
 namespace QuizHub.Domain.Models;
 
-public class UnidentifiedQuestionWithNoImage
+public class UnidentifiedQuestionWithNoImage<T>
+    where T : UnidentifiedAnswerWithNoImage
 {
     public string Content { get; set; } = string.Empty;
     public QuestionType QuestionType { get; set; }
-    public List<UnidentifiedAnswerWithNoImage> Answers { get; set; } = [];
+    public List<T> Answers { get; set; } = [];
 }
+
+public class UnidentifiedQuestionWithNoImage : UnidentifiedQuestionWithNoImage<UnidentifiedAnswerWithNoImage>;

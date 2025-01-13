@@ -5,7 +5,7 @@ namespace QuizHub.Application.Modules.Question.Endpoints.Update;
 
 public record UpdateQuestionRequest
     (Guid QuestionBaseId,
-    IdentifiedQuestionUpdateDTO Question,
+    IdentifiedQuestionUpdateDto Question,
     IFormFile? ContentImage,
     IFormFile? AnswerImage1,
     IFormFile? AnswerImage2,

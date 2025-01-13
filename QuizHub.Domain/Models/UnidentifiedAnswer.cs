@@ -6,8 +6,6 @@ public class UnidentifiedAnswer : UnidentifiedAnswerWithNoImage
 {
     public IFormFile? Image { get; set; }
 
-    public UnidentifiedAnswer() {}
-
     public UnidentifiedAnswer(UnidentifiedAnswerWithNoImage answer, IFormFile? contentImage)
     {
         Content = answer.Content;

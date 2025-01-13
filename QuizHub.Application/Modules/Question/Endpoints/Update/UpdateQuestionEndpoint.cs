@@ -41,7 +41,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
             req.AnswerImage4
         ]);
 
-        IdentifiedQuestionMappedUpdateDTO question = new(req.Question, req.ContentImage, processedAnswerImageFiles);
+        IdentifiedQuestionMappedUpdateDto question = new(req.Question, req.ContentImage, processedAnswerImageFiles);
         
         foreach (var answer in question.Answers)
         {
@@ -78,7 +78,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
         await SendOkAsync(Result.Success(), ct);
     }
 
-    private async void AddNewAnswer(List<IdentifiedAnswerMappedUpdateDTO> answers, Guid questionId, CancellationToken ct)
+    private async void AddNewAnswer(List<IdentifiedAnswerMappedUpdateDto> answers, Guid questionId, CancellationToken ct)
     {
         foreach (var answer in answers)
         {
@@ -94,7 +94,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
         }
     }
 
-    private void RemoveAllAnswersNotIncludedInUpdateDTO(List<IdentifiedAnswerMappedUpdateDTO> answers, Domain.Entities.Question questionDb)
+    private void RemoveAllAnswersNotIncludedInUpdateDTO(List<IdentifiedAnswerMappedUpdateDto> answers, Domain.Entities.Question questionDb)
     {
         var answerIdsFromRequest = GetAllNotNullAnswerIdsFromQuestionUpdateDTO(answers);
 
@@ -107,19 +107,19 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
         }
     }
 
-    private async Task ModifyExistingAnswer(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct)
+    private async Task ModifyExistingAnswer(IdentifiedAnswerMappedUpdateDto dto, Answer answerDb, CancellationToken ct)
     {
         var imageId = await HandleAllCasesOfImageEditionForAnswersAndGetImageId(dto, answerDb, ct);
         answerDb.Update(dto.Content, dto.IsCorrect, imageId);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageId(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct)
+    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageId(IdentifiedAnswerMappedUpdateDto dto, Answer answerDb, CancellationToken ct)
     {   
         return await
             HandleAllCasesOfImageEditionAndGetImageId(dto.Image, dto.ImageEditionState, answerDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageId(IdentifiedQuestionMappedUpdateDTO dto, Domain.Entities.Question questionDb, CancellationToken ct)
+    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageId(IdentifiedQuestionMappedUpdateDto dto, Domain.Entities.Question questionDb, CancellationToken ct)
     {
         return await
             HandleAllCasesOfImageEditionAndGetImageId(dto.Image, dto.ImageEditionState, questionDb.ImageId, ct);
@@ -160,7 +160,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
         return imageDbId;
     }
 
-    private List<Guid> GetAllNotNullAnswerIdsFromQuestionUpdateDTO(List<IdentifiedAnswerMappedUpdateDTO> answers)
+    private List<Guid> GetAllNotNullAnswerIdsFromQuestionUpdateDTO(List<IdentifiedAnswerMappedUpdateDto> answers)
     {
         return answers
             .Where(answer => answer.Id != null)

@@ -1,9 +1,8 @@
 ﻿namespace QuizHub.Domain.Models;
 
-public class IdentifiedQuestion : UnidentifiedQuestionWithNoImage
+public class IdentifiedQuestion : UnidentifiedQuestionWithNoImage<IdentifiedAnswer>
 {
     public Guid Id { get; set; }
-    public new List<IdentifiedAnswer> Answers { get; set; } = [];
     public Guid? ImageId { get; set; }
 }
 
