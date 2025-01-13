@@ -59,7 +59,7 @@ export class QuestionBaseEditComponent {
 
   questions: Question[] | null = null;
 
-  searchFormControl = new FormControl<string>('', Validators.required);
+  searchFormControl = new FormControl<string>('');
 
   paginatorOptions: PaginatorOptions = new PaginatorOptions(
     1,
@@ -69,12 +69,9 @@ export class QuestionBaseEditComponent {
     () => this.getQuestionsAndSetThem(1)
   );
 
-  constructor() {
-    this.questionBaseService.onQuestionBaseNameSent$.subscribe((name) => {
-      this.questionBaseName = name;
-      console.log(this.questionBaseName);
-    });
+  questionGetType: 'regular' | 'searched' = 'regular';
 
+  constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (paramMap.get('id') == null) {
         return;
@@ -94,6 +91,9 @@ export class QuestionBaseEditComponent {
         this.paginatorItemsPerPage[0]
       )
       .subscribe((response) => {
+        this.searchFormControl.reset();
+        this.questionGetType = 'regular';
+
         this.questions = response.data.data;
         this.paginatorOptions.totalItems = response.data.totalItems;
         this.questionBaseName = response.questionBaseName;
@@ -104,11 +104,28 @@ export class QuestionBaseEditComponent {
     this.router.navigateByUrl('manager/question-bases');
   }
 
-  searchForQuestions(): void {
-    this.questionService.searchForQuestions(
-      this.questionBaseId!,
-      this.searchFormControl.value!
-    );
+  searchForQuestions(pageNumber: number = 1): void {
+    const key = this.searchFormControl.value;
+
+    if (key == null || key!.trim() == '') {
+      this.paginatorOptions.setPage(1);
+      this.getQuestionsAndSetThem(1);
+      return;
+    }
+
+    this.questionService
+      .searchForQuestions(
+        this.questionBaseId!,
+        key!,
+        pageNumber,
+        this.paginatorOptions.rows
+      )
+      .subscribe((response) => {
+        this.questionGetType = 'searched';
+
+        this.questions = response.data;
+        this.paginatorOptions.totalItems = response.totalItems;
+      });
   }
 
   openQuestionEditor(index: number, event: MouseEvent) {
@@ -345,7 +362,11 @@ export class QuestionBaseEditComponent {
 
   onPageChange(event: any): void {
     const pageNumber = event.page + 1;
-    this.getQuestionsAndSetThem(pageNumber);
+
+    this.questionGetType == 'regular'
+      ? this.getQuestionsAndSetThem(pageNumber)
+      : this.searchForQuestions(pageNumber);
+
     this.paginatorOptions.setPage(pageNumber);
   }
 }

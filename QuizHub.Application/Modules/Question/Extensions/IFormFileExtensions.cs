@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using QuizHub.Domain.Entities;
 
 namespace QuizHub.Application.Modules.Question.Extensions;
 
@@ -12,7 +11,6 @@ public static class IFormFileExtensions
 
         var baseImage = new Domain.Entities.Image
         {
-            Name = imageFile.FileName,
             Data = memoryStream.ToArray(),
             ContentType = imageFile.ContentType
         };

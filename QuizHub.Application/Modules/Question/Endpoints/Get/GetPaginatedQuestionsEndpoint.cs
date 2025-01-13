@@ -2,7 +2,9 @@
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
+using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Models;
+using System.Text;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Get;
 
@@ -17,43 +19,53 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
 
     public override async Task HandleAsync(GetPaginatedQuestionsRequest req, CancellationToken ct)
     {
-        var (Data, QuestionBaseName) = 
+        var paginatedData = 
             await GetIdentifiedQuestionsPaginatedDataAsync(req.QuestionBaseId, req.PageNumber, req.PageSize, ct);
 
-        var questionsPaginatedData = Data;
-
-        if (questionsPaginatedData == null)
+        if (paginatedData == null)
         {
             await SendOkAsync(Result<GetPaginatedQuestionsResponse>.Error("Błąd danych"), ct);
             return;
         }
 
-        GetPaginatedQuestionsResponse data = new(questionsPaginatedData, QuestionBaseName);
+        var questionBaseName = await GetQuestionBaseName(req.QuestionBaseId, ct);
+
+        GetPaginatedQuestionsResponse data = new(paginatedData, questionBaseName);
 
         await SendOkAsync(Result<GetPaginatedQuestionsResponse>.Success(data), ct);
     }
 
-    private async Task<(PaginatedData<IdentifiedQuestion> Data, string QuestionBaseName)> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct = default)
+    private async Task<string> GetQuestionBaseName(Guid questionBaseId, CancellationToken ct = default)
     {
         var userId = this.GetUserId();
 
-        var questionBaseQueryable = _context.QuestionBases
+        var questionBaseDb = await _context.QuestionBases
+            .FirstOrDefaultAsync(questionBase =>
+                questionBase.Id == questionBaseId &&
+                questionBase.OwnerId == userId
+            , ct) 
+            ?? throw new DomainException("Taka baza pytań nie istnieje");
+
+        return questionBaseDb.Name;
+    }
+
+    private async Task<PaginatedData<IdentifiedQuestion>> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct = default)
+    {
+        var userId = this.GetUserId();
+
+        var questionsDb = await _context.QuestionBases
             .Include(questionBase => questionBase.Questions)
             .ThenInclude(question => question.Answers)
             .Where(questionBase =>
                 questionBase.Id == questionBaseId &&
                 questionBase.OwnerId == userId
-            );
-
-        var questionBaseDb = await questionBaseQueryable
-            .FirstOrDefaultAsync(ct) ?? throw new Exception("Taka baza pytań nie istnieje");
-
-        var questionsDb = await questionBaseQueryable
+            )
             .SelectMany(questionBase => questionBase.Questions)
             .GetPage(pageNumber, pageSize)
             .ToListAsync(ct);
 
         var totalItems = await _context.QuestionBases
+            .Include(questionBase => questionBase.Questions)
             .Where(questionBase =>
                 questionBase.Id == questionBaseId &&
                 questionBase.OwnerId == userId
@@ -61,35 +73,8 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
             .SelectMany(questionBase => questionBase.Questions)
             .CountAsync(ct);
 
-        List<IdentifiedQuestion> identifiedQuestions = [];
+        var identifiedQuestions = questionsDb.ToIdentifiedQuestionList();
 
-        foreach (var question in questionsDb)
-        {
-            List<IdentifiedAnswer> answers = [];
-
-            foreach (var answer in question.Answers)
-            {
-                answers.Add(new IdentifiedAnswer()
-                {
-                    Id = answer.Id,
-                    Content = answer.Content,
-                    IsCorrect = answer.IsCorrect,
-                    ImageId = answer.ImageId
-                });
-            }
-
-            var questionToAdd = new IdentifiedQuestion()
-            {
-                Id = question.Id,
-                Content = question.Content,
-                QuestionType = question.QuestionType,
-                ImageId = question.ImageId,
-                Answers = answers
-            };
-
-            identifiedQuestions.Add(questionToAdd);
-        }
-
-        return (new PaginatedData<IdentifiedQuestion>(identifiedQuestions, totalItems), questionBaseDb.Name);
+        return new PaginatedData<IdentifiedQuestion>(identifiedQuestions, totalItems);
     }
 }

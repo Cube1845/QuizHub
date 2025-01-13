@@ -22,9 +22,6 @@ export class QuestionBaseService {
 
   private readonly toastService = inject(ToastService);
 
-  private readonly questionBaseNameSentSubject = new Subject<string>();
-  onQuestionBaseNameSent$ = this.questionBaseNameSentSubject.asObservable();
-
   displayErrorToast(detail: string): void {
     this.toastService.displayToast('error', 'Błąd', detail);
   }

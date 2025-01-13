@@ -1,7 +1,4 @@
 ﻿using FastEndpoints;
-using FastEndpoints.Security;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Http;
 using QuizHub.Application.Common.Models;
 using QuizHub.Infrastructure.Auth.Services;
 using System.Security.Claims;
@@ -22,13 +19,13 @@ public class LoginEndpoint(AuthRepository authRepository, PasswordHashService pa
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
         var user = await _authRepository.GetUser(req.Email, ct) ??
-            throw new Exception("Niepoprawny email lub hasło");
+            throw new DomainException("Niepoprawny email lub hasło");
 
         var passwordCorrect = _passwordHashService.VerifyPassword(req.Password, user!.PasswordHash);
 
         if (!passwordCorrect)
         {
-            throw new Exception("Niepoprawny email lub hasło");
+            throw new DomainException("Niepoprawny email lub hasło");
         }
 
         Response = await CreateTokenWith<TokenService>(user.Id.ToString(), u =>

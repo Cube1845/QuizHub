@@ -144,7 +144,53 @@ export class QuestionService {
       );
   }
 
-  searchForQuestions(questionBaseId: string, key: string): void {}
+  searchForQuestions(
+    questionBaseId: string,
+    key: string,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedData<Question>> {
+    return this.http
+      .get<Result<PaginatedData<GetQuestionDTO>>>(
+        this.apiUrl +
+          '/question/search' +
+          '?questionBaseId=' +
+          questionBaseId +
+          '&key=' +
+          key +
+          '&pageNumber=' +
+          pageNumber.toString() +
+          '&pageSize=' +
+          pageSize.toString()
+      )
+      .pipe(this.handleGetFoundPaginatedResultPatternResponse());
+  }
+
+  private handleGetFoundPaginatedResultPatternResponse() {
+    return (
+      source: Observable<Result<PaginatedData<GetQuestionDTO>>>
+    ): Observable<PaginatedData<Question>> =>
+      source.pipe(
+        switchMap(async (result: Result<PaginatedData<GetQuestionDTO>>) => {
+          if (!result.isSuccess) {
+            this.displayErrorToast(result.message || 'Wystąpił błąd');
+            return null!;
+          }
+
+          const dtoPaginatedData = result.value;
+
+          const questions: Question[] =
+            await this.mapGetQuestionDtoListToQuestionList(
+              dtoPaginatedData.data
+            );
+
+          return {
+            data: questions,
+            totalItems: dtoPaginatedData.totalItems,
+          };
+        })
+      );
+  }
 
   private handleGetPaginatedResultPatternResponse() {
     return (

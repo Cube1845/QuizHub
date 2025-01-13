@@ -1,18 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace QuizHub.Domain.Entities;
+﻿namespace QuizHub.Domain.Entities;
 
 public class Image
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
     public byte[] Data { get; set; } = [];
     public string ContentType { get; set; } = string.Empty;
 
-    public void Update(Image image)
+    public void Update(byte[] data, string contentType)
     {
-        Name = image.Name;
-        Data = image.Data;
-        ContentType = image.ContentType;
+        Data = data;
+        ContentType = contentType;
     }
 }
