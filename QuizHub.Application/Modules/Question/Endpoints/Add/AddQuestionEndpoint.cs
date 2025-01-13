@@ -21,7 +21,7 @@ public class AddQuestionEndpoint(IAppDbContext context) : Endpoint<AddQuestionRe
 
     public override async Task HandleAsync(AddQuestionRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBaseCorrect = await _context.QuestionBases
             .AnyAsync(questionBase =>

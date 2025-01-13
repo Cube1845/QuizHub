@@ -34,7 +34,7 @@ public class GetFoundPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoin
 
     private async Task<PaginatedData<IdentifiedQuestion>> SearchForQuestionsAndGetPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, string key, CancellationToken ct = default)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBaseQueryable = _context.QuestionBases
             .Include(questionBase => questionBase.Questions)

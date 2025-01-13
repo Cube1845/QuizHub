@@ -15,7 +15,7 @@ public class AddQuestionBaseEndpoint(IAppDbContext context) : Endpoint<AddQuesti
 
     public override async Task HandleAsync(AddQuestionBaseRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBase = new Domain.Entities.QuestionBase()
         {

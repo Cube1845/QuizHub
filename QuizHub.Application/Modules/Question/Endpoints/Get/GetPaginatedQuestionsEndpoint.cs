@@ -37,7 +37,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
 
     private async Task<string> GetQuestionBaseName(Guid questionBaseId, CancellationToken ct = default)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBaseDb = await _context.QuestionBases
             .FirstOrDefaultAsync(questionBase =>
@@ -51,7 +51,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
 
     private async Task<PaginatedData<IdentifiedQuestion>> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct = default)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionsDb = await _context.QuestionBases
             .Include(questionBase => questionBase.Questions)

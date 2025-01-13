@@ -17,7 +17,7 @@ public class GetQuestionBasesEndpoint(IAppDbContext context) : EndpointWithoutRe
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBases = await _context.QuestionBases
             .Include(questionBase => questionBase.Questions)

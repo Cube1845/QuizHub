@@ -22,7 +22,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
 
     public override async Task HandleAsync(UpdateQuestionRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionDb = await _context.QuestionBases
             .GetQuestionWithIncludedAnswers(userId, req.QuestionBaseId, req.Question.Id, ct);
