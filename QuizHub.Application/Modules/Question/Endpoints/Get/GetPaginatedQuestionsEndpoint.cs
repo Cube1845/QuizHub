@@ -35,7 +35,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
         await SendOkAsync(Result<GetPaginatedQuestionsResponse>.Success(data), ct);
     }
 
-    private async Task<string> GetQuestionBaseName(Guid questionBaseId, CancellationToken ct = default)
+    private async Task<string> GetQuestionBaseName(Guid questionBaseId, CancellationToken ct)
     {
         var userId = User.GetId();
 
@@ -49,7 +49,7 @@ public class GetPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoint<Get
         return questionBaseDb.Name;
     }
 
-    private async Task<PaginatedData<IdentifiedQuestion>> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct = default)
+    private async Task<PaginatedData<IdentifiedQuestion>> GetIdentifiedQuestionsPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, CancellationToken ct)
     {
         var userId = User.GetId();
 

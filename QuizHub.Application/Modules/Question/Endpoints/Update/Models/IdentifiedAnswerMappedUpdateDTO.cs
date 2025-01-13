@@ -2,11 +2,11 @@
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Update.Models;
 
-public class IdentifiedAnswerMappedUpdateDTO : IdentifiedAnswerUpdateDTO
+public class IdentifiedAnswerMappedUpdateDto : IdentifiedAnswerUpdateDto
 {
     public IFormFile? Image { get; set; }
 
-    public IdentifiedAnswerMappedUpdateDTO(IdentifiedAnswerUpdateDTO answer, IFormFile? contentImage)
+    public IdentifiedAnswerMappedUpdateDto(IdentifiedAnswerUpdateDto answer, IFormFile? contentImage)
     {
         Id = answer.Id;
         Content = answer.Content;

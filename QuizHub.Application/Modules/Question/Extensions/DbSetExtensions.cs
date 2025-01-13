@@ -31,7 +31,7 @@ public static class DbSetExtensions
             return null;
         }
 
-        var image = await imageToAdd.ToImageDb();
+        var image = await imageToAdd.ToImageDb(ct);
 
         await images.AddAsync(image, ct);
         return image.Id;

@@ -32,7 +32,7 @@ public class GetFoundPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoin
         await SendOkAsync(Result<GetFoundPaginatedQuestionsResponse>.Success(data), ct);
     }
 
-    private async Task<PaginatedData<IdentifiedQuestion>> SearchForQuestionsAndGetPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, string key, CancellationToken ct = default)
+    private async Task<PaginatedData<IdentifiedQuestion>> SearchForQuestionsAndGetPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, string key, CancellationToken ct)
     {
         var userId = User.GetId();
 

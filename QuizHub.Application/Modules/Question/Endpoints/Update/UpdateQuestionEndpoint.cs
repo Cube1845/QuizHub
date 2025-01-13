@@ -78,7 +78,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
         await SendOkAsync(Result.Success(), ct);
     }
 
-    private async void AddNewAnswer(List<IdentifiedAnswerMappedUpdateDTO> answers, Guid questionId, CancellationToken ct = default)
+    private async void AddNewAnswer(List<IdentifiedAnswerMappedUpdateDTO> answers, Guid questionId, CancellationToken ct)
     {
         foreach (var answer in answers)
         {
@@ -107,25 +107,25 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
         }
     }
 
-    private async Task ModifyExistingAnswer(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
+    private async Task ModifyExistingAnswer(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct)
     {
         var imageId = await HandleAllCasesOfImageEditionForAnswersAndGetImageId(dto, answerDb, ct);
         answerDb.Update(dto.Content, dto.IsCorrect, imageId);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageId(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
+    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageId(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct)
     {   
         return await
             HandleAllCasesOfImageEditionAndGetImageId(dto.Image, dto.ImageEditionState, answerDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageId(IdentifiedQuestionMappedUpdateDTO dto, Domain.Entities.Question questionDb, CancellationToken ct = default)
+    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageId(IdentifiedQuestionMappedUpdateDTO dto, Domain.Entities.Question questionDb, CancellationToken ct)
     {
         return await
             HandleAllCasesOfImageEditionAndGetImageId(dto.Image, dto.ImageEditionState, questionDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionAndGetImageId(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct = default)
+    private async Task<Guid?> HandleAllCasesOfImageEditionAndGetImageId(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct)
     {
         if (imageState == ImageEditionState.Untouched)
         {
