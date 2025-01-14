@@ -39,67 +39,66 @@ public class ExportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Export
 
         var imagesDb = await GetAllImagesFromQuestionBaseDb(questionBase, ct);
 
-        using (var memoryStream = new MemoryStream())
+        await SendZipFile(questionBaseDto, imagesDb, questionBaseDto.Name, ct);
+    }
+
+    private async Task SendZipFile(FileManagementQuestionBaseDto questionBaseDto, List<Domain.Entities.Image> imagesDb, string questionBaseName, CancellationToken ct)
+    {
+        using var memoryStream = new MemoryStream();
+        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
         {
-            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+            var serializedQuestionBase = JsonConvert.SerializeObject(questionBaseDto);
+            var jsonEntry = archive.CreateEntry("data.json");
+
+            using (var writer = new StreamWriter(jsonEntry.Open()))
             {
-                string jsonFileName = $"data.json";
-                var serializedQuestionBase = JsonConvert.SerializeObject(questionBaseDto);
-
-                var jsonEntry = archive.CreateEntry(jsonFileName);
-
-                using (var writer = new StreamWriter(jsonEntry.Open()))
-                {
-                    writer.Write(serializedQuestionBase);
-                }
-
-                string imagesFolder = "images/";
-
-
-                foreach (var image in imagesDb)
-                {
-                    var imageExtension = image.ContentType.Split('/')[1];
-
-                    var imageEntry = archive.CreateEntry($"{imagesFolder}{image.Id}.{imageExtension}");
-                    using var imageStream = imageEntry.Open();
-                    await imageStream.WriteAsync(image.Data, 0, image.Data.Length, ct);
-                }
+                writer.Write(serializedQuestionBase);
             }
 
-            memoryStream.Position = 0;
+            const string imagesFolder = "images/";
 
-            await SendStreamAsync(
-                memoryStream,
-                fileName: $"{questionBase.Name}.zip",
-                contentType: "application/zip",
-                cancellation: ct);
+            foreach (var image in imagesDb)
+            {
+                var imageExtension = image.ContentType.Split('/')[1];
+
+                var imageEntry = archive.CreateEntry(imagesFolder + image.Id + "." + imageExtension);
+                using var imageStream = imageEntry.Open();
+                await imageStream.WriteAsync(image.Data, 0, image.Data.Length, ct);
+            }
         }
+
+        memoryStream.Position = 0;
+
+        await SendStreamAsync(
+            memoryStream,
+            fileName: questionBaseName + ".zip",
+            contentType: "application/zip",
+            cancellation: ct);
     }
 
     private async Task<List<Domain.Entities.Image>> GetAllImagesFromQuestionBaseDb(Domain.Entities.QuestionBase questionBaseDb, CancellationToken ct)
     {
-        //here fix
-        var answerImagesArray = await Task.WhenAll(questionBaseDb.Questions
-            .SelectMany(question => question.Answers)
-            .Select(async answer =>
-                await _context.Images.FindAsync([answer.ImageId], ct)
-            )
-        );
+        var answersId = questionBaseDb.Questions
+            .SelectMany(q => q.Answers)
+            .Select(a => a.ImageId)
+            .Where(id => id != null)
+            .ToList();
 
-        var answerImages = answerImagesArray.Where(i => i != null).ToList();
+        var questionIds = questionBaseDb.Questions
+            .Select(q => q.ImageId)
+            .Where(id => id != null)
+            .ToList();
 
-        var questions = questionBaseDb.Questions;
+        var imageIds = answersId.Concat(questionIds).ToList();
 
-        var questionImagesArray = await Task.WhenAll(questions
-            .Where(question => question.ImageId != null)
-            .Select(async question => await _context.Images.FindAsync([question.ImageId], ct)));
+        if (imageIds.Count == 0)
+        {
+            return [];
+        }
 
-        var questionImages = questionImagesArray.Where(i => i != null).ToList();
-
-        List<Domain.Entities.Image> questionBaseImages = [];
-
-        questionBaseImages.AddRange(answerImages!);
-        questionBaseImages.AddRange(questionImages!);
+        List<Domain.Entities.Image> questionBaseImages = await _context.Images
+            .Where(i => imageIds.Contains(i.Id))
+            .ToListAsync(ct);
 
         return questionBaseImages;
     } 
