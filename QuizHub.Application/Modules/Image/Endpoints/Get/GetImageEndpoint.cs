@@ -1,10 +1,11 @@
-﻿using QuizHub.Application.Common.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using QuizHub.Application.Common.Interfaces;
 
 namespace QuizHub.Application.Modules.Image.Endpoints.Get;
 
-public class GetImageEndpoint(IImageService imageService) : Endpoint<GetImageRequest>
+public class GetImageEndpoint(IAppDbContext context) : Endpoint<GetImageRequest>
 {
-    private readonly IImageService _imageService = imageService;
+    private readonly IAppDbContext _context = context;
 
     public override void Configure()
     {
@@ -13,7 +14,7 @@ public class GetImageEndpoint(IImageService imageService) : Endpoint<GetImageReq
 
     public override async Task HandleAsync(GetImageRequest req, CancellationToken ct)
     {
-        var image = await _imageService.GetImageByIdAsync(req.ImageId, ct);
+        var image = await _context.Images.FirstOrDefaultAsync(image => image.Id == req.ImageId, ct);
 
         if (image == null)
         {

@@ -1,15 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuizHub.Application.Modules.Question.Extensions;
 
 public static class DbSetExtensions
 {
-    public static async Task<Domain.Entities.Question?> GetQuestionWithIncludedAnswersAsync(
+    public static async Task<Domain.Entities.Question?> GetQuestionWithIncludedAnswers(
         this DbSet<Domain.Entities.QuestionBase> questionBases,
         Guid userId,
         Guid questionBaseId,
         Guid questionId,
-        CancellationToken ct = default
+        CancellationToken ct
     )
     {
         return await questionBases
@@ -21,5 +22,18 @@ public static class DbSetExtensions
             .SelectMany(questionBase => questionBase.Questions)
             .Include(question => question.Answers)
             .FirstOrDefaultAsync(question => question.Id == questionId, ct);
+    }
+
+    public static async Task<Guid?> AddImage(this DbSet<Domain.Entities.Image> images, IFormFile? imageToAdd, CancellationToken ct)
+    {
+        if (imageToAdd is null)
+        {
+            return null;
+        }
+
+        var image = await imageToAdd.ToImageDb(ct);
+
+        await images.AddAsync(image, ct);
+        return image.Id;
     }
 }

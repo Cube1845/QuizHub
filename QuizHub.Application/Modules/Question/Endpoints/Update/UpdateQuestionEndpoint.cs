@@ -7,14 +7,12 @@ using QuizHub.Application.Modules.Question.Endpoints.Update.Models;
 using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Entities;
 using QuizHub.Domain.Enums;
-using QuizHub.Domain.Models;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Update;
 
-public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageService) : Endpoint<UpdateQuestionRequest, Result>
+public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQuestionRequest, Result>
 {
     private readonly IAppDbContext _context = context;
-    private readonly IImageService _imageService = imageService;
 
     public override void Configure()
     {
@@ -24,10 +22,10 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
 
     public override async Task HandleAsync(UpdateQuestionRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionDb = await _context.QuestionBases
-            .GetQuestionWithIncludedAnswersAsync(userId, req.QuestionBaseId, req.Question.Id, ct);
+            .GetQuestionWithIncludedAnswers(userId, req.QuestionBaseId, req.Question.Id, ct);
 
         if (questionDb == null)
         {
@@ -43,7 +41,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
             req.AnswerImage4
         ]);
 
-        IdentifiedQuestionMappedUpdateDTO question = new(req.Question, req.ContentImage, processedAnswerImageFiles);
+        IdentifiedQuestionMappedUpdateDto question = new(req.Question, req.ContentImage, processedAnswerImageFiles);
         
         foreach (var answer in question.Answers)
         {
@@ -54,7 +52,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
             
             var currentAnswerDb = questionDb.Answers.First(answerDb => answerDb.Id == answer.Id);
 
-            await ModifyExistingAnswerAsync(answer, currentAnswerDb, ct);
+            await ModifyExistingAnswer(answer, currentAnswerDb, ct);
         }
 
         if (question.Answers.Count > questionDb.Answers.Count)
@@ -67,21 +65,20 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         }
         else if (question.Answers.Count < questionDb.Answers.Count)
         {
-            RemoveAllAnswersNotIncludedInUpdateDTO(question.Answers, questionDb);
+            RemoveAnswersNotIncludedInUpdateDto(question.Answers, questionDb);
         }
 
         var contentImageId = await
-            HandleAllCasesOfImageEditionForQuestionAndGetImageIdAsync(question, questionDb, ct);
+            HandleImageEditionForQuestion(question, questionDb, ct);
 
         questionDb.Update(req.Question.Content, req.Question.QuestionType, contentImageId);
 
         await _context.SaveChangesAsync(ct);
-        await _imageService.SaveChangesAsync(ct);
 
         await SendOkAsync(Result.Success(), ct);
     }
 
-    private async void AddNewAnswer(List<IdentifiedAnswerMappedUpdateDTO> answers, Guid questionId, CancellationToken ct = default)
+    private async void AddNewAnswer(List<IdentifiedAnswerMappedUpdateDto> answers, Guid questionId, CancellationToken ct)
     {
         foreach (var answer in answers)
         {
@@ -89,7 +86,7 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
 
             if (answer.Image != null)
             {
-                answerImageId = await _imageService.AddImageAndGetIdWithoutSavingAsync(answer.Image, ct);
+                answerImageId = await _context.Images.AddImage(answer.Image, ct);
             }
 
             Answer answerToAdd = new(questionId, answer.Content, answer.IsCorrect, answerImageId);
@@ -97,9 +94,9 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         }
     }
 
-    private void RemoveAllAnswersNotIncludedInUpdateDTO(List<IdentifiedAnswerMappedUpdateDTO> answers, Domain.Entities.Question questionDb)
+    private void RemoveAnswersNotIncludedInUpdateDto(List<IdentifiedAnswerMappedUpdateDto> answers, Domain.Entities.Question questionDb)
     {
-        var answerIdsFromRequest = GetAllNotNullAnswerIdsFromQuestionUpdateDTO(answers);
+        var answerIdsFromRequest = GetNotNullAnswerIdsFromUpdateDto(answers);
 
         foreach (var answer in questionDb.Answers)
         {
@@ -110,58 +107,62 @@ public class UpdateQuestionEndpoint(IAppDbContext context, IImageService imageSe
         }
     }
 
-    private async Task ModifyExistingAnswerAsync(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
+    private async Task ModifyExistingAnswer(IdentifiedAnswerMappedUpdateDto dto, Answer answerDb, CancellationToken ct)
     {
-        var imageId = await HandleAllCasesOfImageEditionForAnswersAndGetImageIdAsync(dto, answerDb, ct);
+        var imageId = await HandleImageEditionForAnswer(dto, answerDb, ct);
         answerDb.Update(dto.Content, dto.IsCorrect, imageId);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForAnswersAndGetImageIdAsync(IdentifiedAnswerMappedUpdateDTO dto, Answer answerDb, CancellationToken ct = default)
+    private async Task<Guid?> HandleImageEditionForAnswer(IdentifiedAnswerMappedUpdateDto dto, Answer answerDb, CancellationToken ct)
     {   
         return await
-            HandleAllCasesOfImageEditionAndGetImageIdAsync(dto.Image, dto.ImageEditionState, answerDb.ImageId, ct);
+            HandleImageEdition(dto.Image, dto.ImageEditionState, answerDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionForQuestionAndGetImageIdAsync(IdentifiedQuestionMappedUpdateDTO dto, Domain.Entities.Question questionDb, CancellationToken ct = default)
+    private async Task<Guid?> HandleImageEditionForQuestion(IdentifiedQuestionMappedUpdateDto dto, Domain.Entities.Question questionDb, CancellationToken ct)
     {
         return await
-            HandleAllCasesOfImageEditionAndGetImageIdAsync(dto.Image, dto.ImageEditionState, questionDb.ImageId, ct);
+            HandleImageEdition(dto.Image, dto.ImageEditionState, questionDb.ImageId, ct);
     }
 
-    private async Task<Guid?> HandleAllCasesOfImageEditionAndGetImageIdAsync(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct = default)
+    private async Task<Guid?> HandleImageEdition(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct)
     {
-        if (imageState == ImageEditionState.Untouched)
+        switch (imageState)
         {
-            return imageDbId;
+            case ImageEditionState.Untouched:
+                return imageDbId;
+
+            case ImageEditionState.Removed:
+                if (imageDbId != null)
+                {
+                    await _context.Images
+                        .Where(image => image.Id == imageDbId)
+                        .ExecuteDeleteAsync(ct);
+                }
+                return null;
+
+            case ImageEditionState.Modified:
+                if (image != null)
+                {
+                    var imageDb = await _context.Images.FirstOrDefaultAsync(image => image.Id == imageDbId, ct) ??
+                        throw new DomainException("Błąd danych obrazu");
+
+                    var imageModel = await image.ToImageDb(ct);
+
+                    imageDb.Update(imageModel.Data, imageModel.ContentType);
+                    return imageDb.Id;
+                }
+                else
+                {
+                    return await _context.Images.AddImage(image, ct);
+                }
+
+            default:
+                throw new DomainException("Błąd danych obrazu");
         }
-        else if (imageState == ImageEditionState.Removed && imageDbId != null)
-        {
-            await _imageService.RemoveImageWithoutSavingAsync(imageDbId!.Value, ct);
-
-            return null;
-        }
-        else if (imageState == ImageEditionState.Modified && image != null)
-        {
-            if (imageDbId != null)
-            {
-                var imageDb = await _imageService.GetImageByIdAsync(imageDbId!.Value, ct) ??
-                    throw new DomainException("Błąd danych obrazu");
-
-                var imageModel = await image.ToImageDbAsync(ct);
-                imageDb.Update(imageModel.Data, imageModel.ContentType);
-
-                return imageDb.Id;
-            }
-            else
-            {
-                return await _imageService.AddImageAndGetIdWithoutSavingAsync(image, ct);
-            }
-        }
-
-        return imageDbId;
     }
 
-    private List<Guid> GetAllNotNullAnswerIdsFromQuestionUpdateDTO(List<IdentifiedAnswerMappedUpdateDTO> answers)
+    private List<Guid> GetNotNullAnswerIdsFromUpdateDto(List<IdentifiedAnswerMappedUpdateDto> answers)
     {
         return answers
             .Where(answer => answer.Id != null)

@@ -16,7 +16,7 @@ public class UpdateQuestionBaseNameEndpoint(IAppDbContext context) : Endpoint<Up
 
     public override async Task HandleAsync(UpdateQuestionBaseNameRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBase = await _context.QuestionBases
             .FirstOrDefaultAsync(qb => 

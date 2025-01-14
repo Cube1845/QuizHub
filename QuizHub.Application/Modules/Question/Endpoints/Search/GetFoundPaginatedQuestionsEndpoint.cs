@@ -19,7 +19,7 @@ public class GetFoundPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoin
     public override async Task HandleAsync(GetFoundPaginatedQuestionsRequest req, CancellationToken ct)
     {
         var paginatedData =
-            await SearchForQuestionsAndGetPaginatedDataAsync(req.QuestionBaseId, req.PageNumber, req.PageSize, req.Key, ct);
+            await GetFoundQuestionsPaginatedData(req.QuestionBaseId, req.PageNumber, req.PageSize, req.Key, ct);
 
         if (paginatedData == null)
         {
@@ -32,9 +32,9 @@ public class GetFoundPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoin
         await SendOkAsync(Result<GetFoundPaginatedQuestionsResponse>.Success(data), ct);
     }
 
-    private async Task<PaginatedData<IdentifiedQuestion>> SearchForQuestionsAndGetPaginatedDataAsync(Guid questionBaseId, int pageNumber, int pageSize, string key, CancellationToken ct = default)
+    private async Task<PaginatedData<IdentifiedQuestion>> GetFoundQuestionsPaginatedData(Guid questionBaseId, int pageNumber, int pageSize, string key, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBaseQueryable = _context.QuestionBases
             .Include(questionBase => questionBase.Questions)

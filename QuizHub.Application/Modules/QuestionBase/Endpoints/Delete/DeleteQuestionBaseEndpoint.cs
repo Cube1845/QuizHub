@@ -16,7 +16,7 @@ public class DeleteQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Delete
 
     public override async Task HandleAsync(DeleteQuestionBaseRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var questionBase = await _context.QuestionBases
             .FirstOrDefaultAsync(questionBase =>

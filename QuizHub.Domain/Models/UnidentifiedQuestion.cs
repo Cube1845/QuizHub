@@ -2,12 +2,9 @@
 
 namespace QuizHub.Domain.Models;
 
-public class UnidentifiedQuestion : UnidentifiedQuestionWithNoImage
+public class UnidentifiedQuestion : UnidentifiedQuestionWithNoImage<UnidentifiedAnswer>
 {
     public IFormFile? Image { get; set; }
-    public new List<UnidentifiedAnswer> Answers { get; set; } = [];
-
-    public UnidentifiedQuestion() { }
 
     public UnidentifiedQuestion(UnidentifiedQuestionWithNoImage question, IFormFile? contentImage, List<IFormFile?> answerImages)
     {

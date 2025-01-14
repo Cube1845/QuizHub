@@ -7,10 +7,9 @@ using QuizHub.Domain.Entities;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Delete;
 
-public class DeleteQuestionEndpoint(IAppDbContext context, IImageService imageService) : Endpoint<DeleteQuestionRequest, Result>
+public class DeleteQuestionEndpoint(IAppDbContext context) : Endpoint<DeleteQuestionRequest, Result>
 {
     private readonly IAppDbContext _context = context;
-    private readonly IImageService _imageService = imageService;
 
     public override void Configure()
     {
@@ -19,10 +18,10 @@ public class DeleteQuestionEndpoint(IAppDbContext context, IImageService imageSe
 
     public override async Task HandleAsync(DeleteQuestionRequest req, CancellationToken ct)
     {
-        var userId = this.GetUserId();
+        var userId = User.GetId();
 
         var question = await _context.QuestionBases
-            .GetQuestionWithIncludedAnswersAsync(userId, req.QuestionBaseId, req.QuestionId, ct);
+            .GetQuestionWithIncludedAnswers(userId, req.QuestionBaseId, req.QuestionId, ct);
 
         if (question == null)
         {
@@ -34,7 +33,9 @@ public class DeleteQuestionEndpoint(IAppDbContext context, IImageService imageSe
         {
             if (answer.ImageId != null)
             {
-                await _imageService.RemoveImageWithoutSavingAsync(answer.ImageId!.Value, ct);
+                await _context.Images
+                    .Where(image => image.Id == answer.ImageId)
+                    .ExecuteDeleteAsync(ct);
             }
 
             _context.Answers.Remove(answer);
@@ -42,7 +43,9 @@ public class DeleteQuestionEndpoint(IAppDbContext context, IImageService imageSe
 
         if (question.ImageId != null)
         {
-            await _imageService.RemoveImageWithoutSavingAsync(question.ImageId!.Value, ct);
+            await _context.Images
+                    .Where(image => image.Id == question.ImageId)
+                    .ExecuteDeleteAsync(ct);
         }
 
         _context.Questions.Remove(question);
