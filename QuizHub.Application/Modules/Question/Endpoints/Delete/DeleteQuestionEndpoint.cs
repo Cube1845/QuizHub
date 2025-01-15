@@ -4,6 +4,7 @@ using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Entities;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Delete;
 
@@ -33,9 +34,7 @@ public class DeleteQuestionEndpoint(IAppDbContext context) : Endpoint<DeleteQues
         {
             if (answer.ImageId != null)
             {
-                await _context.Images
-                    .Where(image => image.Id == answer.ImageId)
-                    .ExecuteDeleteAsync(ct);
+                await _context.Images.RemoveImage(answer.ImageId!.Value, ct);
             }
 
             _context.Answers.Remove(answer);
@@ -43,9 +42,7 @@ public class DeleteQuestionEndpoint(IAppDbContext context) : Endpoint<DeleteQues
 
         if (question.ImageId != null)
         {
-            await _context.Images
-                    .Where(image => image.Id == question.ImageId)
-                    .ExecuteDeleteAsync(ct);
+            await _context.Images.RemoveImage(question.ImageId!.Value, ct);
         }
 
         _context.Questions.Remove(question);
