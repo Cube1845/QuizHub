@@ -7,6 +7,7 @@ public static class FileExtensionsHelper
     public const string ImagePng = "image/png";
 
     public const string ZipArchive = "application/zip";
+    public const string ZipArchiveCompressed = "application/x-zip-compressed";
 
     public static string ConvertExtensionToContentType(string contentType)
     {
@@ -23,9 +24,9 @@ public static class FileExtensionsHelper
     public static List<string> GetImageExtensions()
     {
         return [
-            ConvertExtensionToContentType(ImageJpeg),
-            ConvertExtensionToContentType(ImageJpg),
-            ConvertExtensionToContentType(ImagePng),
+            ".jpeg",
+            ".jpg",
+            ".png",
         ];
     }
 

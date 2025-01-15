@@ -45,33 +45,34 @@ public class ExportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Export
 
     private async Task SendZipFile(FileManagementQuestionBaseDto questionBaseDto, List<Domain.Entities.Image> imagesDb, string questionBaseName, CancellationToken ct)
     {
-        using MemoryStream memoryStream = new();
-        using ZipArchive archive = new(memoryStream, ZipArchiveMode.Create, leaveOpen: true);
+        using var memoryStream = new MemoryStream();
 
-        var serializedQuestionBase = JsonConvert.SerializeObject(questionBaseDto);
-        var jsonEntry = archive.CreateEntry("data.json");
-
-        using (StreamWriter writer = new(jsonEntry.Open()))
+        using (ZipArchive archive = new(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
         {
-            writer.Write(serializedQuestionBase);
-        }
+            var serializedQuestionBase = JsonConvert.SerializeObject(questionBaseDto);
+            var jsonEntry = archive.CreateEntry("data.json");
 
-        const string imagesFolder = "images/";
+            using (StreamWriter writer = new(jsonEntry.Open()))
+            {
+                writer.Write(serializedQuestionBase);
+            }
 
-        foreach (var image in imagesDb)
-        {
-            var imageExtension = image.ContentType.Split('/')[1];
+            const string imagesFolder = "images/";
+            foreach (var image in imagesDb)
+            {
+                var imageExtension = image.ContentType.Split('/')[1];
+                var imageEntry = archive.CreateEntry(imagesFolder + image.Id + "." + imageExtension);
 
-            var imageEntry = archive.CreateEntry(imagesFolder + image.Id + "." + imageExtension);
-            using var imageStream = imageEntry.Open();
-            await imageStream.WriteAsync(image.Data, ct);
+                await using var imageStream = imageEntry.Open();
+                await imageStream.WriteAsync(image.Data, 0, image.Data.Length, ct);
+            }
         }
 
         memoryStream.Position = 0;
 
         await SendStreamAsync(
             memoryStream,
-            fileName: questionBaseName + ".zip",
+            fileName: $"{questionBaseName}.zip",
             contentType: FileExtensionsHelper.ZipArchive,
             cancellation: ct);
     }

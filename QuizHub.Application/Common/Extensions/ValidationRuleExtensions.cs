@@ -6,7 +6,7 @@ namespace QuizHub.Application.Common.Extensions;
 
 public static class ValidationRuleExtensions
 {
-    private const int MaxImageSize = 500;
+    private const int MaxImageSize = 4000;
 
     public static IRuleBuilderOptions<T, Guid> MustBeCorrectGuid<T>(this IRuleBuilder<T, Guid> ruleBuilder)
     {
