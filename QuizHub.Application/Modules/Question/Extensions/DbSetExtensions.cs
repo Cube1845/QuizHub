@@ -36,4 +36,14 @@ public static class DbSetExtensions
         await images.AddAsync(image, ct);
         return image.Id;
     }
+
+    public static async Task RemoveImage(this DbSet<Domain.Entities.Image> images, Guid imageId, CancellationToken ct)
+    {
+        var image = await images.FindAsync([imageId], ct);
+
+        if (image is not null)
+        {
+            images.Remove(image);
+        }
+    }
 }

@@ -7,6 +7,7 @@ using QuizHub.Application.Modules.Question.Endpoints.Update.Models;
 using QuizHub.Application.Modules.Question.Extensions;
 using QuizHub.Domain.Entities;
 using QuizHub.Domain.Enums;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace QuizHub.Application.Modules.Question.Endpoints.Update;
 
@@ -127,38 +128,46 @@ public class UpdateQuestionEndpoint(IAppDbContext context) : Endpoint<UpdateQues
 
     private async Task<Guid?> HandleImageEdition(IFormFile? image, ImageEditionState imageState, Guid? imageDbId, CancellationToken ct)
     {
-        switch (imageState)
+        return imageState switch
         {
-            case ImageEditionState.Untouched:
-                return imageDbId;
+            ImageEditionState.Untouched => imageDbId,
+            ImageEditionState.Removed => await HandleImageRemoving(imageDbId, ct),
+            ImageEditionState.Modified => await HandleImageModifying(image, imageDbId, ct),
 
-            case ImageEditionState.Removed:
-                if (imageDbId != null)
-                {
-                    await _context.Images
-                        .Where(image => image.Id == imageDbId)
-                        .ExecuteDeleteAsync(ct);
-                }
-                return null;
+            _ => throw new DomainException("Błąd danych obrazu"),
+        };
+    }
 
-            case ImageEditionState.Modified:
-                if (image != null)
-                {
-                    var imageDb = await _context.Images.FirstOrDefaultAsync(image => image.Id == imageDbId, ct) ??
-                        throw new DomainException("Błąd danych obrazu");
+    private async Task<Guid?> HandleImageRemoving(Guid? imageId, CancellationToken ct)
+    {
+        if (imageId != null)
+        {
+            await _context.Images.RemoveImage(imageId.Value, ct);
+        }
 
-                    var imageModel = await image.ToImageDb(ct);
+        return null;
+    }
 
-                    imageDb.Update(imageModel.Data, imageModel.ContentType);
-                    return imageDb.Id;
-                }
-                else
-                {
-                    return await _context.Images.AddImage(image, ct);
-                }
+    private async Task<Guid?> HandleImageModifying(IFormFile? image, Guid? imageId, CancellationToken ct)
+    {
+        if (image == null)
+        {
+            return imageId;
+        }
 
-            default:
+        if (imageId != null)
+        {
+            var imageDb = await _context.Images.FirstOrDefaultAsync(image => image.Id == imageId, ct) ??
                 throw new DomainException("Błąd danych obrazu");
+
+            var imageModel = await image.ToImageDb(ct);
+
+            imageDb.Update(imageModel.Data, imageModel.ContentType);
+            return imageDb.Id;
+        }
+        else
+        {
+            return await _context.Images.AddImage(image, ct);
         }
     }
 
