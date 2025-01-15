@@ -1,6 +1,6 @@
 ﻿using QuizHub.Domain.Models;
 
-namespace QuizHub.Application.Modules.Question.Models;
+namespace QuizHub.Application.Modules.QuestionBase.Models;
 
 public class FileManagementAnswerDto : UnidentifiedAnswerWithNoImage
 {

@@ -2,7 +2,8 @@
 using Newtonsoft.Json;
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
-using QuizHub.Application.Modules.Question.Models;
+using QuizHub.Application.Common.Models;
+using QuizHub.Application.Modules.QuestionBase.Models;
 using QuizHub.Domain.Entities;
 using System.IO.Compression;
 
@@ -44,27 +45,26 @@ public class ExportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Export
 
     private async Task SendZipFile(FileManagementQuestionBaseDto questionBaseDto, List<Domain.Entities.Image> imagesDb, string questionBaseName, CancellationToken ct)
     {
-        using var memoryStream = new MemoryStream();
-        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
+        using MemoryStream memoryStream = new();
+        using ZipArchive archive = new(memoryStream, ZipArchiveMode.Create, leaveOpen: true);
+
+        var serializedQuestionBase = JsonConvert.SerializeObject(questionBaseDto);
+        var jsonEntry = archive.CreateEntry("data.json");
+
+        using (StreamWriter writer = new(jsonEntry.Open()))
         {
-            var serializedQuestionBase = JsonConvert.SerializeObject(questionBaseDto);
-            var jsonEntry = archive.CreateEntry("data.json");
+            writer.Write(serializedQuestionBase);
+        }
 
-            using (var writer = new StreamWriter(jsonEntry.Open()))
-            {
-                writer.Write(serializedQuestionBase);
-            }
+        const string imagesFolder = "images/";
 
-            const string imagesFolder = "images/";
+        foreach (var image in imagesDb)
+        {
+            var imageExtension = image.ContentType.Split('/')[1];
 
-            foreach (var image in imagesDb)
-            {
-                var imageExtension = image.ContentType.Split('/')[1];
-
-                var imageEntry = archive.CreateEntry(imagesFolder + image.Id + "." + imageExtension);
-                using var imageStream = imageEntry.Open();
-                await imageStream.WriteAsync(image.Data, 0, image.Data.Length, ct);
-            }
+            var imageEntry = archive.CreateEntry(imagesFolder + image.Id + "." + imageExtension);
+            using var imageStream = imageEntry.Open();
+            await imageStream.WriteAsync(image.Data, ct);
         }
 
         memoryStream.Position = 0;
@@ -72,7 +72,7 @@ public class ExportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Export
         await SendStreamAsync(
             memoryStream,
             fileName: questionBaseName + ".zip",
-            contentType: "application/zip",
+            contentType: FileExtensionsHelper.ZipArchive,
             cancellation: ct);
     }
 
