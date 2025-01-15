@@ -25,5 +25,17 @@ public class UpdateQuestionValidator : Validator<UpdateQuestionRequest>
 
         RuleFor(x => x.Question.Answers.Select(a => a.Id))
             .MustBeCorrectGuidsOrNulls();
+
+        RuleFor(x => x.ContentImage)
+            .MustBeCorrectImageFile();
+
+        RuleFor(x => x.AnswerImage1)
+           .MustBeCorrectImageFile();
+        RuleFor(x => x.AnswerImage2)
+           .MustBeCorrectImageFile();
+        RuleFor(x => x.AnswerImage3)
+           .MustBeCorrectImageFile();
+        RuleFor(x => x.AnswerImage4)
+           .MustBeCorrectImageFile();
     }
 }

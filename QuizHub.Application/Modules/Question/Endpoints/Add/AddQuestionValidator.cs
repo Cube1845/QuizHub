@@ -18,5 +18,17 @@ public class AddQuestionValidator : Validator<AddQuestionRequest>
                 .WithMessage("Pytanie musi mieć przynajmniej 2 odpowiedzi")
             .Must(x => x.Any(a => a.IsCorrect))
                 .WithMessage("Pytanie musi mieć przynajmniej jedną poprawną odpowiedź");
+
+        RuleFor(x => x.ContentImage)
+            .MustBeCorrectImageFile();
+
+        RuleFor(x => x.AnswerImage1)
+           .MustBeCorrectImageFile();
+        RuleFor(x => x.AnswerImage2)
+           .MustBeCorrectImageFile();
+        RuleFor(x => x.AnswerImage3)
+           .MustBeCorrectImageFile();
+        RuleFor(x => x.AnswerImage4)
+           .MustBeCorrectImageFile();
     }
 }
