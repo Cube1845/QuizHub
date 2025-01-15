@@ -67,7 +67,6 @@ public class AddQuestionEndpoint(IAppDbContext context) : Endpoint<AddQuestionRe
     private Domain.Entities.Question ConvertToQuestionDb(UnidentifiedQuestion question, Guid questionBaseId, Guid? imageId)
     {
         return new Domain.Entities.Question(
-            Guid.Empty,
             questionBaseId,
             question.Content,
             question.QuestionType,
