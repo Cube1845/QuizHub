@@ -1,0 +1,20 @@
+@if (false) {
+    <input/>
+} @else {
+    <div class="container m-2">
+        @for (test of tests; track $index) {
+            <div class="test-panel m-2">
+                <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ test.name }}</h1>
+                <p class="m-0 p-0">{{ test.code }}</p>
+
+                <i class="pi pi-copy clickable-icon copy-icon text-lg"></i>
+                <i class="pi pi-pencil clickable-icon edit-icon text-lg"></i>
+                <i class="pi pi-trash clickable-icon delete-icon text-lg"></i>
+            </div>
+        }
+
+        <div class="test-panel m-2">
+            <i class="pi pi-plus text-2xl" style="color: var(--p-zinc-200)"></i>
+        </div>
+    </div>
+}

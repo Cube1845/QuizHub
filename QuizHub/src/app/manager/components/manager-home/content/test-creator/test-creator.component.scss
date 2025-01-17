@@ -1,0 +1,72 @@
+:host {
+    $panel-size: 217px;
+
+    display: flex;
+    max-height: calc(100vh - 56.5px);
+    overflow: auto;
+    width: 100%;
+    justify-content: center;
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        align-content: flex-start;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 100%;
+    }
+
+    .test-panel {
+        background: var(--p-zinc-800);
+        color: var(--p-text-color);
+        width: $panel-size;
+        height: $panel-size;
+        border-radius: var(--p-border-radius-lg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        word-break: break-word;
+        position: relative;
+
+        h1 {
+            text-align: center;
+        }
+
+        p {
+            color: var(--p-zinc-400);
+        }
+
+        &:hover {
+            background: var(--p-zinc-700);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+    }
+
+    .clickable-icon {
+        position: absolute;
+        color: var(--p-zinc-500);
+        transition: 0.1s;
+        bottom: 10px;
+
+        &:hover {
+            transition: 0.1s;
+            bottom: 10px;
+            color: var(--p-primary-color);
+        }
+    }
+
+    .delete-icon {
+        right: 10px;
+    }
+
+    .edit-icon {
+        right: 38px;
+    }
+
+    .copy-icon {
+        right: 66px;
+    }
+}
