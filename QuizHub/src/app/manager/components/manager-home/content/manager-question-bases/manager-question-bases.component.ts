@@ -77,7 +77,11 @@ export class ManagerQuestionBasesComponent {
           return;
         }
 
-        this.questionBaseService.importQuestionBaseFile(result);
+        this.questionBaseService
+          .importQuestionBaseFile(result)
+          .subscribe((id) =>
+            this.router.navigateByUrl('manager/question-base-edit/' + id)
+          );
       });
   }
 

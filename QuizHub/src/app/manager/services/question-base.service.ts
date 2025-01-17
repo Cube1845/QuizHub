@@ -2,15 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { QuestionBaseData } from '../models/questionBaseData';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { catchError, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import {
   handleResultPatternResponse,
   Result,
 } from '../../common/models/result';
 import { ToastService } from '../../common/services/toast.service';
-import { saveAs } from 'file-saver';
 
-type AddQuestionBaseResponse = {
+type QuestionBaseNameResponse = {
   questionBaseId: string;
 };
 
@@ -44,12 +43,12 @@ export class QuestionBaseService {
     };
 
     return this.http
-      .post<Result<AddQuestionBaseResponse>>(
+      .post<Result<QuestionBaseNameResponse>>(
         this.apiUrl + '/question-base',
         body
       )
       .pipe(
-        handleResultPatternResponse<AddQuestionBaseResponse, string>(
+        handleResultPatternResponse<QuestionBaseNameResponse, string>(
           (value) => value.questionBaseId,
           (detail) => this.displayErrorToast(detail)
         )
@@ -97,7 +96,20 @@ export class QuestionBaseService {
       );
   }
 
-  importQuestionBaseFile(file: File): void {
-    return;
+  importQuestionBaseFile(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('questionBaseZip', file);
+
+    return this.http
+      .post<Result<QuestionBaseNameResponse>>(
+        this.apiUrl + '/question-base/file',
+        formData
+      )
+      .pipe(
+        handleResultPatternResponse<QuestionBaseNameResponse, string>(
+          (value) => value.questionBaseId,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
   }
 }
