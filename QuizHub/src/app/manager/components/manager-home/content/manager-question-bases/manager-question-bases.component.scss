@@ -27,7 +27,11 @@
         align-items: center;
         justify-content: center;
         transition: 0.2s;
-        word-break: break-all;
+        word-break: break-word;
+
+        h1 {
+            text-align: center;
+        }
 
         p {
             color: var(--p-zinc-400);
