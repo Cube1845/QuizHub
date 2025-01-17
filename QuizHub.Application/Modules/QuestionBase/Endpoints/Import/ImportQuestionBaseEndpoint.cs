@@ -30,7 +30,7 @@ public class ImportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Import
             var extension = Path.GetExtension(entry.Name).ToLowerInvariant();
 
             if (entry.FullName.StartsWith("images/") &&
-                FileExtensionsHelper.GetImageExtensions().Contains(extension))
+                FileExtensionsHelper.ImageExtensions.Contains(extension))
             {
                 if (!Guid.TryParse(entry.Name.Split('.')[0], out var oldImageId))
                 {
