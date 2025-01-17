@@ -2,12 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { QuestionBaseData } from '../models/questionBaseData';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { Observable, Subject } from 'rxjs';
+import { catchError, Observable, of, Subject, tap } from 'rxjs';
 import {
   handleResultPatternResponse,
   Result,
 } from '../../common/models/result';
 import { ToastService } from '../../common/services/toast.service';
+import { saveAs } from 'file-saver';
 
 type AddQuestionBaseResponse = {
   questionBaseId: string;
@@ -83,8 +84,17 @@ export class QuestionBaseService {
       );
   }
 
-  exportQuestionBaseFile(questionBaseId: string): void {
-    return;
+  exportQuestionBaseFile(questionBaseId: string): Observable<Blob> {
+    return this.http
+      .get(this.apiUrl + '/question-base/file/' + questionBaseId, {
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(() => {
+          this.displayErrorToast('Wystąpił błąd przy pobieraniu pliku');
+          throw new Error('Wystąpił błąd przy pobieraniu pliku');
+        })
+      );
   }
 
   importQuestionBaseFile(file: File): void {

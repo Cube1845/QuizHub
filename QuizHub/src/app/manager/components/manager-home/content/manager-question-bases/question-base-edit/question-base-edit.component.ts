@@ -24,6 +24,7 @@ import { DisplayableImage } from '../../../../../models/displayableImage';
 import { Answer } from '../../../../../models/answer';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
 import { QuestionBaseNameEditDialogComponent } from '../dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
+import saveAs from 'file-saver';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -357,6 +358,34 @@ export class QuestionBaseEditComponent {
             'Zmieniono nazwę'
           );
         }
+      });
+  }
+
+  displayDownloadingQuestionBaseModal(event: Event): void {
+    event.stopPropagation();
+
+    this.globalDialogService.displayConfirmationDialog({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz pobrać tę bazę pytań do pliku?',
+      header: 'Potwierdzenie',
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      defaultFocus: 'accept',
+
+      accept: () => this.downloadQuestionBase(),
+    });
+  }
+
+  downloadQuestionBase(): void {
+    this.questionBaseService
+      .exportQuestionBaseFile(this.questionBaseId!)
+      .subscribe((value) => {
+        return saveAs(value, this.questionBaseName!);
       });
   }
 
