@@ -7,11 +7,33 @@ public static class FileExtensionsHelper
     public const string ImagePng = "image/png";
 
     public const string ZipArchive = "application/zip";
+    public const string ZipArchiveCompressed = "application/x-zip-compressed";
+
+    public static string ConvertExtensionToContentType(string contentType)
+    {
+        return contentType switch
+        {
+            ".jpeg" => ImageJpeg,
+            ".jpg" => ImageJpg,
+            ".png" => ImagePng,
+            ".zip" => ZipArchive,
+            _ => string.Empty
+        };
+    }
+
+    public static List<string> GetImageExtensions()
+    {
+        return [
+            ".jpeg",
+            ".jpg",
+            ".png",
+        ];
+    }
 
     public static bool IsImageFile(string contentType)
     {
-        List<string> imageExtensions = [ImageJpeg, ImageJpg, ImagePng];
+        List<string> imageContentTypes = [ImageJpeg, ImageJpg, ImagePng];
 
-        return imageExtensions.Contains(contentType);
+        return imageContentTypes.Contains(contentType);
     }
 }
