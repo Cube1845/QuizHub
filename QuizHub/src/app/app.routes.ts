@@ -8,6 +8,7 @@ import { QuestionBaseEditComponent } from './manager/components/manager-home/con
 import { userMustBeLoggedInGuard } from './auth/guards/user-must-be-logged-in.guard';
 import { userMustNotBeLoggedInGuard } from './auth/guards/user-must-not-be-logged-in.guard';
 import { TestCreatorComponent } from './manager/components/manager-home/content/test-creator/test-creator.component';
+import { TestEditComponent } from './manager/components/manager-home/content/test-creator/test-edit/test-edit.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'question-bases', component: ManagerQuestionBasesComponent },
       { path: 'question-base-edit/:id', component: QuestionBaseEditComponent },
       { path: 'tests', component: TestCreatorComponent },
+      { path: 'test-edit/:id', component: TestEditComponent },
     ],
     canActivate: [userMustBeLoggedInGuard],
   },

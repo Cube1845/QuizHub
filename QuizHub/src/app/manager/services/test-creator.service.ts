@@ -10,8 +10,8 @@ export class TestCreatorService {
     return [
       {
         name: 'Test 1',
-        code: '4e6JkIet',
-        id: 'dadadadada-dadada-dadada',
+        isActive: false,
+        id: '8c5dcda0-dc44-4f79-a6d9-08dd37007596',
       },
     ];
   }

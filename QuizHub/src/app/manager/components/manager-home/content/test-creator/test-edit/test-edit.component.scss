@@ -1,0 +1,46 @@
+:host {
+    .test-options-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .test-name-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--p-zinc-850);
+        color: var(--p-zinc-200);
+    }
+
+    .test-options-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .test-options {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .question-count-input-box {
+        display: flex;
+        flex-direction: column;
+        width: min-content;
+    }
+
+    p-table {
+        width: min-content;
+    }
+
+    .picked-question-bases-box {
+        display: flex;
+        flex-direction: column;
+        width: min-content;
+    }
+
+    .code-box {
+        display: flex;
+        flex-direction: column;
+    }
+}

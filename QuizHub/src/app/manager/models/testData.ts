@@ -1,5 +1,5 @@
 export type TestData = {
   name: string;
-  code: string;
+  isActive: boolean;
   id: string;
 };

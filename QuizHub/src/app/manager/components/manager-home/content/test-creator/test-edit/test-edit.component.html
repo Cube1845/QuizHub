@@ -1,0 +1,85 @@
+<div class="container m-0 p-0">
+    <div class="test-name-bar m-0 p-0 py-2">
+        @if (testName && testOptions) {
+            <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ testName }}</h2>
+
+            <div class="test-functionalities-box">
+                <p-button 
+                    icon="pi pi-globe" 
+                    [label]="testOptions.isActive ? 'Dezaktywuj' : 'Uaktywnij'" 
+                    [outlined]="true" 
+                    class="mr-3"/>
+
+                <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3"/>
+                <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3"/>
+                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3"/>
+            </div>
+        } @else {
+            <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/>
+        }
+    </div>
+
+    <div class="test-options-container m-0">
+        @if (testOptions) {
+            <div class="test-options m-4">
+                <div>
+                    <div class="question-count-input-box m-0 p-0">
+                        <label class="text-sm">Liczba pytań</label>
+                        <input pInputText type="number" min="1" max="150"/>
+                    </div>
+
+                    <div class="picked-question-bases-box m-0 p-0">
+                        <h2 class="m-0 p-0 text-lg mt-4">Wybrane bazy pytań:</h2>
+                        <p-table [value]="testOptions.usedQuestionBases" [tableStyle]="{width: 'max-content'}" [size]="'small'" class="mt-1" [scrollable]="true" scrollHeight="300px">
+                            <ng-template #header>
+                                <tr>
+                                    <th>Nazwa</th>
+                                    <th>Minimalna ilość pytań</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template #body let-questionBase>
+                                <tr>
+                                    <td>
+                                        <input pInputText [value]="questionBase.questionBaseName"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <input pInputText type="number" [value]="questionBase.minimalQuestionCount"  max="150"/>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                        <p-button 
+                                [outlined]="true"
+                                icon="pi pi-plus"
+                                size="small"
+                                class="mt-2"
+                                />
+                    </div>
+                </div>
+
+                <div class="mr-4">
+                    <div class="code-box">
+                        <div>
+                            <label>Kod testu</label>
+                        </div>
+                        <div>
+                            <input pInputText style="width: min-content" maxlength="8"/>
+                            <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-4"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="finalize-box m-4">
+                <p-button 
+                    [outlined]="true"
+                    label="Zapisz"
+                    icon="pi pi-pencil"
+                />
+            </div>
+        } @else {
+            <app-spinner/>
+        }
+    </div>
+</div>
