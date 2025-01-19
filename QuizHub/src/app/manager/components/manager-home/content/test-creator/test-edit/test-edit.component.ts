@@ -9,7 +9,12 @@ import {
 import { TestEditService } from '../../../../../services/test-edit.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { TableModule } from 'primeng/table';
 import { QuestionBaseData } from '../../../../../models/questionBaseData';
@@ -45,9 +50,14 @@ export class TestEditComponent {
   userQuestionBases!: QuestionBaseData[] | null;
 
   testOptionsFormGroup = new FormGroup({
-    questionCount: new FormControl<number>(0),
+    questionCount: new FormControl<number>(0, [
+      Validators.required,
+      Validators.min(1),
+    ]),
     minimalQuestionCounts: new FormGroup<FormControl<number | null>[]>([]),
   });
+
+  codeFormControl = new FormControl<string>('');
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -61,9 +71,10 @@ export class TestEditComponent {
       this.testOptions = this.testEditService.getTestOptions(this.testId!);
       this.setInputValues(
         this.testOptions!.questionCount,
-        this.testOptions.usedQuestionBases
+        this.testOptions.usedQuestionBases,
+        this.testOptions.code
       );
-      this.testName = paramMap.get('id');
+      this.testName = this.testOptions.name;
       this.userQuestionBases = [
         {
           name: 'Pytania testowe',
@@ -91,7 +102,8 @@ export class TestEditComponent {
 
   setInputValues(
     questionCount: number,
-    usedQuestionBases: QuestionBasesWithMinimalQuestions[]
+    usedQuestionBases: QuestionBasesWithMinimalQuestions[],
+    code: string
   ): void {
     usedQuestionBases.forEach((questionBase) => {
       this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.push(
@@ -100,6 +112,8 @@ export class TestEditComponent {
     });
 
     this.testOptionsFormGroup.controls.questionCount.setValue(questionCount);
+
+    this.codeFormControl.setValue(code);
   }
 
   openQuestionBaseSelectingDialog(): void {

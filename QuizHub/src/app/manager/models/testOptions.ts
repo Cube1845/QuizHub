@@ -1,8 +1,9 @@
 export type TestOptions = {
-  questionCount: number;
-  usedQuestionBases: QuestionBasesWithMinimalQuestions[];
+  name: string;
   isActive: boolean;
   code: string;
+  questionCount: number;
+  usedQuestionBases: QuestionBasesWithMinimalQuestions[];
 };
 
 export type QuestionBasesWithMinimalQuestions = {

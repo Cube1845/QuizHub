@@ -3,7 +3,7 @@
 } @else {
     <div class="container m-2">
         @for (test of tests; track $index) {
-            <div class="test-panel m-2">
+            <div class="test-panel m-2" (click)="goToTestEditor(test.id)">
                 <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ test.name }}</h1>
                 <p class="m-0 p-0 line-height lighter">{{ test.code }}</p>
                 <p class="m-0 p-0 line-height-1">{{ test.isActive ? 'Aktywny' : 'Nieaktywny' }}</p>

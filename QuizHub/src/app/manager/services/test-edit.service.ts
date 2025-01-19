@@ -7,6 +7,7 @@ import { TestOptions } from '../models/testOptions';
 export class TestEditService {
   getTestOptions(testId: string): TestOptions {
     return {
+      name: 'Test 1',
       questionCount: 10,
       usedQuestionBases: [
         {

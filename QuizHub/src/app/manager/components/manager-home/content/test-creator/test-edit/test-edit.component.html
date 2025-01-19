@@ -75,7 +75,7 @@
                             <label>Kod testu</label>
                         </div>
                         <div>
-                            <input pInputText style="width: min-content" maxlength="8"/>
+                            <input pInputText style="width: min-content" maxlength="8" readonly [formControl]="codeFormControl"/>
                             <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-4"/>
                         </div>
                     </div>
@@ -87,6 +87,7 @@
                     [outlined]="true"
                     label="Zapisz"
                     icon="pi pi-pencil"
+                    [disabled]="testOptionsFormGroup.invalid"
                 />
             </div>
         } @else {
