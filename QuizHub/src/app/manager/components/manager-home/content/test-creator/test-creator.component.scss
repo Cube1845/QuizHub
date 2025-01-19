@@ -38,6 +38,10 @@
             color: var(--p-zinc-400);
         }
 
+        p.lighter {
+            color: var(--p-zinc-300);
+        }
+
         &:hover {
             background: var(--p-zinc-700);
             transition: 0.2s;

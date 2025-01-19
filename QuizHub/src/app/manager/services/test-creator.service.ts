@@ -11,6 +11,7 @@ export class TestCreatorService {
       {
         name: 'Test 1',
         isActive: false,
+        code: 'aeg234ged',
         id: '8c5dcda0-dc44-4f79-a6d9-08dd37007596',
       },
     ];

@@ -5,7 +5,8 @@
         @for (test of tests; track $index) {
             <div class="test-panel m-2">
                 <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ test.name }}</h1>
-                <p class="m-0 p-0">{{ test.isActive ? 'Aktywny' : 'Nieaktywny' }}</p>
+                <p class="m-0 p-0 line-height lighter">{{ test.code }}</p>
+                <p class="m-0 p-0 line-height-1">{{ test.isActive ? 'Aktywny' : 'Nieaktywny' }}</p>
 
                 <i class="pi pi-copy clickable-icon copy-icon text-lg"></i>
                 <i class="pi pi-pencil clickable-icon edit-icon text-lg"></i>

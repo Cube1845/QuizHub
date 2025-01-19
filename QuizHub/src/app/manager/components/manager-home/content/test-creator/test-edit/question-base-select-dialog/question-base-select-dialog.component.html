@@ -1,0 +1,6 @@
+<p-select [options]="questionBases" [formControl]="questionBaseFormControl" optionLabel="name" class="mb-8" scrollHeight="150px" placeholder="Wybierz"/>
+
+<div class="button-box m-0 p-0 mt-4">
+    <p-button label="Anuluj" severity="secondary" [outlined]="true" class="mr-2" (click)="close()"/>
+    <p-button label="Wybierz" [outlined]="true" [disabled]="questionBaseFormControl.invalid" (click)="select()"/>
+</div>

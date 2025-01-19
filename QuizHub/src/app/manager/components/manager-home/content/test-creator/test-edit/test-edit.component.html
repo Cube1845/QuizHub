@@ -24,38 +24,49 @@
             <div class="test-options m-4">
                 <div>
                     <div class="question-count-input-box m-0 p-0">
-                        <label class="text-sm">Liczba pytań</label>
-                        <input pInputText type="number" min="1" max="150"/>
+                        <label class="text-sm">Ogólna liczba pytań</label>
+                        <input pInputText type="number" min="1" max="150" [formControl]="testOptionsFormGroup.controls.questionCount"/>
                     </div>
 
                     <div class="picked-question-bases-box m-0 p-0">
-                        <h2 class="m-0 p-0 text-lg mt-4">Wybrane bazy pytań:</h2>
-                        <p-table [value]="testOptions.usedQuestionBases" [tableStyle]="{width: 'max-content'}" [size]="'small'" class="mt-1" [scrollable]="true" scrollHeight="300px">
-                            <ng-template #header>
+                        @if (testOptions.usedQuestionBases.length > 0) {
+                            <h2 class="m-0 p-0 text-lg mt-4">Wybrane bazy pytań:</h2>
+                            <table class="mt-1">
                                 <tr>
                                     <th>Nazwa</th>
-                                    <th>Minimalna ilość pytań</th>
+                                    <th class="px-2">Minimalna ilość pytań</th>
                                 </tr>
-                            </ng-template>
-                            <ng-template #body let-questionBase>
-                                <tr>
-                                    <td>
-                                        <input pInputText [value]="questionBase.questionBaseName"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <input pInputText type="number" [value]="questionBase.minimalQuestionCount"  max="150"/>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
+
+                                @for (questionBase of testOptions.usedQuestionBases; track $index) {
+                                    <tr>
+                                        <td>
+                                            <p class="my-0 mx-3"><i class="pi pi-trash text-sm mr-2"></i> {{ questionBase.questionBaseName }}</p>
+                                        </td>
+                                        <td class="text-center">
+                                            <input pInputText 
+                                                type="number" 
+                                                [value]="questionBase.minimalQuestionCount" 
+                                                max="150" 
+                                                class="question-count-input my-2" 
+                                                [formControl]="testOptionsFormGroup.controls.minimalQuestionCounts.controls[$index]"/>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        } @else {
+                            <h2 class="m-0 p-0 text-lg mt-4">Brak wybranych baz pytań</h2>
+                        }
 
                         <p-button 
                                 [outlined]="true"
                                 icon="pi pi-plus"
                                 size="small"
                                 class="mt-2"
+                                (click)="openQuestionBaseSelectingDialog()"
                                 />
                     </div>
+
+                    <p class="m-0 mt-2 p-0 line-height-1 text-sm info"><i class="pi pi-info-circle text-xs pr-1"></i>Ogólna liczba pytań określa z ilu pytań składa się test. Minimalna ilość pytań przy bazach pytań określa ile pytań conajmniej będzie wylosowane z danej bazy pytań. Pozostałe pytania będą losowane z dowolnej bazy pytań.</p>
                 </div>
 
                 <div class="mr-4">
@@ -71,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="finalize-box m-4">
+            <div class="finalize-box ml-4">
                 <p-button 
                     [outlined]="true"
                     label="Zapisz"

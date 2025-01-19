@@ -12,7 +12,7 @@ export class TestEditService {
         {
           questionBaseId: 'awdada',
           questionBaseName: 'Pytania testowe',
-          minimalQuestionCount: null,
+          minimalQuestionCount: 2,
         },
         {
           questionBaseId: 'awdadaga',
