@@ -6,7 +6,7 @@
             <div class="test-functionalities-box">
                 <p-button 
                     icon="pi pi-globe" 
-                    [label]="testOptions.isActive ? 'Dezaktywuj' : 'Uaktywnij'" 
+                    [label]="isTestActive ? 'Dezaktywuj' : 'Uaktywnij'" 
                     [outlined]="true" 
                     class="mr-3"/>
 
@@ -25,7 +25,7 @@
                 <div>
                     <div class="question-count-input-box m-0 p-0">
                         <label class="text-sm">Ogólna liczba pytań</label>
-                        <input pInputText type="number" min="1" max="150" [formControl]="testOptionsFormGroup.controls.questionCount"/>
+                        <input pInputText type="number" min="1" max="150" [formControl]="testOptionsFormGroup.controls.questionCount" [readonly]="isTestActive"/>
                     </div>
 
                     <div class="picked-question-bases-box m-0 p-0">
@@ -48,7 +48,8 @@
                                                 [value]="questionBase.minimalQuestionCount" 
                                                 max="150" 
                                                 class="question-count-input my-2" 
-                                                [formControl]="testOptionsFormGroup.controls.minimalQuestionCounts.controls[$index]"/>
+                                                [formControl]="testOptionsFormGroup.controls.minimalQuestionCounts.at($index)"
+                                                [readonly]="isTestActive"/>
                                         </td>
                                     </tr>
                                 }
@@ -63,6 +64,7 @@
                                 size="small"
                                 class="mt-2"
                                 (click)="openQuestionBaseSelectingDialog()"
+                                [disabled]="isTestActive"
                                 />
                     </div>
 
@@ -76,7 +78,7 @@
                         </div>
                         <div>
                             <input pInputText style="width: min-content" maxlength="8" readonly [formControl]="codeFormControl"/>
-                            <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-4"/>
+                            <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-4" [disabled]="isTestActive"/>
                         </div>
                     </div>
                 </div>
@@ -87,8 +89,25 @@
                     [outlined]="true"
                     label="Zapisz"
                     icon="pi pi-pencil"
-                    [disabled]="testOptionsFormGroup.invalid"
+                    [disabled]="testOptionsFormGroup.invalid || isTestActive"
+                    (click)="saveTestOptions()"
                 />
+
+                @if (!isTestActive) {
+                    <h2 class="m-0 p-0 mt-4 info text-lg">Test jest nieaktywny</h2>
+                    <p-button 
+                        icon="pi pi-globe" 
+                        label="Uaktywnij" 
+                        [outlined]="true" 
+                        class="mr-3"/>
+                } @else {
+                    <h2 class="m-0 p-0 mt-4 info text-lg">Test jest teraz aktywny, dezaktywuj go, aby edytować</h2>
+                    <p-button 
+                        icon="pi pi-globe" 
+                        label="Dezaktywuj" 
+                        [outlined]="true" 
+                        class="mr-3"/>
+                }
             </div>
         } @else {
             <app-spinner/>

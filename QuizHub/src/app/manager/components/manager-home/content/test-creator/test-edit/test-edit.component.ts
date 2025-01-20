@@ -10,6 +10,7 @@ import { TestEditService } from '../../../../../services/test-edit.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -20,6 +21,7 @@ import { TableModule } from 'primeng/table';
 import { QuestionBaseData } from '../../../../../models/questionBaseData';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 import { QuestionBaseSelectDialogComponent } from './question-base-select-dialog/question-base-select-dialog.component';
+import { questionSumValidator } from '../../../../../validators/question-sum-validator';
 
 @Component({
   selector: 'app-test-edit',
@@ -47,15 +49,21 @@ export class TestEditComponent {
 
   testOptions!: TestOptions | null;
 
+  isTestActive!: boolean;
+  testCode!: string;
+
   userQuestionBases!: QuestionBaseData[] | null;
 
-  testOptionsFormGroup = new FormGroup({
-    questionCount: new FormControl<number>(0, [
-      Validators.required,
-      Validators.min(1),
-    ]),
-    minimalQuestionCounts: new FormGroup<FormControl<number | null>[]>([]),
-  });
+  testOptionsFormGroup = new FormGroup(
+    {
+      questionCount: new FormControl<number>(0, [
+        Validators.required,
+        Validators.min(1),
+      ]),
+      minimalQuestionCounts: new FormArray<FormControl<number | null>>([]),
+    },
+    questionSumValidator
+  );
 
   codeFormControl = new FormControl<string>('');
 
@@ -68,11 +76,18 @@ export class TestEditComponent {
       this.testId = paramMap.get('id');
 
       //temporary
-      this.testOptions = this.testEditService.getTestOptions(this.testId!);
+      const testOptionsAndData = this.testEditService.getTestOptionsAndData(
+        this.testId!
+      );
+
+      this.testOptions = testOptionsAndData.testOptions;
+      this.testCode = testOptionsAndData.code;
+      this.isTestActive = testOptionsAndData.isActive;
+
       this.setInputValues(
         this.testOptions!.questionCount,
         this.testOptions.usedQuestionBases,
-        this.testOptions.code
+        this.testCode
       );
       this.testName = this.testOptions.name;
       this.userQuestionBases = [
@@ -100,14 +115,16 @@ export class TestEditComponent {
     });
   }
 
+  saveTestOptions(): void {}
+
   setInputValues(
     questionCount: number,
     usedQuestionBases: QuestionBasesWithMinimalQuestions[],
     code: string
   ): void {
     usedQuestionBases.forEach((questionBase) => {
-      this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.push(
-        new FormControl<number | null>(questionBase.minimalQuestionCount)
+      this.testOptionsFormGroup.controls.minimalQuestionCounts.push(
+        new FormControl(questionBase.minimalQuestionCount)
       );
     });
 
