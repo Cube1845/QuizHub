@@ -49,8 +49,8 @@ export class TestEditComponent {
 
   testOptions!: TestOptions | null;
 
-  isTestActive!: boolean;
-  testCode!: string;
+  isTestActive!: boolean | null;
+  testCode!: string | null;
 
   userQuestionBases!: QuestionBaseData[] | null;
 
@@ -131,6 +131,28 @@ export class TestEditComponent {
     this.testOptionsFormGroup.controls.questionCount.setValue(questionCount);
 
     this.codeFormControl.setValue(code);
+  }
+
+  displayQuestionBaseUnselectingDialog(index: number, event: Event): void {
+    this.globalDialogService.displayConfirmationDialog({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz odznaczyć tą bazę pytań',
+      header: 'Potwierdzenie',
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      defaultFocus: 'reject',
+
+      accept: () => this.unselectQuestionBase(index),
+    });
+  }
+
+  unselectQuestionBase(index: number): void {
+    this.testOptions!.usedQuestionBases.splice(index, 1);
   }
 
   openQuestionBaseSelectingDialog(): void {
