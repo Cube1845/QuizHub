@@ -16,4 +16,10 @@ export class TestCreatorService {
       },
     ];
   }
+
+  createTest(name: string): void {}
+
+  editTestName(updatedName: string, testId: string): void {}
+
+  removeTest(testId: string): void {}
 }

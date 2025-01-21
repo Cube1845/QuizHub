@@ -40,7 +40,7 @@
                                 @for (questionBase of testOptions.usedQuestionBases; track $index) {
                                     <tr>
                                         <td>
-                                            <p class="my-0 mx-3"><i class="pi pi-trash text-sm mr-2" (click)="displayQuestionBaseUnselectingDialog($index, $event)"></i> {{ questionBase.questionBaseName }}</p>
+                                            <p class="my-0 mx-3"><i class="pi pi-times-circle text-sm mr-2" (click)="displayQuestionBaseUnselectingDialog($index, $event)"></i> {{ questionBase.questionBaseName }}</p>
                                         </td>
                                         <td class="text-center">
                                             <input pInputText 
