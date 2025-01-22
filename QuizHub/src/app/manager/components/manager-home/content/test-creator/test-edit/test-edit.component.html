@@ -1,11 +1,12 @@
 <div class="container m-0 p-0">
     <div class="test-name-bar m-0 p-0 py-2">
         @if (testName && testOptions) {
-            <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ testName }}</h2>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <p-button icon="pi pi-arrow-left" label="Testy" class="ml-3" (click)="goBack()"/>
+                <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ testName }}</h2>
+            </div>
 
             <div class="test-functionalities-box">
-                <p-button icon="pi pi-arrow-left" label="Testy" [outlined]="true" class="mr-3" (click)="goBack()"/>
-
                 <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
                 <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal($event)"/>
                 <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3" (click)="copyCode()"/>
@@ -43,7 +44,7 @@
                                 @for (questionBase of testOptions.usedQuestionBases; track $index) {
                                     <tr>
                                         <td>
-                                            <p class="my-0 mx-3"><i class="pi pi-times-circle text-sm mr-2" (click)="displayQuestionBaseUnselectingDialog($index, $event)"></i> {{ questionBase.questionBaseName }}</p>
+                                            <p class="my-0 mx-3">{{ questionBase.questionBaseName }}<i class="pi pi-trash text-sm ml-2" (click)="displayQuestionBaseUnselectingDialog($index, $event)"></i> </p>
                                         </td>
                                         <td class="text-center">
                                             <input pInputText 
@@ -77,7 +78,7 @@
                 <div class="mr-4">
                     <div class="code-box">
                         <div>
-                            <label>Kod testu</label>
+                            <label class="text-sm">Kod testu</label>
                         </div>
                         <div>
                             <input pInputText style="width: min-content" maxlength="8" readonly [formControl]="codeFormControl"/>
