@@ -4,15 +4,17 @@
             <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ testName }}</h2>
 
             <div class="test-functionalities-box">
+                <p-button icon="pi pi-arrow-left" label="Testy" [outlined]="true" class="mr-3" (click)="goBack()"/>
+
+                <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
+                <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal($event)"/>
+                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3"/>
+
                 <p-button 
                     icon="pi pi-globe" 
                     [label]="isTestActive ? 'Dezaktywuj' : 'Uaktywnij'" 
                     [outlined]="true" 
                     class="mr-3"/>
-
-                <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3"/>
-                <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3"/>
-                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3"/>
             </div>
         } @else {
             <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/>

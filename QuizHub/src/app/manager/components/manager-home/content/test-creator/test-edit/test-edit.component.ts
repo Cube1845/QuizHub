@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
 import { ButtonModule } from 'primeng/button';
 import {
@@ -22,6 +22,9 @@ import { QuestionBaseData } from '../../../../../models/questionBaseData';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 import { QuestionBaseSelectDialogComponent } from './question-base-select-dialog/question-base-select-dialog.component';
 import { questionSumValidator } from '../../../../../validators/question-sum-validator';
+import { NameEditDialogComponent } from '../../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
+import { TestCreatorService } from '../../../../../services/test-creator.service';
+import { ToastService } from '../../../../../../common/services/toast.service';
 
 @Component({
   selector: 'app-test-edit',
@@ -41,8 +44,10 @@ import { questionSumValidator } from '../../../../../validators/question-sum-val
 export class TestEditComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly testEditService = inject(TestEditService);
-
+  private readonly router = inject(Router);
   private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly testCreatorService = inject(TestCreatorService);
+  private readonly toastService = inject(ToastService);
 
   testId!: string | null;
   testName!: string | null;
@@ -115,6 +120,10 @@ export class TestEditComponent {
     });
   }
 
+  goBack(): void {
+    this.router.navigateByUrl('manager/tests');
+  }
+
   saveTestOptions(): void {}
 
   setInputValues(
@@ -131,6 +140,73 @@ export class TestEditComponent {
     this.testOptionsFormGroup.controls.questionCount.setValue(questionCount);
 
     this.codeFormControl.setValue(code);
+  }
+
+  displayTestRemovalModal(event: Event): void {
+    this.globalDialogService.displayConfirmationDialog({
+      target: event.target as EventTarget,
+      message: 'Na pewno chcesz usunąć ten test?',
+      header: 'Potwierdzenie',
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      defaultFocus: 'reject',
+
+      accept: () => this.removeThisTest(),
+    });
+  }
+
+  removeThisTest(): void {
+    this.testCreatorService.removeTest(this.testId!);
+    // .subscribe((isSuccess) => {
+    //   if (isSuccess) {
+    //     this.goBack();
+    //     this.toastService.displayToast(
+    //       'success',
+    //       'Sukces',
+    //       'Usunięto bazę pytań'
+    //     );
+    //   }
+    // });
+
+    this.goBack();
+    this.toastService.displayToast('success', 'Sukces', 'Usunięto bazę pytań');
+  }
+
+  displayTestNameEditDialog(): void {
+    this.globalDialogService
+      .displayDialog(NameEditDialogComponent, {
+        header: 'Edytuj nazwę testu',
+        width: '25rem',
+        modal: true,
+        data: { index: -1, currentName: this.testName },
+      })
+      .subscribe((result) => {
+        if (result != null) {
+          this.saveThisTestName(result.name);
+        }
+      });
+  }
+
+  saveThisTestName(updatedName: string): void {
+    this.testCreatorService.editTestName(updatedName, this.testId!);
+    // .subscribe((isSuccess) => {
+    //   if (isSuccess) {
+    //     this.questionBaseName = updatedName;
+    //     this.toastService.displayToast(
+    //       'success',
+    //       'Sukces',
+    //       'Zmieniono nazwę'
+    //     );
+    //   }
+    // });
+
+    this.testName = updatedName;
+    this.toastService.displayToast('success', 'Sukces', 'Zmieniono nazwę');
   }
 
   displayQuestionBaseUnselectingDialog(index: number, event: Event): void {
