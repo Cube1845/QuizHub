@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -6,7 +6,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'app-question-base-name-edit-dialog',
+  selector: 'app-name-edit-dialog',
   standalone: true,
   imports: [
     ButtonModule,
@@ -14,15 +14,15 @@ import { InputTextModule } from 'primeng/inputtext';
     FloatLabelModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './question-base-name-edit-dialog.component.html',
-  styleUrl: './question-base-name-edit-dialog.component.scss',
+  templateUrl: './name-edit-dialog.component.html',
+  styleUrl: './name-edit-dialog.component.scss',
 })
-export class QuestionBaseNameEditDialogComponent implements OnInit {
+export class NameEditDialogComponent {
   private readonly ref = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
 
   currentName: string | null = null;
-  questionBaseIndex: number | null = null;
+  itemIndex: number | null = null;
 
   dialogType!: 'add' | 'edit';
 
@@ -41,7 +41,7 @@ export class QuestionBaseNameEditDialogComponent implements OnInit {
     }
 
     this.currentName = data.currentName;
-    this.questionBaseIndex = data.index;
+    this.itemIndex = data.index;
 
     this.dialogType = 'edit';
 
@@ -54,14 +54,14 @@ export class QuestionBaseNameEditDialogComponent implements OnInit {
     this.nameFormControl.setValue(this.currentName);
   }
 
-  addNewQuestionBase(): void {
+  addNewItem(): void {
     this.ref.close(this.nameFormControl.value!);
   }
 
-  saveQuestionBaseName() {
+  saveName() {
     this.ref.close({
       name: this.nameFormControl.value!,
-      questionBaseIndex: this.questionBaseIndex,
+      itemIndex: this.itemIndex,
     });
   }
 

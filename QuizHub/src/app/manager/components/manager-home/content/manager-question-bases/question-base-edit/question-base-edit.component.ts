@@ -23,8 +23,8 @@ import { ImageEditionState } from '../../../../../enums/imageEditionState';
 import { DisplayableImage } from '../../../../../models/displayableImage';
 import { Answer } from '../../../../../models/answer';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
-import { QuestionBaseNameEditDialogComponent } from '../dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import saveAs from 'file-saver';
+import { NameEditDialogComponent } from '../../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -333,7 +333,7 @@ export class QuestionBaseEditComponent {
 
   displayQuestionBaseNameEditModal(): void {
     this.globalDialogService
-      .displayDialog(QuestionBaseNameEditDialogComponent, {
+      .displayDialog(NameEditDialogComponent, {
         header: 'Edytuj nazwę bazy pytań',
         width: '25rem',
         modal: true,

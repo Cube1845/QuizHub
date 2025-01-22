@@ -4,8 +4,8 @@ import { TestCreatorService } from '../../../../services/test-creator.service';
 import { SpinnerComponent } from '../../../../../common/components/spinner/spinner.component';
 import { Router } from '@angular/router';
 import { GlobalDialogService } from '../../../../../common/services/global-dialog.service';
-import { TestNameEditDialogComponent } from './test-edit/test-name-edit-dialog/test-name-edit-dialog.component';
 import { ToastService } from '../../../../../common/services/toast.service';
+import { NameEditDialogComponent } from '../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
 
 @Component({
   selector: 'app-test-creator',
@@ -34,7 +34,7 @@ export class TestCreatorComponent {
     event.stopPropagation();
 
     this.globalDialogService
-      .displayDialog(TestNameEditDialogComponent, {
+      .displayDialog(NameEditDialogComponent, {
         header: 'Edytuj nazwę testu',
         width: '25rem',
         modal: true,
@@ -42,14 +42,14 @@ export class TestCreatorComponent {
       })
       .subscribe((result) => {
         if (result != null) {
-          this.saveTestName(result.name, result.testIndex);
+          this.saveTestName(result.name, result.itemIndex);
         }
       });
   }
 
   displayTestCreatingDialog(): void {
     this.globalDialogService
-      .displayDialog(TestNameEditDialogComponent, {
+      .displayDialog(NameEditDialogComponent, {
         header: 'Dodaj test',
         width: '25rem',
         modal: true,

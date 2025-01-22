@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
-import { QuestionBaseNameEditDialogComponent } from './dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import { QuestionBaseData } from '../../../../models/questionBaseData';
 import { QuestionBaseAddingMethodDialogComponent } from './dialogs/question-base-adding-method-dialog/question-base-adding-method-dialog.component';
 import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-base-dialog/import-question-base-dialog.component';
@@ -13,6 +12,7 @@ import { ToastService } from '../../../../../common/services/toast.service';
 import { GlobalDialogService } from '../../../../../common/services/global-dialog.service';
 import { SpinnerComponent } from '../../../../../common/components/spinner/spinner.component';
 import { saveAs } from 'file-saver';
+import { NameEditDialogComponent } from '../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -52,7 +52,7 @@ export class ManagerQuestionBasesComponent {
     event.stopPropagation();
 
     this.globalDialogService
-      .displayDialog(QuestionBaseNameEditDialogComponent, {
+      .displayDialog(NameEditDialogComponent, {
         header: 'Edytuj nazwę bazy pytań',
         width: '25rem',
         modal: true,
@@ -60,7 +60,7 @@ export class ManagerQuestionBasesComponent {
       })
       .subscribe((result) => {
         if (result != null) {
-          this.saveQuestionBaseName(result.name, result.questionBaseIndex);
+          this.saveQuestionBaseName(result.name, result.itemIndex);
         }
       });
   }
@@ -108,7 +108,7 @@ export class ManagerQuestionBasesComponent {
 
   displayQuestionBaseCreatingDialog(): void {
     this.globalDialogService
-      .displayDialog(QuestionBaseNameEditDialogComponent, {
+      .displayDialog(NameEditDialogComponent, {
         header: 'Dodaj bazę pytań',
         width: '25rem',
         modal: true,
