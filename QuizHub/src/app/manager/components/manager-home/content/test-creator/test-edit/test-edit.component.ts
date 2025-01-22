@@ -55,7 +55,6 @@ export class TestEditComponent {
   testOptions!: TestOptions | null;
 
   isTestActive!: boolean | null;
-  testCode!: string | null;
 
   userQuestionBases!: QuestionBaseData[] | null;
 
@@ -86,15 +85,14 @@ export class TestEditComponent {
       );
 
       this.testOptions = testOptionsAndData.testOptions;
-      this.testCode = testOptionsAndData.code;
       this.isTestActive = testOptionsAndData.isActive;
 
       this.setInputValues(
         this.testOptions!.questionCount,
         this.testOptions.usedQuestionBases,
-        this.testCode
+        testOptionsAndData.code
       );
-      this.testName = this.testOptions.name;
+      this.testName = testOptionsAndData.name;
       this.userQuestionBases = [
         {
           name: 'Pytania testowe',
@@ -124,7 +122,39 @@ export class TestEditComponent {
     this.router.navigateByUrl('manager/tests');
   }
 
-  saveTestOptions(): void {}
+  saveTestOptions(): void {
+    this.testEditService.saveTestOptions(this.testId!, this.testOptions!);
+
+    //temporary
+    this.toastService.displayToast('success', 'Sukces', 'Zapisano ustawienia');
+  }
+
+  changeTestCode(): void {
+    this.testEditService.changeTestCode(this.testId!);
+
+    //temporary
+    this.codeFormControl.setValue('hu4Ay2ga');
+    this.toastService.displayToast('success', 'Sukces', 'Zmieniono kod testu');
+  }
+
+  changeTestActiveState(): void {
+    this.testEditService.changeTestActiveState(this.testId!);
+
+    //temporary
+    this.isTestActive = !this.isTestActive;
+  }
+
+  copyCode(): void {
+    navigator.clipboard
+      .writeText(this.codeFormControl.value!)
+      .then(() =>
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Skopiowano kod testu'
+        )
+      );
+  }
 
   setInputValues(
     questionCount: number,

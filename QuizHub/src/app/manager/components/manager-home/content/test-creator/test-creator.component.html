@@ -8,7 +8,7 @@
                 <p class="m-0 p-0 line-height lighter">{{ test.code }}</p>
                 <p class="m-0 p-0 line-height-1">{{ test.isActive ? 'Aktywny' : 'Nieaktywny' }}</p>
 
-                <i class="pi pi-copy clickable-icon copy-icon text-lg"></i>
+                <i class="pi pi-copy clickable-icon copy-icon text-lg" (click)="copyCode($index, $event)"></i>
                 <i class="pi pi-pencil clickable-icon edit-icon text-lg" (click)="displayTestNameEditDialog($event, $index)"></i>
                 <i class="pi pi-trash clickable-icon delete-icon text-lg" (click)="displayTestRemovalModal($event, $index)"></i>
             </div>

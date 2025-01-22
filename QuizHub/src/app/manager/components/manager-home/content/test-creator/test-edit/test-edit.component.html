@@ -8,13 +8,14 @@
 
                 <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
                 <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal($event)"/>
-                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3"/>
+                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3" (click)="copyCode()"/>
 
                 <p-button 
                     icon="pi pi-globe" 
                     [label]="isTestActive ? 'Dezaktywuj' : 'Uaktywnij'" 
                     [outlined]="true" 
-                    class="mr-3"/>
+                    class="mr-3"
+                    (click)="changeTestActiveState()"/>
             </div>
         } @else {
             <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/>
@@ -80,7 +81,7 @@
                         </div>
                         <div>
                             <input pInputText style="width: min-content" maxlength="8" readonly [formControl]="codeFormControl"/>
-                            <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-4" [disabled]="isTestActive"/>
+                            <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-4" [disabled]="isTestActive" (click)="changeTestCode()"/>
                         </div>
                     </div>
                 </div>
@@ -95,21 +96,18 @@
                     (click)="saveTestOptions()"
                 />
 
-                @if (!isTestActive) {
-                    <h2 class="m-0 p-0 mt-4 info text-lg">Test jest nieaktywny</h2>
-                    <p-button 
+                <h2 class="m-0 p-0 mt-4 info text-lg">
+                    {{ isTestActive 
+                        ? 'Test jest teraz aktywny, dezaktywuj go, aby edytować' 
+                        : 'Test jest nieaktywny (nie można go w tej chwili rozwiązać)'
+                    }}
+                </h2>
+                <p-button 
                         icon="pi pi-globe" 
-                        label="Uaktywnij" 
+                        [label]="isTestActive ? 'Dezaktywuj' : 'Uaktywnij'" 
                         [outlined]="true" 
-                        class="mr-3"/>
-                } @else {
-                    <h2 class="m-0 p-0 mt-4 info text-lg">Test jest teraz aktywny, dezaktywuj go, aby edytować</h2>
-                    <p-button 
-                        icon="pi pi-globe" 
-                        label="Dezaktywuj" 
-                        [outlined]="true" 
-                        class="mr-3"/>
-                }
+                        class="mr-3"
+                        (click)="changeTestActiveState()"/>
             </div>
         } @else {
             <app-spinner/>

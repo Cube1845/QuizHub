@@ -1,5 +1,4 @@
 export type TestOptions = {
-  name: string;
   questionCount: number;
   usedQuestionBases: QuestionBasesWithMinimalQuestions[];
 };

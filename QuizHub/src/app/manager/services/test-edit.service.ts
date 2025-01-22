@@ -5,6 +5,7 @@ export type TestOptionsAndData = {
   testOptions: TestOptions;
   code: string;
   isActive: boolean;
+  name: string;
 };
 
 @Injectable({
@@ -14,7 +15,6 @@ export class TestEditService {
   getTestOptionsAndData(testId: string): TestOptionsAndData {
     return {
       testOptions: {
-        name: 'Test 1',
         questionCount: 10,
         usedQuestionBases: [
           {
@@ -31,6 +31,13 @@ export class TestEditService {
       },
       code: 'js6fA820',
       isActive: false,
+      name: 'Test 1',
     };
   }
+
+  saveTestOptions(testId: string, options: TestOptions): void {}
+
+  changeTestCode(testId: string): void {}
+
+  changeTestActiveState(testId: string): void {}
 }

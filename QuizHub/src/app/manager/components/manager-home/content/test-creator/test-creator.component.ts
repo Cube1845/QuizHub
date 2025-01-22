@@ -47,6 +47,20 @@ export class TestCreatorComponent {
       });
   }
 
+  copyCode(index: number, event: Event): void {
+    event.stopPropagation();
+
+    navigator.clipboard
+      .writeText(this.tests![index].code)
+      .then(() =>
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Skopiowano kod testu'
+        )
+      );
+  }
+
   displayTestCreatingDialog(): void {
     this.globalDialogService
       .displayDialog(NameEditDialogComponent, {
