@@ -123,9 +123,22 @@ export class TestEditComponent {
   }
 
   saveTestOptions(): void {
-    this.testEditService.saveTestOptions(this.testId!, this.testOptions!);
+    const newOptions: TestOptions = {
+      questionCount: this.testOptionsFormGroup.controls.questionCount.value!,
+      usedQuestionBases: this.testOptions!.usedQuestionBases.map(
+        (questionBase, i) => {
+          questionBase.minimalQuestionCount =
+            this.testOptionsFormGroup.value.minimalQuestionCounts![i];
+
+          return questionBase;
+        }
+      ),
+    };
+
+    this.testEditService.saveTestOptions(this.testId!, newOptions);
 
     //temporary
+    this.testOptions = newOptions;
     this.toastService.displayToast('success', 'Sukces', 'Zapisano ustawienia');
   }
 
@@ -138,6 +151,15 @@ export class TestEditComponent {
   }
 
   changeTestActiveState(): void {
+    this.testOptionsFormGroup.controls.questionCount.setValue(
+      this.testOptions!.questionCount
+    );
+
+    this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.forEach(
+      (fc, i) =>
+        fc.setValue(this.testOptions!.usedQuestionBases[i].minimalQuestionCount)
+    );
+
     this.testEditService.changeTestActiveState(this.testId!);
 
     //temporary
@@ -259,6 +281,13 @@ export class TestEditComponent {
 
   unselectQuestionBase(index: number): void {
     this.testOptions!.usedQuestionBases.splice(index, 1);
+    this.testOptionsFormGroup.controls.minimalQuestionCounts.controls[
+      index
+    ].reset();
+    this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.splice(
+      index,
+      1
+    );
   }
 
   openQuestionBaseSelectingDialog(): void {
