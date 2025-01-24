@@ -78,21 +78,10 @@ export class TestCreatorComponent {
   displayTestRemovalModal(event: Event, index: number): void {
     event.stopPropagation();
 
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz usunąć ten test?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'reject',
-
-      accept: () => this.removeTest(index),
-    });
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz usunąć ten test?',
+      () => this.removeTest(index)
+    );
   }
 
   removeTest(index: number): void {

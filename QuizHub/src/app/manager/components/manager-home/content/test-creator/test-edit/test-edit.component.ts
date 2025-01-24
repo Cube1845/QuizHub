@@ -114,6 +114,11 @@ export class TestEditComponent {
           questionCount: 10,
           id: 'awdawdawdagswa',
         },
+        {
+          name: 'HHHHHHHHHHHHHHHHHHHHHHHHH',
+          questionCount: 10,
+          id: 'awdawdawdag231swa',
+        },
       ];
     });
   }
@@ -148,6 +153,15 @@ export class TestEditComponent {
     //temporary
     this.codeFormControl.setValue('hu4Ay2ga');
     this.toastService.displayToast('success', 'Sukces', 'Zmieniono kod testu');
+  }
+
+  displayTestActivationDialog(): void {
+    this.globalDialogService.displayConfirmationDialog(
+      this.isTestActive
+        ? 'Czy na pewno chcesz dezaktywować ten test?'
+        : 'Czy na pewno chcesz aktywować ten test (nie będzie można go edytować)',
+      () => this.changeTestActiveState()
+    );
   }
 
   changeTestActiveState(): void {
@@ -194,22 +208,11 @@ export class TestEditComponent {
     this.codeFormControl.setValue(code);
   }
 
-  displayTestRemovalModal(event: Event): void {
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz usunąć ten test?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'reject',
-
-      accept: () => this.removeThisTest(),
-    });
+  displayTestRemovalModal(): void {
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz usunąć ten test?',
+      () => this.removeThisTest()
+    );
   }
 
   removeThisTest(): void {
@@ -261,22 +264,11 @@ export class TestEditComponent {
     this.toastService.displayToast('success', 'Sukces', 'Zmieniono nazwę');
   }
 
-  displayQuestionBaseUnselectingDialog(index: number, event: Event): void {
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz odznaczyć tą bazę pytań',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'reject',
-
-      accept: () => this.unselectQuestionBase(index),
-    });
+  displayQuestionBaseUnselectingDialog(index: number): void {
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz odznaczyć tą bazę pytań',
+      () => this.unselectQuestionBase(index)
+    );
   }
 
   unselectQuestionBase(index: number): void {
@@ -304,7 +296,7 @@ export class TestEditComponent {
         data: notAlreadyUsedQuestionBases,
         closable: true,
         modal: true,
-        width: '20rem',
+        width: '23rem',
         header: 'Wybierz bazę pytań',
       })
       .subscribe((result) => {

@@ -87,4 +87,11 @@
     .question-count-input {
         width: 200px;
     }
+
+    .question-base-name-td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        word-break: break-word;
+    }
 }

@@ -123,21 +123,10 @@ export class ManagerQuestionBasesComponent {
   displayQuestionBaseRemovalModal(event: Event, index: number): void {
     event.stopPropagation();
 
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz usunąć tę bazę pytań?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'reject',
-
-      accept: () => this.removeQuestionBase(index),
-    });
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz usunąć tę bazę pytań?',
+      () => this.removeQuestionBase(index)
+    );
   }
 
   removeQuestionBase(index: number): void {
@@ -192,20 +181,9 @@ export class ManagerQuestionBasesComponent {
   displayDownloadingQuestionBaseModal(event: Event, index: number): void {
     event.stopPropagation();
 
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz pobrać tę bazę pytań do pliku?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'accept',
-
-      accept: () => this.downloadQuestionBase(index),
-    });
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz pobrać tę bazę pytań do pliku?',
+      () => this.downloadQuestionBase(index)
+    );
   }
 }

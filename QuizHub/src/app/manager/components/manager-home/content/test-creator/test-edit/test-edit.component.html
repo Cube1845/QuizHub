@@ -7,16 +7,16 @@
             </div>
 
             <div class="test-functionalities-box">
-                <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
-                <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal($event)"/>
-                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3" (click)="copyCode()"/>
-
                 <p-button 
                     icon="pi pi-globe" 
                     [label]="isTestActive ? 'Dezaktywuj' : 'Aktywuj'" 
                     [outlined]="true" 
                     class="mr-3"
-                    (click)="changeTestActiveState()"/>
+                    (click)="displayTestActivationDialog()"/>
+
+                <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
+                <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal()"/>
+                <p-button icon="pi pi-copy" label="Skopiuj kod" [outlined]="true" severity="secondary" class="mr-3" (click)="copyCode()"/>
             </div>
         } @else {
             <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/>
@@ -61,8 +61,12 @@
 
                             @for (questionBase of testOptions.usedQuestionBases; track $index) {
                                 <tr>
-                                    <td>
-                                        <p class="my-0 mx-3">{{ questionBase.questionBaseName }}<i class="pi pi-trash text-sm ml-2" (click)="displayQuestionBaseUnselectingDialog($index, $event)"></i> </p>
+                                    <td class="question-base-name-td">
+                                        <p class="my-0 mx-3">{{ questionBase.questionBaseName }}</p>
+
+                                        @if (!isTestActive) {
+                                            <i class="pi pi-trash text-sm mr-3" (click)="displayQuestionBaseUnselectingDialog($index)"></i>
+                                        }
                                     </td>
                                     <td class="text-center">
                                         @if (!isTestActive) {
