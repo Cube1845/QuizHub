@@ -12,6 +12,7 @@ import { ImportQuestionBaseDialogComponent } from './dialogs/import-question-bas
 import { ToastService } from '../../../../../common/services/toast.service';
 import { GlobalDialogService } from '../../../../../common/services/global-dialog.service';
 import { SpinnerComponent } from '../../../../../common/components/spinner/spinner.component';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-manager-question-bases',
@@ -76,7 +77,11 @@ export class ManagerQuestionBasesComponent {
           return;
         }
 
-        this.questionBaseService.importQuestionBaseFile(result);
+        this.questionBaseService
+          .importQuestionBaseFile(result)
+          .subscribe((id) =>
+            this.router.navigateByUrl('manager/question-base-edit/' + id)
+          );
       });
   }
 
@@ -177,9 +182,11 @@ export class ManagerQuestionBasesComponent {
   }
 
   downloadQuestionBase(index: number): void {
-    this.questionBaseService.exportQuestionBaseFile(
-      this.questionBases![index].id
-    );
+    this.questionBaseService
+      .exportQuestionBaseFile(this.questionBases![index].id)
+      .subscribe((value) => {
+        return saveAs(value, this.questionBases![index].name);
+      });
   }
 
   displayDownloadingQuestionBaseModal(event: Event, index: number): void {

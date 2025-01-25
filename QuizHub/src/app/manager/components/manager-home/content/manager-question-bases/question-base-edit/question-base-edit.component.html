@@ -12,7 +12,7 @@
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
         <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()"></p-button> 
 
-        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Eksportuj" icon="pi pi-download" severity="secondary"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Eksportuj" icon="pi pi-download" severity="secondary" (click)="displayDownloadingQuestionBaseModal($event)"></p-button>
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Usuń" icon="pi pi-trash" severity="secondary" (click)="displayQuestionBaseRemovalModal($event)"></p-button>
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Edytuj nazwę" icon="pi pi-pencil" severity="secondary" (click)="displayQuestionBaseNameEditModal()"></p-button>
         <p-button [outlined]="true" [style]="{width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="showCreatingQuestionDialog()"></p-button>

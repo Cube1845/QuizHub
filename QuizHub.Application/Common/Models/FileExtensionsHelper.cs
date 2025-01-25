@@ -21,14 +21,7 @@ public static class FileExtensionsHelper
         };
     }
 
-    public static List<string> GetImageExtensions()
-    {
-        return [
-            ".jpeg",
-            ".jpg",
-            ".png",
-        ];
-    }
+    public static readonly List<string> ImageExtensions = [".jpeg", ".jpg", ".png"];
 
     public static bool IsImageFile(string contentType)
     {

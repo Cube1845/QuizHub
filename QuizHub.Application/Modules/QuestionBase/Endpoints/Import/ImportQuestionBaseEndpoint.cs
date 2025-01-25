@@ -8,7 +8,7 @@ using System.IO.Compression;
 
 namespace QuizHub.Application.Modules.QuestionBase.Endpoints.Import;
 
-public class ImportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<ImportQuestionBaseRequest, Result>
+public class ImportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<ImportQuestionBaseRequest, Result<ImportQuestionBaseResponse>>
 {
     private readonly IAppDbContext _context = context;
 
@@ -30,11 +30,12 @@ public class ImportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Import
             var extension = Path.GetExtension(entry.Name).ToLowerInvariant();
 
             if (entry.FullName.StartsWith("images/") &&
-                FileExtensionsHelper.GetImageExtensions().Contains(extension))
+                FileExtensionsHelper.ImageExtensions.Contains(extension))
             {
                 if (!Guid.TryParse(entry.Name.Split('.')[0], out var oldImageId))
                 {
-                    throw new DomainException("Błąd nazwy pliku z obrazem");
+                    await SendOkAsync(Result<ImportQuestionBaseResponse>.Error("Błąd nazwy pliku z obrazem"), ct);
+                    return;
                 }
 
                 var newImageId = await AddImageToDb(entry, extension, ct);
@@ -43,12 +44,12 @@ public class ImportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Import
             }
         }
 
-        await ImportQuestionBaseToDb(questionBaseDto, ct);
+        var questionBaseId = await ImportQuestionBaseToDb(questionBaseDto, ct);
 
-        await SendOkAsync(Result.Success(), ct);
+        await SendOkAsync(Result<ImportQuestionBaseResponse>.Success(new(questionBaseId)), ct);
     }
 
-    private async Task ImportQuestionBaseToDb(FileManagementQuestionBaseDto dto, CancellationToken ct)
+    private async Task<Guid> ImportQuestionBaseToDb(FileManagementQuestionBaseDto dto, CancellationToken ct)
     {
         var userId = User.GetId();
 
@@ -63,6 +64,8 @@ public class ImportQuestionBaseEndpoint(IAppDbContext context) : Endpoint<Import
         await AddQuestionsAndAnswersToDb(dto.Questions, questionBase.Id, ct);
 
         await _context.SaveChangesAsync(ct);
+
+        return questionBase.Id;
     }
 
     private async Task AddQuestionsAndAnswersToDb(List<FileManagementQuestionDto> questions, Guid questionBaseId, CancellationToken ct)
