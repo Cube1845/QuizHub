@@ -1,0 +1,43 @@
+﻿using QuizHub.Application.Common.Extensions;
+using QuizHub.Application.Common.Interfaces;
+using QuizHub.Application.Common.Models;
+using QuizHub.Domain.Entities;
+using QuizHub.Domain.Services;
+
+namespace QuizHub.Application.Modules.TestCreator.Endpoints.Add;
+
+public class AddTestEndpoint(IAppDbContext context) : Endpoint<AddTestRequest, Result<AddTestResponse>>
+{
+    private readonly IAppDbContext _context = context;
+
+    public override void Configure()
+    {
+        Post("test");
+    }
+
+    public override async Task HandleAsync(AddTestRequest req, CancellationToken ct)
+    {
+        var userId = User.GetId();
+
+        Test test = new()
+        {
+            OwnerId = userId,
+            Code = CodeService.GenerateCode(),
+            Name = req.Name,
+            IsActive = false,
+        };
+
+        await _context.Tests.AddAsync(test, ct);
+
+        TestOptions options = new()
+        {
+            QuestionCount = 10,
+            TestId = test.Id,
+        };
+
+        await _context.TestsOptions.AddAsync(options, ct);
+
+        await _context.SaveChangesAsync(ct);
+        await SendOkAsync(Result<AddTestResponse>.Success(new(test.Id)), ct);
+    }
+}
