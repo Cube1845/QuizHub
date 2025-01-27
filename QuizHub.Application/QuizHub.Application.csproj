@@ -18,9 +18,4 @@
     <ProjectReference Include="..\QuizHub.Domain\QuizHub.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Modules\TestCreator\Endpoints\Delete\" />
-    <Folder Include="Modules\TestCreator\Endpoints\Update\" />
-  </ItemGroup>
-
 </Project>

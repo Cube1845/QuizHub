@@ -29,7 +29,7 @@ public class AddTestEndpoint(IAppDbContext context) : Endpoint<AddTestRequest, R
 
         await _context.Tests.AddAsync(test, ct);
 
-        TestOptions options = new()
+        Domain.Entities.TestOptions options = new()
         {
             QuestionCount = 10,
             TestId = test.Id,

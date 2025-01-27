@@ -1,0 +1,16 @@
+﻿
+using QuizHub.Application.Common.Extensions;
+
+namespace QuizHub.Application.Modules.TestOptions.Endpoints.Update;
+
+public class UpdateTestSettingsValidator : Validator<UpdateTestSettingsRequest>
+{
+    public UpdateTestSettingsValidator()
+    {
+        RuleFor(x => x.UsedQuestionBases)
+            .NotNull();
+
+        RuleFor(x => x.UsedQuestionBases.Select(qb => qb.QuestionBaseId))
+            .MustBeCorrectGuids();
+    }
+}
