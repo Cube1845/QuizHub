@@ -1,10 +1,4 @@
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-} from '@angular/forms';
+import { AbstractControl, FormArray, ValidationErrors } from '@angular/forms';
 
 export function questionSumValidator(
   group: AbstractControl
@@ -18,13 +12,10 @@ export function questionSumValidator(
     return null;
   }
 
-  let sum = 0;
-  minimalQuestionCountsArray.controls.forEach((control) => {
+  const sum = minimalQuestionCountsArray.controls.reduce((total, control) => {
     const value = control.value;
-    if (value !== null) {
-      sum += value;
-    }
-  });
+    return value !== null ? total + value : total;
+  }, 0);
 
   return sum > questionCount ? { sumExceedsQuestionCount: true } : null;
 }
