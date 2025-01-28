@@ -36,9 +36,9 @@ export class ManagerHomeComponent {
     {
       text: 'Kreator testów',
       icon: 'pi pi-wrench',
-      route: '',
+      route: 'manager/tests',
       color: null,
-      alternativeRoutes: [],
+      alternativeRoutes: ['manager/test-edit'],
     },
     {
       text: 'Historia testów',

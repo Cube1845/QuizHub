@@ -1,7 +1,7 @@
 <div class="container m-0">
     <div class="question-base-name-bar m-0 p-0 pt-3">
         @if (questionBaseName) {
-            <h2 class="m-0 py-1 pl-3 text-4xl font-light">{{ questionBaseName || 'Baza pytań' }}</h2>
+            <h2 class="m-0 py-1 pl-3 text-4xl font-light">{{ questionBaseName }}</h2>
         } @else {
             <app-spinner [spinnerWidth]="2" [spinnerSize]="28.335" class="mt-2"/>
         }
@@ -13,7 +13,7 @@
         <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()"></p-button> 
 
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Eksportuj" icon="pi pi-download" severity="secondary" (click)="displayDownloadingQuestionBaseModal($event)"></p-button>
-        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Usuń" icon="pi pi-trash" severity="secondary" (click)="displayQuestionBaseRemovalModal($event)"></p-button>
+        <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Usuń" icon="pi pi-trash" severity="secondary" (click)="displayQuestionBaseRemovalModal()"></p-button>
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Edytuj nazwę" icon="pi pi-pencil" severity="secondary" (click)="displayQuestionBaseNameEditModal()"></p-button>
         <p-button [outlined]="true" [style]="{width: 'max-content'}" label="Nowe pytanie" icon="pi pi-plus" (click)="showCreatingQuestionDialog()"></p-button>
     </div>
@@ -165,7 +165,7 @@
                             </p>
                         </div>
 
-                        <i class="pi pi-trash delete-icon independent-cilck-action text-lg" (click)="displayQuestionRemovalModal($event, $index)"></i>
+                        <i class="pi pi-trash delete-icon independent-cilck-action text-lg" (click)="displayQuestionRemovalModal($index)"></i>
                     </div>
                 }
             </div>

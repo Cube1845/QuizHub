@@ -23,8 +23,8 @@ import { ImageEditionState } from '../../../../../enums/imageEditionState';
 import { DisplayableImage } from '../../../../../models/displayableImage';
 import { Answer } from '../../../../../models/answer';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
-import { QuestionBaseNameEditDialogComponent } from '../dialogs/question-base-name-edit-dialog/question-base-name-edit-dialog.component';
 import saveAs from 'file-saver';
+import { NameEditDialogComponent } from '../../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -181,22 +181,11 @@ export class QuestionBaseEditComponent {
       });
   }
 
-  displayQuestionRemovalModal(event: Event, index: number): void {
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz usunąć to pytanie?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'reject',
-
-      accept: () => this.removeQuestion(index),
-    });
+  displayQuestionRemovalModal(index: number): void {
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz usunąć to pytanie?',
+      () => this.removeQuestion(index)
+    );
   }
 
   removeQuestion(index: number): void {
@@ -298,22 +287,11 @@ export class QuestionBaseEditComponent {
       });
   }
 
-  displayQuestionBaseRemovalModal(event: Event): void {
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz usunąć tę bazę pytań?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'reject',
-
-      accept: () => this.removeThisQuestionBase(),
-    });
+  displayQuestionBaseRemovalModal(): void {
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz usunąć tę bazę pytań?',
+      () => this.removeThisQuestionBase()
+    );
   }
 
   removeThisQuestionBase(): void {
@@ -333,7 +311,7 @@ export class QuestionBaseEditComponent {
 
   displayQuestionBaseNameEditModal(): void {
     this.globalDialogService
-      .displayDialog(QuestionBaseNameEditDialogComponent, {
+      .displayDialog(NameEditDialogComponent, {
         header: 'Edytuj nazwę bazy pytań',
         width: '25rem',
         modal: true,
@@ -364,21 +342,10 @@ export class QuestionBaseEditComponent {
   displayDownloadingQuestionBaseModal(event: Event): void {
     event.stopPropagation();
 
-    this.globalDialogService.displayConfirmationDialog({
-      target: event.target as EventTarget,
-      message: 'Na pewno chcesz pobrać tę bazę pytań do pliku?',
-      header: 'Potwierdzenie',
-      icon: '',
-      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
-      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
-      acceptIcon: '',
-      rejectIcon: '',
-      acceptLabel: 'Tak',
-      rejectLabel: 'Nie',
-      defaultFocus: 'accept',
-
-      accept: () => this.downloadQuestionBase(),
-    });
+    this.globalDialogService.displayConfirmationDialog(
+      'Na pewno chcesz pobrać tę bazę pytań do pliku?',
+      () => this.downloadQuestionBase()
+    );
   }
 
   downloadQuestionBase(): void {

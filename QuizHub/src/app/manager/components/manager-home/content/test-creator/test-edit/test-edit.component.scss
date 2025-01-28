@@ -1,0 +1,97 @@
+:host {
+    .test-options-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .test-name-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--p-zinc-850);
+        color: var(--p-zinc-200);
+    }
+
+    .test-options-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .test-options {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+
+    .question-count-input-box {
+        display: flex;
+        flex-direction: column;
+
+        input {
+            width: 200px;
+        }
+    }
+
+    .info {
+        color: var(--p-zinc-300);
+        width: 40rem;
+    }
+
+    table {
+        border-collapse: collapse;
+        overflow-y: auto;
+        max-height: 300px;
+        display: block;
+        width: max-content;
+
+        tr {
+            background-color: var(--p-zinc-900);
+
+            th {
+            background-color: var(--p-zinc-800);
+
+            }
+
+            i {
+                color: var(--p-zinc-400);
+                transition: 0.1s;
+
+                &:hover {
+                    color: var(--p-primary-color);
+                    transition: 0.1s;
+                }
+            }
+        }
+
+        td {
+            width: 250px;
+            height: 70px;
+        }
+
+        th, td {
+            border: 1px solid var(--p-zinc-700);
+        }
+    }
+
+    .picked-question-bases-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .code-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .question-count-input {
+        width: 200px;
+    }
+
+    .question-base-name-td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        word-break: break-word;
+    }
+}

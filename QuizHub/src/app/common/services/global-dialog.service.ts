@@ -30,7 +30,20 @@ export class GlobalDialogService {
     return ref.onClose;
   }
 
-  displayConfirmationDialog(confirmation: Confirmation): void {
+  displayConfirmationDialog(message: string, accept: Function): void {
+    const confirmation: Confirmation = {
+      icon: '',
+      acceptButtonStyleClass: 'p-button-primary p-button-outlined',
+      rejectButtonStyleClass: 'p-button-secondary p-button-outlined',
+      acceptIcon: '',
+      rejectIcon: '',
+      header: 'Potwierdzenie',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      message: message,
+      accept: accept,
+    };
+
     this.confirmationDialogSubject.next(confirmation);
   }
 }

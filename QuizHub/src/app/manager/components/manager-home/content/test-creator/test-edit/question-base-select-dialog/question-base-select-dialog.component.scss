@@ -1,5 +1,8 @@
 :host {
-    .dialog-buttons-box {
+    display: flex;
+    flex-direction: column;
+
+    .button-box {
         display: flex;
         justify-content: end;
     }
