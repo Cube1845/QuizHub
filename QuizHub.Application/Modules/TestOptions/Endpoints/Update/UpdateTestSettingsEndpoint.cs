@@ -2,7 +2,6 @@
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
-using QuizHub.Application.Modules.TestOptions.Extensions;
 using QuizHub.Application.Modules.TestOptions.Models;
 using QuizHub.Domain.Entities;
 
@@ -19,7 +18,7 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
 
     public override async Task HandleAsync(UpdateTestSettingsRequest req, CancellationToken ct)
     {
-        var testOptionsDb = await _context.Tests.GetTestOptions(req.TestId, User.GetId(), ct);
+        var testOptionsDb = await GetTestOptions(req.TestId, User.GetId(), ct);
 
         if (testOptionsDb == null)
         {
@@ -79,5 +78,17 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
 
             await _context.QuestionBasesWithQuestionCount.AddAsync(questionBaseWithQuestionCount, ct);
         }
+    }
+
+    public async Task<Domain.Entities.TestOptions?> GetTestOptions(Guid testId, Guid userId, CancellationToken ct)
+    {
+        var testOptionsDb = await _context.Tests
+            .Include(test => test.Options)
+            .ThenInclude(options => options!.UsedQuestionBasesWithQuestionCounts)
+            .Where(test => test.Id == testId && test.OwnerId == userId)
+            .Select(test => test.Options)
+            .FirstOrDefaultAsync(ct);
+
+        return testOptionsDb;
     }
 }
