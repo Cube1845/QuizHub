@@ -9,5 +9,8 @@ public interface IAppDbContext
     DbSet<Question> Questions { get; set; }
     DbSet<Answer> Answers { get; set; }
     DbSet<Image> Images { get; set; }
+    DbSet<Test> Tests { get; set; }
+    DbSet<TestOptions> TestsOptions { get; set; }
+    DbSet<QuestionBaseWithQuestionCount> QuestionBasesWithQuestionCount { get; set; }
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

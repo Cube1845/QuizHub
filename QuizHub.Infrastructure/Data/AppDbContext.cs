@@ -17,6 +17,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Answer> Answers { get; set; }
     public DbSet<Image> Images { get; set; }
 
+    //Tests
+    public DbSet<Test> Tests { get; set; }
+    public DbSet<TestOptions> TestsOptions { get; set; }
+    public DbSet<QuestionBaseWithQuestionCount> QuestionBasesWithQuestionCount { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<AppUser>(e =>
@@ -51,6 +56,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         builder.Entity<Image>(e =>
         {
             e.HasKey(x => x.Id);
+        });
+
+        builder.Entity<Test>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasOne(x => x.Options).WithOne(x => x.Test);
+            e.HasIndex(x => new { x.Id, x.OwnerId }).IsUnique();
+        });
+
+        builder.Entity<TestOptions>(e =>
+        {
+            e.HasKey(x => x.Id);
+        });
+
+        builder.Entity<QuestionBaseWithQuestionCount>(e =>
+        {
+            e.HasKey(x => new { x.TestOptionsId, x.QuestionBaseId });
+            e.HasOne(x => x.TestOptions)
+                .WithMany(x => x.UsedQuestionBasesWithQuestionCounts)
+                .HasForeignKey(x => x.TestOptionsId);
         });
     }
 }
