@@ -2,6 +2,7 @@
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
+using QuizHub.Application.Modules.TestOptions.Extensions;
 using QuizHub.Application.Modules.TestOptions.Models;
 using QuizHub.Domain.Entities;
 
@@ -18,17 +19,23 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
 
     public override async Task HandleAsync(UpdateTestSettingsRequest req, CancellationToken ct)
     {
-        var testOptionsDb = await GetTestOptions(req.TestId, User.GetId(), ct);
+        var testDb = await _context.Tests.GetTestDb(User.GetId(), req.TestId, ct);
 
-        if (testOptionsDb == null)
+        if (testDb == null)
         {
             await SendOkAsync(Result.Error("Taki test nie istnieje"), ct);
             return;
         }
 
-        await HandleUsedQuestionBases(testOptionsDb, req.UsedQuestionBases, ct);
+        if (testDb.IsActive)
+        {
+            await SendOkAsync(Result.Error("Nie można edytować testu, ponieważ test jest aktywny"), ct);
+            return;
+        }
 
-        testOptionsDb.QuestionCount = req.QuestionCount;
+        await HandleUsedQuestionBases(testDb.Options!, req.UsedQuestionBases, ct);
+
+        testDb.Options!.QuestionCount = req.QuestionCount;
 
         await _context.SaveChangesAsync(ct);
 
@@ -78,17 +85,5 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
 
             await _context.QuestionBasesWithQuestionCount.AddAsync(questionBaseWithQuestionCount, ct);
         }
-    }
-
-    public async Task<Domain.Entities.TestOptions?> GetTestOptions(Guid testId, Guid userId, CancellationToken ct)
-    {
-        var testOptionsDb = await _context.Tests
-            .Include(test => test.Options)
-            .ThenInclude(options => options!.UsedQuestionBasesWithQuestionCounts)
-            .Where(test => test.Id == testId && test.OwnerId == userId)
-            .Select(test => test.Options)
-            .FirstOrDefaultAsync(ct);
-
-        return testOptionsDb;
     }
 }

@@ -29,6 +29,12 @@ public class ChangeTestCodeEndpoint(IAppDbContext context) : Endpoint<ChangeTest
             return;
         }
 
+        if (testDb.IsActive)
+        {
+            await SendOkAsync(Result<ChangeTestCodeResponse>.Error("Nie można zmienić kodu, ponieważ test jest aktywny"), ct);
+            return;
+        }
+
         var newCode = CodeService.GenerateCode();
         testDb.Code = newCode;
 

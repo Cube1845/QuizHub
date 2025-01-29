@@ -3,6 +3,7 @@ using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.QuestionBase.Models;
+using QuizHub.Application.Modules.TestOptions.Extensions;
 using QuizHub.Application.Modules.TestOptions.Models;
 using QuizHub.Domain.Entities;
 
@@ -19,7 +20,7 @@ public class GetTestOptionsEndpoint(IAppDbContext context) : Endpoint<GetTestOpt
 
     public override async Task HandleAsync(GetTestOptionsRequest req, CancellationToken ct)
     {
-        var testDb = await GetTestDb(req.TestId, ct);
+        var testDb = await _context.Tests.GetTestDb(User.GetId(), req.TestId, ct);
 
         if (testDb == null || testDb.Options == null)
         {
@@ -102,18 +103,5 @@ public class GetTestOptionsEndpoint(IAppDbContext context) : Endpoint<GetTestOpt
         return userQuestionBases
             .Select(qb => new QuestionBaseData(qb.Id, qb.Name, qb.Questions.Count))
             .ToList();
-    }
-
-    private async Task<Test?> GetTestDb(Guid testId, CancellationToken ct)
-    {
-        var userId = User.GetId();
-
-        var testDb = await _context.Tests
-            .Include(test => test.Options)
-            .ThenInclude(options => options!.UsedQuestionBasesWithQuestionCounts)
-            .Where(test => test.Id == testId && test.OwnerId == userId)
-            .FirstOrDefaultAsync(ct);
-
-        return testDb;
     }
 }
