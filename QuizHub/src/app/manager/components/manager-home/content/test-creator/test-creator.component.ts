@@ -23,7 +23,9 @@ export class TestCreatorComponent {
   tests: TestData[] | null = null;
 
   constructor() {
-    this.tests = this.testCreatorService.getUserTests();
+    this.testCreatorService
+      .getUserTests()
+      .subscribe((response) => (this.tests = response));
   }
 
   goToTestEditor(testId: string) {
@@ -85,31 +87,22 @@ export class TestCreatorComponent {
   }
 
   removeTest(index: number): void {
-    this.testCreatorService.removeTest(this.tests![index].id);
-    //after api merging
-    // .subscribe((isSuccess) => {
-    //   if (isSuccess) {
-    //     this.tests?.splice(index, 1);
-    //     this.toastService.displayToast(
-    //       'success',
-    //       'Sukces',
-    //       'Usunięto test'
-    //     );
-    //   }
-    // });
-
-    this.tests?.splice(index, 1);
-    this.toastService.displayToast('success', 'Sukces', 'Usunięto test');
+    this.testCreatorService
+      .removeTest(this.tests![index].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.tests!.splice(index, 1);
+          this.toastService.displayToast('success', 'Sukces', 'Usunięto test');
+        }
+      });
   }
 
   createTest(name: string): void {
-    this.testCreatorService.createTest(name);
-    //after api merging
-    // .subscribe((newId) =>
-    //   this.router.navigateByUrl('manager/test-edit/' + newId)
-    // );
-
-    this.router.navigateByUrl('manager/test-edit/' + 'xd');
+    this.testCreatorService
+      .createTest(name)
+      .subscribe((newId) =>
+        this.router.navigateByUrl('manager/test-edit/' + newId)
+      );
   }
 
   saveTestName(updatedName: string, testIndex: number): void {
@@ -117,19 +110,13 @@ export class TestCreatorComponent {
       return;
     }
 
-    this.testCreatorService.editTestName(
-      updatedName,
-      this.tests![testIndex].id
-    );
-    // after api merging
-    // .subscribe((isSuccess) => {
-    //   if (isSuccess) {
-    //     this.tests![testIndex].name = updatedName;
-    //     this.toastService.displayToast('success', 'Sukces', 'Zapisano nazwę');
-    //   }
-    // });
-
-    this.tests![testIndex].name = updatedName;
-    this.toastService.displayToast('success', 'Sukces', 'Zapisano nazwę');
+    this.testCreatorService
+      .editTestName(updatedName, this.tests![testIndex].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.tests![testIndex].name = updatedName;
+          this.toastService.displayToast('success', 'Sukces', 'Zapisano nazwę');
+        }
+      });
   }
 }

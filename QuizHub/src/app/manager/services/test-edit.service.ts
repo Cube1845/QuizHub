@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TestOptions } from '../models/testOptions';
+import { QuestionBaseData } from '../models/questionBaseData';
 
 export type TestOptionsAndData = {
   testOptions: TestOptions;
   code: string;
   isActive: boolean;
   name: string;
-  //add user Question Bases
+  userQuestionBases: QuestionBaseData[];
 };
 
 @Injectable({
@@ -33,6 +34,7 @@ export class TestEditService {
       code: 'js6fA820',
       isActive: false,
       name: 'Test 1',
+      userQuestionBases: [],
     };
   }
 
