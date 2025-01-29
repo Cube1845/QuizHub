@@ -5,7 +5,6 @@ using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.QuestionBase.Models;
 using QuizHub.Application.Modules.TestOptions.Models;
 using QuizHub.Domain.Entities;
-using static FastEndpoints.Ep;
 
 namespace QuizHub.Application.Modules.TestOptions.Endpoints.Get;
 
