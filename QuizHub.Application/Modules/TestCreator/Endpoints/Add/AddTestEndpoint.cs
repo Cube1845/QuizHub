@@ -10,6 +10,8 @@ public class AddTestEndpoint(IAppDbContext context) : Endpoint<AddTestRequest, R
 {
     private readonly IAppDbContext _context = context;
 
+    private const int DefaultQuestionCount = 10;
+
     public override void Configure()
     {
         Post("test");
@@ -31,7 +33,7 @@ public class AddTestEndpoint(IAppDbContext context) : Endpoint<AddTestRequest, R
 
         Domain.Entities.TestOptions options = new()
         {
-            QuestionCount = 10,
+            QuestionCount = DefaultQuestionCount,
             TestId = test.Id,
         };
 
