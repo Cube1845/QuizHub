@@ -79,47 +79,20 @@ export class TestEditComponent {
 
       this.testId = paramMap.get('id');
 
-      //temporary
-      const testOptionsAndData = this.testEditService.getTestOptionsAndData(
-        this.testId!
-      );
+      this.testEditService
+        .getTestOptionsAndData(this.testId!)
+        .subscribe((data) => {
+          this.testOptions = data.testOptions;
+          this.isTestActive = data.isActive;
+          this.testName = data.name;
+          this.userQuestionBases = data.userQuestionBases;
 
-      this.testOptions = testOptionsAndData.testOptions;
-      this.isTestActive = testOptionsAndData.isActive;
-
-      this.setInputValues(
-        this.testOptions!.questionCount,
-        this.testOptions.usedQuestionBases,
-        testOptionsAndData.code
-      );
-      this.testName = testOptionsAndData.name;
-      this.userQuestionBases = [
-        {
-          name: 'Pytania testowe',
-          questionCount: 10,
-          id: 'awdawdawdagswegwea',
-        },
-        {
-          name: 'Pytania testowe 1',
-          questionCount: 10,
-          id: 'awdawdawdegwea',
-        },
-        {
-          name: 'Pytania testowe 2',
-          questionCount: 10,
-          id: 'awdawdawwegwea',
-        },
-        {
-          name: 'Pytania testowe 3',
-          questionCount: 10,
-          id: 'awdawdawdagswa',
-        },
-        {
-          name: 'HHHHHHHHHHHHHHHHHHHHHHHHH',
-          questionCount: 10,
-          id: 'awdawdawdag231swa',
-        },
-      ];
+          this.setInputValues(
+            this.testOptions!.questionCount,
+            this.testOptions!.usedQuestionBases,
+            data.code
+          );
+        });
     });
   }
 
@@ -140,19 +113,29 @@ export class TestEditComponent {
       ),
     };
 
-    this.testEditService.saveTestOptions(this.testId!, newOptions);
-
-    //temporary
-    this.testOptions = newOptions;
-    this.toastService.displayToast('success', 'Sukces', 'Zapisano ustawienia');
+    this.testEditService
+      .saveTestOptions(this.testId!, newOptions)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.testOptions = newOptions;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Zapisano ustawienia'
+          );
+        }
+      });
   }
 
   changeTestCode(): void {
-    this.testEditService.changeTestCode(this.testId!);
-
-    //temporary
-    this.codeFormControl.setValue('hu4Ay2ga');
-    this.toastService.displayToast('success', 'Sukces', 'Zmieniono kod testu');
+    this.testEditService.changeTestCode(this.testId!).subscribe((newCode) => {
+      this.codeFormControl.setValue(newCode);
+      this.toastService.displayToast(
+        'success',
+        'Sukces',
+        'Zmieniono kod testu'
+      );
+    });
   }
 
   displayTestActivationDialog(): void {
@@ -174,10 +157,13 @@ export class TestEditComponent {
         fc.setValue(this.testOptions!.usedQuestionBases[i].minimalQuestionCount)
     );
 
-    this.testEditService.changeTestActiveState(this.testId!);
-
-    //temporary
-    this.isTestActive = !this.isTestActive;
+    this.testEditService
+      .changeTestActiveState(this.testId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.isTestActive = !this.isTestActive;
+        }
+      });
   }
 
   copyCode(): void {
@@ -216,20 +202,16 @@ export class TestEditComponent {
   }
 
   removeThisTest(): void {
-    this.testCreatorService.removeTest(this.testId!);
-    // .subscribe((isSuccess) => {
-    //   if (isSuccess) {
-    //     this.goBack();
-    //     this.toastService.displayToast(
-    //       'success',
-    //       'Sukces',
-    //       'Usunięto bazę pytań'
-    //     );
-    //   }
-    // });
-
-    this.goBack();
-    this.toastService.displayToast('success', 'Sukces', 'Usunięto bazę pytań');
+    this.testCreatorService.removeTest(this.testId!).subscribe((isSuccess) => {
+      if (isSuccess) {
+        this.goBack();
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Usunięto bazę pytań'
+        );
+      }
+    });
   }
 
   displayTestNameEditDialog(): void {
@@ -248,20 +230,18 @@ export class TestEditComponent {
   }
 
   saveThisTestName(updatedName: string): void {
-    this.testCreatorService.editTestName(updatedName, this.testId!);
-    // .subscribe((isSuccess) => {
-    //   if (isSuccess) {
-    //     this.questionBaseName = updatedName;
-    //     this.toastService.displayToast(
-    //       'success',
-    //       'Sukces',
-    //       'Zmieniono nazwę'
-    //     );
-    //   }
-    // });
-
-    this.testName = updatedName;
-    this.toastService.displayToast('success', 'Sukces', 'Zmieniono nazwę');
+    this.testCreatorService
+      .editTestName(updatedName, this.testId!)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.testName = updatedName;
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Zmieniono nazwę'
+          );
+        }
+      });
   }
 
   displayQuestionBaseUnselectingDialog(index: number): void {
