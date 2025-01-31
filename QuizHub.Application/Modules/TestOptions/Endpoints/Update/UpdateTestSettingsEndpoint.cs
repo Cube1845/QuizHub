@@ -103,17 +103,20 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
             return;
         }
 
-        foreach (var questionBaseId in reqQuestionBaseIds)
-        {
-            QuestionBaseWithQuestionCount questionBaseWithQuestionCount = new()
+        var questionBaseWithCountList = reqHandledQuestionBaseIds
+            .Select(questionBaseId =>
             {
-                MinimalQuestionCount = reqUsedQuestionBases
+                QuestionBaseWithQuestionCount questionBaseWithQuestionCount = new()
+                {
+                    MinimalQuestionCount = reqUsedQuestionBases
                     .First(qb => qb.QuestionBaseId == questionBaseId).MinimalQuestionCount,
-                TestOptionsId = testOptionsDb.Id,
-                QuestionBaseId = questionBaseId
-            };
+                    TestOptionsId = testOptionsDb.Id,
+                    QuestionBaseId = questionBaseId
+                };
 
-            await _context.QuestionBasesWithQuestionCount.AddAsync(questionBaseWithQuestionCount, ct);
-        }
+                return questionBaseWithQuestionCount;
+            });
+
+        await _context.QuestionBasesWithQuestionCount.AddRangeAsync(questionBaseWithCountList, ct);
     }
 }

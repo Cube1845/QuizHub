@@ -30,8 +30,7 @@ public class ChangeTestActiveStateEndpoint(IAppDbContext context) : Endpoint<Cha
             return;
         }
 
-        var newActiveState = !testDb.IsActive;
-        testDb.IsActive = newActiveState;
+        testDb.ToggleActiveState();
 
         await _context.SaveChangesAsync(ct);
 
