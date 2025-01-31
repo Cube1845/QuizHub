@@ -9,6 +9,8 @@ import { userMustBeLoggedInGuard } from './auth/guards/user-must-be-logged-in.gu
 import { userMustNotBeLoggedInGuard } from './auth/guards/user-must-not-be-logged-in.guard';
 import { TestCreatorComponent } from './manager/components/manager-home/content/test-creator/test-creator.component';
 import { TestEditComponent } from './manager/components/manager-home/content/test-creator/test-edit/test-edit.component';
+import { ClientBeginTestComponent } from './client/components/client-begin-test/client-begin-test.component';
+import { ClientTestSolveComponent } from './client/components/client-test-solve/client-test-solve.component';
 
 export const routes: Routes = [
   {
@@ -33,5 +35,13 @@ export const routes: Routes = [
     ],
     canActivate: [userMustBeLoggedInGuard],
   },
-  { path: '**', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: 'start',
+    component: ClientBeginTestComponent,
+  },
+  {
+    path: 'test-solve',
+    component: ClientTestSolveComponent,
+  },
+  { path: '**', redirectTo: 'start', pathMatch: 'full' },
 ];

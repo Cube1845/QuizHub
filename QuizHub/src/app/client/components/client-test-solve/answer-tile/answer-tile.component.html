@@ -1,0 +1,8 @@
+<div class="mt-2 container m-0 p-0 border-round-xl" [ngStyle]="{background: getBackgroundColor()}" (mouseover)="hovered = true" (mouseout)="hovered = false">
+    @if (answer.image) {
+        <img class="m-3 mb-2 mt-4" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/POLSKA_mapa_woj_z_powiatami.png/646px-POLSKA_mapa_woj_z_powiatami.png" style="height: 180px; width: min-content;">
+        <h3 class="p-0 mt-0 m-3">{{ answer.content }}</h3>
+    } @else {
+        <h2 class="py-6 m-3 px-2">{{ answer.content }}</h2>
+    }
+</div>

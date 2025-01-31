@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   DisplayableImage,
   DisplayableImageWithChangeTracker,
-} from '../../../../../../../models/displayableImage';
+} from '../../../../../../../../common/models/displayableImage';
 
 @Component({
   selector: 'app-image-panel',

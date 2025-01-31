@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { GetQuestionDTO } from '../models/getQuestionDto';
 import { HttpClient } from '@angular/common/http';
 import { Question } from '../models/question';
-import { DisplayableImage } from '../models/displayableImage';
+import { DisplayableImage } from '../../common/models/displayableImage';
 import { environment } from '../../../environments/environment.development';
 import { map } from 'rxjs';
 

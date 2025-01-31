@@ -13,7 +13,7 @@ import { UnidentifiedQuestionWithNoImage } from '../models/unidentifiedQuestionW
 import { ImageService } from './image.service';
 import { GetQuestionDTO } from '../models/getQuestionDto';
 import { Answer } from '../models/answer';
-import { DisplayableImage } from '../models/displayableImage';
+import { DisplayableImage } from '../../common/models/displayableImage';
 import { QuestionUpdateDTO } from '../models/questionUpdateDTO';
 
 type GetPaginatedQuestionsResponse = {

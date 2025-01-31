@@ -20,7 +20,7 @@ import { GlobalDialogService } from '../../../../../../common/services/global-di
 import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
 import { QuestionUpdateDTO } from '../../../../../models/questionUpdateDTO';
 import { ImageEditionState } from '../../../../../enums/imageEditionState';
-import { DisplayableImage } from '../../../../../models/displayableImage';
+import { DisplayableImage } from '../../../../../../common/models/displayableImage';
 import { Answer } from '../../../../../models/answer';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
 import saveAs from 'file-saver';
