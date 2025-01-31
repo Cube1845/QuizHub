@@ -273,9 +273,11 @@ export class TestEditComponent {
 
   unselectQuestionBase(index: number): void {
     this.testOptions!.usedQuestionBases.splice(index, 1);
+
     this.testOptionsFormGroup.controls.minimalQuestionCounts.controls[
       index
     ].reset();
+
     this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.splice(
       index,
       1

@@ -10,14 +10,14 @@ public static class CodeService
 
     public static string GenerateCode()
     {
-        var alphanumericChars = (_smallLetters + _bigLetters + _numbers).Split("");
+        var alphanumericChars = (_smallLetters + _bigLetters + _numbers).ToCharArray();
 
-        var range = Enumerable.Range(0, _codeSize - 1);
+        var range = Enumerable.Range(1, _codeSize);
 
-        var code = range.Select(x => 
+        var code = range.Select(x =>
             alphanumericChars[Random.Shared.Next(0, alphanumericChars.Length)]
-        ).ToString()!;
+        ).ToList();
 
-        return code;
+        return string.Join("", code);
     }
 }
