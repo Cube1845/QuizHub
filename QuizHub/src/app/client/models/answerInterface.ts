@@ -4,4 +4,5 @@ export type AnswerInterface = {
   content: string;
   id: string;
   image: DisplayableImage | null;
+  isSelected: boolean;
 };
