@@ -15,47 +15,40 @@ import { QuestionType } from '../../../common/enums/questionType';
 export class ClientTestSolveComponent {
   private readonly testClientService = inject(TestClientService);
 
-  questions: QuestionInterface[] = [];
+  currentQuestion!: QuestionInterface;
 
   currentQuestionIndex: number = 0;
 
+  questionLength!: number;
+
   constructor() {
-    this.questions = this.testClientService.getTestQuestions();
+    this.currentQuestion = this.testClientService.getQuestion(0)!;
+    this.questionLength = this.testClientService.getQuestionsLength();
   }
 
   previousPage(): void {
     if (this.currentQuestionIndex - 1 >= 0) {
       this.currentQuestionIndex--;
+      this.currentQuestion = this.testClientService.getQuestion(
+        this.currentQuestionIndex
+      );
     }
   }
 
   nextPage(): void {
-    if (this.questions.length > this.currentQuestionIndex + 1) {
+    if (this.questionLength > this.currentQuestionIndex + 1) {
       this.currentQuestionIndex++;
+      this.currentQuestion = this.testClientService.getQuestion(
+        this.currentQuestionIndex
+      );
     }
   }
 
   selectAnswer(answerIndex: number, state: boolean): void {
-    if (
-      this.questions[this.currentQuestionIndex].questionType ==
-      QuestionType.MultiAnswer
-    ) {
-      this.questions[this.currentQuestionIndex].answers[
-        answerIndex
-      ].isSelected = state;
-
-      return;
-    }
-
-    if (state) {
-      this.questions[this.currentQuestionIndex].answers.forEach((answer) => {
-        if (answer.isSelected) {
-          answer.isSelected = false;
-        }
-      });
-    }
-
-    this.questions[this.currentQuestionIndex].answers[answerIndex].isSelected =
-      state;
+    this.currentQuestion = this.testClientService.changeQuestionSelectedState(
+      this.currentQuestionIndex,
+      answerIndex,
+      state
+    );
   }
 }
