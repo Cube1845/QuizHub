@@ -11,6 +11,7 @@ import { TestCreatorComponent } from './manager/components/manager-home/content/
 import { TestEditComponent } from './manager/components/manager-home/content/test-creator/test-edit/test-edit.component';
 import { ClientBeginTestComponent } from './client/components/client-begin-test/client-begin-test.component';
 import { ClientTestSolveComponent } from './client/components/client-test-solve/client-test-solve.component';
+import { ClientTestFinishComponent } from './client/components/client-test-finish/client-test-finish.component';
 
 export const routes: Routes = [
   {
@@ -40,8 +41,12 @@ export const routes: Routes = [
     component: ClientBeginTestComponent,
   },
   {
-    path: 'test-solve',
+    path: 'test-solve/:id',
     component: ClientTestSolveComponent,
+  },
+  {
+    path: 'test-finish',
+    component: ClientTestFinishComponent,
   },
   { path: '**', redirectTo: 'start', pathMatch: 'full' },
 ];

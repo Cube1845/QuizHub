@@ -6,14 +6,15 @@
 
         <div class="question-box m-0 p-0">
             <div class="content-box mx-8 mb-5">
-                @if (currentQuestion.image) {
+                @if (questions[currentQuestionIndex].image) {
+                    <!-- dont beat me its temporary -->
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/POLSKA_mapa_woj_z_powiatami.png/646px-POLSKA_mapa_woj_z_powiatami.png" style="height: 320px; width: min-content; align-self: center;">
                 }
 
-                <h1 class="p-0 m-0 mt-3 line-height-2 text-3xl">{{ currentQuestion.content }}</h1>
+                <h1 class="p-0 m-0 mt-3 line-height-2 text-3xl">{{ questions[currentQuestionIndex].content }}</h1>
             </div>
             <div class="answer-box m-0 p-0 mx-8 gap-5">
-                @for (answer of currentQuestion.answers; track $index) {
+                @for (answer of questions[currentQuestionIndex].answers; track $index) {
                     <app-answer-tile [answer]="answer" (onClick)="selectAnswer($index, $event)"/>
                 }
             </div>
@@ -22,9 +23,9 @@
         <div class="nav-box mb-5">
             <p-button icon="pi pi-arrow-left" [outlined]="true" class="ml-8" (click)="previousPage()" [disabled]="currentQuestionIndex == 0" label="Poprzednie pytanie"/>
     
-            <p-button label="Zakończ test"/>
+            <p-button label="Zakończ test" (click)="displayFinishingTestDialog()"/>
     
-            <p-button icon="pi pi-arrow-right" [outlined]="true" class="mr-8" (click)="nextPage()" [disabled]="questionLength <= this.currentQuestionIndex + 1" label="Następne pytanie" iconPos="right"/>
+            <p-button icon="pi pi-arrow-right" [outlined]="true" class="mr-8" (click)="nextPage()" [disabled]="questions.length <= this.currentQuestionIndex + 1" label="Następne pytanie" iconPos="right"/>
         </div>
     </div>
 </div>

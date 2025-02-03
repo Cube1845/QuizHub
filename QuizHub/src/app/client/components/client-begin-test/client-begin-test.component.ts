@@ -9,6 +9,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-client-begin-test',
@@ -24,6 +25,7 @@ import {
 })
 export class ClientBeginTestComponent {
   private readonly testClientService = inject(TestClientService);
+  private readonly router = inject(Router);
 
   dataFormGroup = new FormGroup({
     username: new FormControl<string>('', [
@@ -38,9 +40,12 @@ export class ClientBeginTestComponent {
   });
 
   beginTest(): void {
-    this.testClientService.beginTest(
+    var testSolvingId = this.testClientService.beginTest(
       this.dataFormGroup.value.code!,
       this.dataFormGroup.value.username!
     );
+
+    // to subscribe
+    this.router.navigateByUrl('test-solve/' + testSolvingId);
   }
 }
