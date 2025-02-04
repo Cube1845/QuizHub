@@ -12,5 +12,8 @@ public interface IAppDbContext
     DbSet<Test> Tests { get; set; }
     DbSet<TestOptions> TestsOptions { get; set; }
     DbSet<QuestionBaseWithQuestionCount> QuestionBasesWithQuestionCount { get; set; }
+    DbSet<TestLog> TestLogs { get; set; }
+    DbSet<SelectedAnswer> SelectedAnswers { get; set; }
+    DbSet<TestSolving> TestSolvings { get; set; }
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }
