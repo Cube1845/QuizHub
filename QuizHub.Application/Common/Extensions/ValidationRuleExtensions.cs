@@ -24,17 +24,6 @@ public static class ValidationRuleExtensions
             .WithMessage("Niepoprawne id");
     }
 
-    public static IRuleBuilderOptions<T, IEnumerable<Guid>> MustBeCorrectGuids<T>(this IRuleBuilder<T, IEnumerable<Guid>> ruleBuilder)
-    {
-        return ruleBuilder
-            .ForEach(rule =>
-                rule.Must(guid =>
-                    guid != Guid.Empty
-                )
-            )
-            .WithMessage("Niepoprawne id");
-    }
-
     public static IRuleBuilderOptions<T, IFormFile?> MustBeCorrectImageFile<T>(this IRuleBuilder<T, IFormFile?> ruleBuilder)
     {
         return ruleBuilder.Must(imagefile =>

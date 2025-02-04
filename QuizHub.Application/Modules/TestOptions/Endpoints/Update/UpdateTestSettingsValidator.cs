@@ -7,11 +7,10 @@ public class UpdateTestSettingsValidator : Validator<UpdateTestSettingsRequest>
     public UpdateTestSettingsValidator()
     {
         RuleFor(x => x.UsedQuestionBases)
-            .NotNull()
-            .Must(x => x.Count > 0);
+            .NotNull();
 
-        RuleFor(x => x.UsedQuestionBases.Select(qb => qb.QuestionBaseId))
-            .MustBeCorrectGuids();
+        RuleForEach(x => x.UsedQuestionBases)
+            .Must(x => x.QuestionBaseId != Guid.Empty);
 
         RuleFor(x => x)
             .Must(x =>

@@ -10,7 +10,7 @@ public static class CodeService
 
     public static string GenerateCode()
     {
-        var alphanumericChars = (_smallLetters + _bigLetters + _numbers).ToCharArray();
+        var alphanumericChars = _smallLetters + _bigLetters + _numbers;
 
         var range = Enumerable.Range(1, _codeSize);
 
