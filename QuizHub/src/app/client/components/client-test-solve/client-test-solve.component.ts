@@ -5,6 +5,7 @@ import { TestClientService } from '../../services/test-client.service';
 import { QuestionInterface } from '../../models/questionInterface';
 import { QuestionType } from '../../../common/enums/questionType';
 import { GlobalDialogService } from '../../../common/services/global-dialog.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-client-test-solve',
@@ -16,13 +17,21 @@ import { GlobalDialogService } from '../../../common/services/global-dialog.serv
 export class ClientTestSolveComponent {
   private readonly testClientService = inject(TestClientService);
   private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  questions!: QuestionInterface[];
+  questions!: QuestionInterface[] | null;
 
   currentQuestionIndex: number = 0;
 
   constructor() {
-    this.questions = this.testClientService.getTestQuestions();
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
+      if (paramMap.get('id') == null) {
+        return;
+      }
+
+      const testSolvingId = paramMap.get('id');
+      this.questions = this.testClientService.getTestQuestions(testSolvingId!);
+    });
   }
 
   displayFinishingTestDialog(): void {
@@ -39,11 +48,11 @@ export class ClientTestSolveComponent {
   }
 
   finishTest(): void {
-    this.testClientService.finishTest(this.questions);
+    this.testClientService.finishTest(this.questions!);
   }
 
   everyQuestionHasSelectedAnswers(): boolean {
-    return this.questions.every((question) =>
+    return this.questions!.every((question) =>
       question.answers.some((answer) => answer.isSelected)
     );
   }
@@ -55,37 +64,37 @@ export class ClientTestSolveComponent {
   }
 
   nextPage(): void {
-    if (this.questions.length > this.currentQuestionIndex + 1) {
+    if (this.questions!.length > this.currentQuestionIndex + 1) {
       this.currentQuestionIndex++;
     }
   }
 
   selectAnswer(answerIndex: number, state: boolean): void {
     if (
-      answerIndex >= this.questions[this.currentQuestionIndex].answers.length
+      answerIndex >= this.questions![this.currentQuestionIndex].answers.length
     ) {
       return;
     }
 
     if (
-      this.questions[this.currentQuestionIndex].questionType ==
+      this.questions![this.currentQuestionIndex].questionType ==
       QuestionType.MultiAnswer
     ) {
-      this.questions[this.currentQuestionIndex].answers[
+      this.questions![this.currentQuestionIndex].answers[
         answerIndex
       ].isSelected = state;
       return;
     }
 
     if (state) {
-      this.questions[this.currentQuestionIndex].answers.forEach((answer) => {
+      this.questions![this.currentQuestionIndex].answers.forEach((answer) => {
         if (answer.isSelected) {
           answer.isSelected = false;
         }
       });
     }
 
-    this.questions[this.currentQuestionIndex].answers[answerIndex].isSelected =
+    this.questions![this.currentQuestionIndex].answers[answerIndex].isSelected =
       state;
   }
 }

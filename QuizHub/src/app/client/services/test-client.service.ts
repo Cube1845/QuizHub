@@ -16,20 +16,28 @@ export class TestClientService {
     return 'a1231szefa-1fwasf-awegfaw';
   }
 
-  finishTest(questions: QuestionInterface[]): TestResult {
+  finishTest(questions: QuestionInterface[]): string {
     // api call
 
-    this.router.navigateByUrl('test-finish');
+    const testLogId = '1121231241zefa-112512wasf-awegfaw';
+
+    this.router.navigateByUrl('test-finish/' + testLogId);
+
+    return testLogId;
+  }
+
+  getTestResult(testLogId: string): TestResult {
+    //api call
 
     return {
       earnedPoints: 2,
-      maxPoints: 10,
-      time: new Date(),
+      maxPoints: 11,
+      timeInSeconds: 143,
       username: 'uzerr',
     };
   }
 
-  getTestQuestions(): QuestionInterface[] {
+  getTestQuestions(testSolvingId: string): QuestionInterface[] {
     //api call
 
     return [

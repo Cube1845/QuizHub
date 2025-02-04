@@ -45,7 +45,7 @@ export const routes: Routes = [
     component: ClientTestSolveComponent,
   },
   {
-    path: 'test-finish',
+    path: 'test-finish/:id',
     component: ClientTestFinishComponent,
   },
   { path: '**', redirectTo: 'start', pathMatch: 'full' },
