@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgStyle } from '@angular/common';
 import { AnswerInterface } from '../../../models/answerInterface';
 
 @Component({
   selector: 'app-answer-tile',
   standalone: true,
-  imports: [NgStyle],
+  imports: [],
   templateUrl: './answer-tile.component.html',
   styleUrl: './answer-tile.component.scss',
 })
@@ -15,20 +14,20 @@ export class AnswerTileComponent {
   @Input({ required: true }) answer!: AnswerInterface;
   @Output() onClick = new EventEmitter<boolean>();
 
-  getBackgroundColor(): string {
+  getClass(): string {
     if (this.answer.isSelected) {
       if (this.hovered) {
-        return 'var(--p-primary-800)';
+        return ' hovered-selected';
       }
 
-      return 'var(--p-primary-900)';
+      return ' selected';
     }
 
     if (this.hovered) {
-      return 'var(--p-zinc-800)';
+      return ' hovered';
     }
 
-    return 'var(--p-zinc-850)';
+    return '';
   }
 
   onAnswerTileClick(): void {
