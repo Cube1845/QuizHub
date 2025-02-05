@@ -1,0 +1,17 @@
+<div class="container m-0 p-0">
+    <div class="content-box">
+        <h1 class="m-0 p-0 mb-5 line-height-1">Rozpocznij test</h1>
+        
+        <p-floatlabel class="mb-5">
+            <input id="username" pInputText maxlength="30" [formControl]="dataFormGroup.controls.username"/>
+            <label for="username">Nazwa użytkownika</label>
+        </p-floatlabel>
+
+        <p-floatlabel class="mb-5">
+            <input id="code" pInputText maxlength="8" [formControl]="dataFormGroup.controls.code"/>
+            <label for="code">Kod testu</label>
+        </p-floatlabel>
+
+        <p-button label="Rozpocznij test" [outlined]="true" [disabled]="dataFormGroup.invalid" (click)="beginTest()"/>
+    </div>
+</div>

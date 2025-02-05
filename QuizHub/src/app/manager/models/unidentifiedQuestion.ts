@@ -1,4 +1,4 @@
-import { DisplayableImage } from './displayableImage';
+import { DisplayableImage } from '../../common/models/displayableImage';
 import { UnidentifiedAnswer } from './unidentifiedAnswer';
 import { UnidentifiedQuestionWithNoImage } from './unidentifiedQuestionWithNoImage';
 

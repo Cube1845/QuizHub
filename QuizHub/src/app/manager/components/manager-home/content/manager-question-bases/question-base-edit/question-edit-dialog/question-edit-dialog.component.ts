@@ -26,9 +26,9 @@ import { Question } from '../../../../../../models/question';
 import {
   DisplayableImage,
   DisplayableImageWithChangeTracker,
-} from '../../../../../../models/displayableImage';
+} from '../../../../../../../common/models/displayableImage';
 import { Answer } from '../../../../../../models/answer';
-import { QuestionType } from '../../../../../../enums/questionType';
+import { QuestionType } from '../../../../../../../common/enums/questionType';
 import { SelectButton } from 'primeng/selectbutton';
 import { UnidentifiedQuestion } from '../../../../../../models/unidentifiedQuestion';
 import { UnidentifiedAnswer } from '../../../../../../models/unidentifiedAnswer';

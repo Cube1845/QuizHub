@@ -56,20 +56,12 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
         var userQuestionBases = await _context.QuestionBases
             .Include(qb => qb.Questions)
             .Where(qb => qb.OwnerId == User.GetId())
-            .ToListAsync(ct);
+            .ToDictionaryAsync(qb => qb.Id, ct);
 
-        foreach (var usedQuestionBase in usedQuestionBases)
-        {
-            var currentQuestionBaseDb = userQuestionBases
-                .FirstOrDefault(qb => qb.Id == usedQuestionBase.QuestionBaseId);
-
-            if (currentQuestionBaseDb == null || currentQuestionBaseDb.Questions.Count < usedQuestionBase.MinimalQuestionCount)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return usedQuestionBases.All(usedQuestionBase =>
+            userQuestionBases.TryGetValue(usedQuestionBase.QuestionBaseId, out var currentQuestionBaseDb) &&
+            currentQuestionBaseDb.Questions.Count >= usedQuestionBase.MinimalQuestionCount
+        );
     }
 
     private async Task HandleUsedQuestionBases(Domain.Entities.TestOptions testOptionsDb, List<QuestionBaseWithQuestionCountDto> reqUsedQuestionBases, CancellationToken ct)
