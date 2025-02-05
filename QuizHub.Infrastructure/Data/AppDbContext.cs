@@ -102,12 +102,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
 
-            e.Property(x => x.UsedQuestionIds)
-                .HasConversion(
-                    x => JsonConvert.SerializeObject(x),
-                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
-                );
-
             e.Property(x => x.Duration)
                 .HasConversion(
                     x => x.Ticks,
