@@ -2,7 +2,7 @@
 
 namespace QuizHub.Application.Modules.Client.Models;
 
-public class AnswerDto(Answer answerDb)
+public class AnswerOutDto(Answer answerDb)
 {
     public Guid Id { get; set; } = answerDb.Id;
     public string? Content { get; set; } = answerDb.Content;

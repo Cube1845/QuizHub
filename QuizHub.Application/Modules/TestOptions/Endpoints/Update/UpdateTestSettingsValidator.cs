@@ -12,6 +12,9 @@ public class UpdateTestSettingsValidator : Validator<UpdateTestSettingsRequest>
         RuleForEach(x => x.UsedQuestionBases)
             .Must(x => x.QuestionBaseId != Guid.Empty);
 
+        RuleFor(x => x.QuestionCount)
+            .Must(x => x > 0);
+
         RuleFor(x => x)
             .Must(x =>
             {
