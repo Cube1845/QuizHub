@@ -7,5 +7,5 @@ public class SelectedAnswer
     public TestLog? TestLog { get; set; }
     public Guid QuestionId { get; set; }
     public List<Guid> SelectedAnswerIds { get; set; } = [];
-    public bool Scored { get; set; }
+    public int ScoredPoints { get; set; }
 }
