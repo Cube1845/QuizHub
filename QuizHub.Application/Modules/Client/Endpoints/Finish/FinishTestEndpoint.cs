@@ -40,6 +40,7 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
         {
             TestId = testSolvingDb.TestId,
             Duration = testDuration!.Value,
+            Username = testSolvingDb.Username,
         };
 
         await _context.TestLogs.AddAsync(testLog, ct);

@@ -45,7 +45,7 @@ public class BeginTestEndpoint(IAppDbContext context) : Endpoint<BeginTestReques
             return;
         }
 
-        TestSolving solving = new(testDb.Id, drawnQuestionIds);
+        TestSolving solving = new(testDb.Id, drawnQuestionIds, req.Username);
 
         await _context.TestSolvings.AddAsync(solving, ct);
         await _context.SaveChangesAsync(ct);
