@@ -59,7 +59,7 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
         await SendOkAsync(Result<FinishTestResponse>.Success(new(testLog.Id)), ct);
     }
     
-    private List<SelectedAnswer> ConvertDtoToSelectedAnswersDb(List<Domain.Entities.Question> questionsDb, List<QuestionInDto> questionDtos, Guid TestLogId)
+    private List<SelectedAnswer> ConvertDtoToSelectedAnswersDb(List<Domain.Entities.Question> questionsDb, List<QuestionInDto> questionDtos, Guid testLogId)
     {
         List<SelectedAnswer> selectedAnswersDb = [];
 
@@ -69,20 +69,14 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
 
             if (currentDto == null)
             {
+                selectedAnswersDb.Add(new(testLogId, questionDb.Id, [], 0));
+
                 continue;
             }
 
             var scoredPoints = IsSelectedAnswerScored(questionDb, currentDto);
 
-            SelectedAnswer selectedAnswerDb = new()
-            {
-                QuestionId = currentDto.Id,
-                SelectedAnswerIds = currentDto.SelectedAnswerIds,
-                ScoredPoints = scoredPoints,
-                TestLogId = TestLogId
-            };
-
-            selectedAnswersDb.Add(selectedAnswerDb);
+            selectedAnswersDb.Add(new(testLogId, questionDb.Id, currentDto.SelectedAnswerIds, scoredPoints));
         }
 
         return selectedAnswersDb;

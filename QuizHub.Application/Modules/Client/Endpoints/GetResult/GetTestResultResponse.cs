@@ -2,5 +2,5 @@
 
 namespace QuizHub.Application.Modules.Client.Endpoints.GetResult;
 
-public record GetTestResultResponse(int EarnedPoints, int MaxPoints, int TimeInSeconds, string Username)
-    : TestResultDto(EarnedPoints, MaxPoints, TimeInSeconds, Username);
+public record GetTestResultResponse(TestResultDto Dto)
+    : TestResultDto(Dto.EarnedPoints, Dto.MaxPoints, Dto.TimeInSeconds, Dto.Username);
