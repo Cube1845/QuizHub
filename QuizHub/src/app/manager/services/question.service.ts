@@ -10,11 +10,11 @@ import {
 } from '../../common/models/result';
 import { PaginatedData } from '../../common/models/paginatedData';
 import { UnidentifiedQuestionWithNoImage } from '../models/unidentifiedQuestionWithNoImage';
-import { ImageService } from './image.service';
 import { GetQuestionDTO } from '../models/getQuestionDto';
 import { Answer } from '../models/answer';
 import { DisplayableImage } from '../../common/models/displayableImage';
 import { QuestionUpdateDTO } from '../models/questionUpdateDTO';
+import { ImageService } from '../../common/services/image.service';
 
 type GetPaginatedQuestionsResponse = {
   data: PaginatedData<GetQuestionDTO>;
@@ -229,13 +229,13 @@ export class QuestionService {
     const mappedQuestions: Question[] = await Promise.all(
       questionDtoList.map(async (dto) => {
         const questionImage = dto.imageId
-          ? await this.getImageFromApi(dto.imageId)
+          ? await this.imageService.getImageFromApi(dto.imageId)
           : null;
 
         const answers: Answer[] = await Promise.all(
           dto.answers.map(async (answerDto) => {
             const answerImage = answerDto.imageId
-              ? await this.getImageFromApi(answerDto.imageId)
+              ? await this.imageService.getImageFromApi(answerDto.imageId)
               : null;
 
             return {
@@ -258,33 +258,5 @@ export class QuestionService {
     );
 
     return mappedQuestions;
-  }
-
-  private async getImageFromApi(
-    imageId: string
-  ): Promise<DisplayableImage | null> {
-    return this.http
-      .get(`${this.apiUrl}/image/${imageId}`, {
-        responseType: 'blob',
-      })
-      .toPromise()
-      .then((blob) => {
-        if (blob) {
-          const displayableImage: DisplayableImage | null = new File(
-            [blob],
-            'Obraz',
-            {
-              type: blob.type,
-            }
-          );
-
-          displayableImage.displayUrl =
-            this.imageService.getImageUrl(displayableImage);
-
-          return displayableImage;
-        } else {
-          return null;
-        }
-      });
   }
 }

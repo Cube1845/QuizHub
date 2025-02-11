@@ -1,10 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { GetQuestionDTO } from '../models/getQuestionDto';
 import { HttpClient } from '@angular/common/http';
-import { Question } from '../models/question';
 import { DisplayableImage } from '../../common/models/displayableImage';
 import { environment } from '../../../environments/environment.development';
-import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -82,4 +79,31 @@ export class ImageService {
       );
     });
   };
+
+  public async getImageFromApi(
+    imageId: string
+  ): Promise<DisplayableImage | null> {
+    return this.http
+      .get(`${this.apiUrl}/image/${imageId}`, {
+        responseType: 'blob',
+      })
+      .toPromise()
+      .then((blob) => {
+        if (blob) {
+          const displayableImage: DisplayableImage | null = new File(
+            [blob],
+            'Obraz',
+            {
+              type: blob.type,
+            }
+          );
+
+          displayableImage.displayUrl = this.getImageUrl(displayableImage);
+
+          return displayableImage;
+        } else {
+          return null;
+        }
+      });
+  }
 }

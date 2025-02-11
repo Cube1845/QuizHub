@@ -128,21 +128,22 @@ public class BeginTestEndpoint(IAppDbContext context) : Endpoint<BeginTestReques
         return indexes;
     }
 
-    private async Task<List<QuestionBaseInfoDto>> GetQuestionBasesQuestionCounts(List<Domain.Entities.QuestionBaseWithQuestionCount> questionBasesDb, CancellationToken ct)
+    private async Task<List<QuestionBaseInfoDto>> GetQuestionBasesQuestionCounts(List<QuestionBaseWithQuestionCount> questionBasesDb, CancellationToken ct)
     {
         var questionBasesIds = questionBasesDb.Select(qb => qb.QuestionBaseId);
 
-        var result = await _context.QuestionBases
+        var wantedQuestionBasesDb = await _context.QuestionBases
             .Include(qb => qb.Questions)
             .Where(qb => questionBasesIds.Contains(qb.Id))
-            .Select(qb => new QuestionBaseInfoDto
-            {
-                QuestionBaseId = qb.Id,
-                QuestionIds = qb.Questions.Select(qb => qb.Id).ToList(),
-                SpecifiedMinimalCount = 
-                    questionBasesDb.First(qbdb => qbdb.QuestionBaseId == qb.Id).MinimalQuestionCount
-            })
             .ToListAsync(ct);
+
+        var result = wantedQuestionBasesDb.Select(qb => new QuestionBaseInfoDto
+        {
+            QuestionBaseId = qb.Id,
+            QuestionIds = qb.Questions.Select(qb => qb.Id).ToList(),
+            SpecifiedMinimalCount =
+                questionBasesDb.First(qbdb => qbdb.QuestionBaseId == qb.Id).MinimalQuestionCount
+        }).ToList();
 
         return result;
     }

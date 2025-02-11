@@ -2,4 +2,4 @@
 
 namespace QuizHub.Application.Modules.Client.Endpoints.GetQuestions;
 
-public record GetTestSolvingQuestionsResponse(List<QuestionOutDto> Questions);
+public class GetTestSolvingQuestionsResponse(List<QuestionOutDto> Questions) : List<QuestionOutDto>(Questions);

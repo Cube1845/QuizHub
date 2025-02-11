@@ -1,10 +1,14 @@
-<div class="container m-0 p-0">
-    <div class="info-box mb-7">
-        <h1 class="m-0 p-0 mb-4">Test ukończony jako {{ result!.username }}</h1>
+@if (result) {
+    <div class="container m-0 p-0">
+        <div class="info-box mb-7">
+            <h1 class="m-0 p-0 mb-4">Test ukończony jako {{ result!.username }}</h1>
+            
+            <h2 class="m-0 p-0">Wynik:  {{ result!.earnedPoints }}/{{ result!.maxPoints}} ({{ getScorePercentage(result!.earnedPoints, result!.maxPoints) }}%)</h2>
+            <h2 class="m-0 p-0">Czas ukończenia: {{ convertTimeInSecondsToTimeString(result!.timeInSeconds) }}</h2>
+        </div>
         
-        <h2 class="m-0 p-0">Wynik:  {{ result!.earnedPoints }}/{{ result!.maxPoints}} ({{ getScorePercentage(result!.earnedPoints, result!.maxPoints) }}%)</h2>
-        <h2 class="m-0 p-0">Czas ukończenia: {{ convertTimeInSecondsToTimeString(result!.timeInSeconds) }}</h2>
+        <p-button label="Powrót" class="return-button" icon="pi pi-home" [outlined]="true" (click)="return()"/>
     </div>
-    
-    <p-button label="Powrót" class="return-button" icon="pi pi-home" [outlined]="true" (click)="return()"/>
-</div>
+} @else {
+    <!-- spinner -->
+}

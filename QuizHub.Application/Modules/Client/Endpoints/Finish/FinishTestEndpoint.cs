@@ -54,6 +54,8 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
 
         await _context.SelectedAnswers.AddRangeAsync(selectedAnswersDb, ct);
 
+        _context.TestSolvings.Remove(testSolvingDb);
+
         await _context.SaveChangesAsync(ct);
 
         await SendOkAsync(Result<FinishTestResponse>.Success(new(testLog.Id)), ct);

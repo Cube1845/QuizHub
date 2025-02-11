@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AnswerInterface } from '../../../models/answerInterface';
+import { AnswerOutDto } from '../../../models/answerOutDto';
 
 @Component({
   selector: 'app-answer-tile',
@@ -11,7 +11,7 @@ import { AnswerInterface } from '../../../models/answerInterface';
 export class AnswerTileComponent {
   hovered!: boolean;
 
-  @Input({ required: true }) answer!: AnswerInterface;
+  @Input({ required: true }) answer!: AnswerOutDto;
   @Output() onClick = new EventEmitter<boolean>();
 
   getClass(): string {

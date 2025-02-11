@@ -10,6 +10,7 @@ public class GetImageEndpoint(IAppDbContext context) : Endpoint<GetImageRequest>
     public override void Configure()
     {
         Get("image/{ImageId}");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(GetImageRequest req, CancellationToken ct)
