@@ -11,6 +11,8 @@ import { TestEditComponent } from './manager/components/manager-home/content/tes
 import { ClientBeginTestComponent } from './client/components/client-begin-test/client-begin-test.component';
 import { ClientTestSolveComponent } from './client/components/client-test-solve/client-test-solve.component';
 import { ClientTestFinishComponent } from './client/components/client-test-finish/client-test-finish.component';
+import { TestHistoryComponent } from './manager/components/manager-home/content/test-history/test-history.component';
+import { TestLogsComponent } from './manager/components/manager-home/content/test-history/test-logs/test-logs.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +33,8 @@ export const routes: Routes = [
       { path: 'question-base-edit/:id', component: QuestionBaseEditComponent },
       { path: 'tests', component: TestCreatorComponent },
       { path: 'test-edit/:id', component: TestEditComponent },
+      { path: 'test-history', component: TestHistoryComponent },
+      { path: 'test-logs/:id', component: TestLogsComponent },
     ],
     canActivate: [userMustBeLoggedInGuard],
   },

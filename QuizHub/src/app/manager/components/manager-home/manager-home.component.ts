@@ -36,9 +36,9 @@ export class ManagerHomeComponent {
     {
       text: 'Historia testów',
       icon: 'pi pi-address-book',
-      route: '',
+      route: 'manager/test-history',
       color: null,
-      alternativeRoutes: [],
+      alternativeRoutes: ['manager/test-logs'],
     },
   ];
 }

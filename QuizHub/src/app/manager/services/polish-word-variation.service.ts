@@ -15,4 +15,16 @@ export class PolishWordVariationService {
       return 'Pytań';
     }
   }
+
+  getSolveWordVariation(solveCount: number): string {
+    const lastDigit = solveCount % 10;
+
+    if (solveCount == 1) {
+      return 'Rozwiązanie';
+    } else if (lastDigit == 2 || lastDigit == 3 || lastDigit == 4) {
+      return 'Rozwiązania';
+    } else {
+      return 'Rozwiązań';
+    }
+  }
 }

@@ -1,0 +1,25 @@
+:host {
+    .test-options-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .test-name-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--p-zinc-850);
+        color: var(--p-zinc-200);
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        width: 50%;
+
+        input {
+            width: 100%;
+        }
+    }
+}
