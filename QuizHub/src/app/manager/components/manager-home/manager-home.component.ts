@@ -20,13 +20,6 @@ import { RouterOutlet } from '@angular/router';
 export class ManagerHomeComponent {
   navBarItems: NavBarItem[] = [
     {
-      text: 'Strona główna',
-      icon: 'pi pi-home',
-      route: 'manager/main',
-      color: null,
-      alternativeRoutes: [],
-    },
-    {
       text: 'Bazy Pytań',
       icon: 'pi pi-question-circle',
       route: 'manager/question-bases',

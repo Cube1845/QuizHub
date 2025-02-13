@@ -67,7 +67,7 @@ export class LoginComponent {
 
           if (!isResult(result)) {
             this.authDataService.setAuthData(result);
-            this.router.navigateByUrl('manager');
+            this.router.navigateByUrl('manager/question-bases');
             return;
           }
 
