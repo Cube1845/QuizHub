@@ -15,12 +15,14 @@
                 <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/> -->
             }
         </div>
-        <div class="m-0 p-0 logs-container">
+        <div class="m-0 mx-3 p-0 pt-3 logs-container">
             @if (testLogs.length > 0) {
-                @for (testLogRow of getTestLogsRows(); track $rowIndex) {
-                    <div class="test-logs-row">
+                @for (testLogRow of getTestLogsRows(); track $index) {
+                    <div class="test-logs-row gap-3 mb-3">
                         @for (testLog of testLogRow; track $index) {
-
+                            <div class="test-log-panel">
+                                <h1>{{ testLog.username }}</h1>
+                            </div>
                         }
                     </div>
                 }

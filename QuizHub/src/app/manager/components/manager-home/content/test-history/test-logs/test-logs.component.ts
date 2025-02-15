@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TestLogsService } from '../../../../../services/test-logs.service';
 import { TestLog } from '../../../../../models/testLog';
-import { splitArrayIntoChunks } from '../../../../../../../main';
+import { splitArrayIntoChunks } from '../../../../../../common/globalFunctions';
 
 @Component({
   selector: 'app-test-logs',
