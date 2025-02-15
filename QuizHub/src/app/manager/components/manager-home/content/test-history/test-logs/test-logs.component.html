@@ -1,17 +1,35 @@
-<div class="container m-0">
-    <div class="test-name-bar m-0 p-0 py-2">
-        @if (true) {
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <p-button icon="pi pi-arrow-left" label="Historia testów" class="ml-3" [outlined]="true" severity="secondary"/>
-                <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ 'Test' }}</h2>
-            </div>
+@if (testLogs) {
+    <div class="container m-0">
+        <div class="test-name-bar m-0 p-0 py-2">
+            @if (true) {
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <p-button icon="pi pi-arrow-left" label="Historia testów" class="ml-3" [outlined]="true" severity="secondary" (click)="goBack()"/>
+                    <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ 'Test' }}</h2>
+                </div>
 
-            <div class="search-box">
-                <input type="text" pInputText placeholder="Wyszukaj rozwiązanie po nazwie użytkownika"/>
-                <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" />
-            </div>
-        } @else {
-            <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/> -->
-        }
+                <div class="search-box">
+                    <input type="text" pInputText placeholder="Wyszukaj rozwiązanie po nazwie użytkownika"/>
+                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" />
+                </div>
+            } @else {
+                <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/> -->
+            }
+        </div>
+        <div class="m-0 p-0 logs-container">
+            @if (testLogs.length > 0) {
+                @for (testLogRow of getTestLogsRows(); track $rowIndex) {
+                    <div class="test-logs-row">
+                        @for (testLog of testLogRow; track $index) {
+
+                        }
+                    </div>
+                }
+            } @else {
+                <p>Brak rozwiązań tego testu.</p>
+            }
+        </div>
     </div>
-</div>
+} @else {
+    <!-- spinner -->
+}
+    
