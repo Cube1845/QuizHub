@@ -41,6 +41,7 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
             TestId = testSolvingDb.TestId,
             Duration = testDuration!.Value,
             Username = testSolvingDb.Username,
+            SolvedDate = _timeProvider.GetUtcNow().DateTime,
         };
 
         await _context.TestLogs.AddAsync(testLog, ct);
