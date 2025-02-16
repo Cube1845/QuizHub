@@ -18,7 +18,7 @@ public class GetTestSolvingQuestionsEndpoint(IAppDbContext context) : Endpoint<G
     public override async Task HandleAsync(GetTestSolvingQuestionsRequest req, CancellationToken ct)
     {
         var testSolvingDb = await _context.TestSolvings
-            .FirstOrDefaultAsync(ts => ts.Id == req.TestSolvingId, ct);
+            .FindAsync([req.TestSolvingId], ct);
 
         if (testSolvingDb == null)
         {

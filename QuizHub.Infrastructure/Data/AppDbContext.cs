@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Newtonsoft.Json;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Domain.Entities;
@@ -91,11 +92,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
 
-            e.Property(x => x.DrawnQuestionsIds)
-                .HasConversion(
-                    x => JsonConvert.SerializeObject(x),
-                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
-                );
+            e.OwnsOne(x => x.DrawnQuestionsIds, builder =>
+            {
+                builder.ToJson();
+            });
         });
 
         builder.Entity<TestLog>(e =>
@@ -115,11 +115,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
 
-            e.Property(x => x.SelectedAnswerIds)
-                .HasConversion(
-                    x => JsonConvert.SerializeObject(x),
-                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
-                );
+            e.OwnsOne(x => x.SelectedAnswerIds, builder => builder.ToJson());
         });
     }
 }
