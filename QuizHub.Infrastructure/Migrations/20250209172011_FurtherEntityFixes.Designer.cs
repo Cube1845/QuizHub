@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizHub.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using QuizHub.Infrastructure.Data;
 namespace QuizHub.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250209172011_FurtherEntityFixes")]
+    partial class FurtherEntityFixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,8 +141,8 @@ namespace QuizHub.Infrastructure.Migrations
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Scored")
-                        .HasColumnType("bit");
+                    b.Property<int>("ScoredPoints")
+                        .HasColumnType("int");
 
                     b.Property<string>("SelectedAnswerIds")
                         .IsRequired()
@@ -195,10 +198,6 @@ namespace QuizHub.Infrastructure.Migrations
                     b.Property<Guid>("TestId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("TestLogs");
@@ -242,10 +241,6 @@ namespace QuizHub.Infrastructure.Migrations
 
                     b.Property<Guid>("TestId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

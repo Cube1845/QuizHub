@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Newtonsoft.Json;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Domain.Entities;
 using QuizHub.Infrastructure.Auth.Entities;
+using System.Text.Json;
 
 namespace QuizHub.Infrastructure.Data;
 
@@ -21,6 +24,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Test> Tests { get; set; }
     public DbSet<TestOptions> TestsOptions { get; set; }
     public DbSet<QuestionBaseWithQuestionCount> QuestionBasesWithQuestionCount { get; set; }
+
+    //Test logs
+    public DbSet<TestLog> TestLogs { get; set; }
+    public DbSet<SelectedAnswer> SelectedAnswers { get; set; }
+
+    //Client (test solving)
+    public DbSet<TestSolving> TestSolvings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -76,6 +86,41 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasOne(x => x.TestOptions)
                 .WithMany(x => x.UsedQuestionBasesWithQuestionCounts)
                 .HasForeignKey(x => x.TestOptionsId);
+        });
+
+        builder.Entity<TestSolving>(e =>
+        {
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.DrawnQuestionsIds)
+                .HasConversion(
+                    x => JsonConvert.SerializeObject(x),
+                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
+                );
+        });
+
+        builder.Entity<TestLog>(e =>
+        {
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.Duration)
+                .HasConversion(
+                    x => x.Ticks,
+                    x => new TimeSpan(x)
+                );
+
+            e.HasMany(x => x.SelectedAnswers).WithOne(x => x.TestLog);
+        });
+
+        builder.Entity<SelectedAnswer>(e =>
+        {
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.SelectedAnswerIds)
+                .HasConversion(
+                    x => JsonConvert.SerializeObject(x),
+                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
+                );
         });
     }
 }
