@@ -108,17 +108,17 @@ public class BeginTestEndpoint(IAppDbContext context) : Endpoint<BeginTestReques
         return drawnQuestionIds;
     }
 
-    private List<int> DrawQuestionIndexes(int count, int size)
+    private List<int> DrawQuestionIndexes(int indexCount, int questionBaseSize)
     {
         List<int> indexes = [];
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < indexCount; i++)
         {
             int index;
 
             do
             {
-                index = Random.Shared.Next(0, size);
+                index = Random.Shared.Next(0, questionBaseSize);
             }
             while (indexes.Contains(index));
 
