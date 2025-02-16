@@ -91,11 +91,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         builder.Entity<TestSolving>(e =>
         {
             e.HasKey(x => x.Id);
+        });
 
-            e.OwnsOne(x => x.DrawnQuestionsIds, builder =>
-            {
-                builder.ToJson();
-            });
+        builder.Entity<TestSolving>().OwnsMany(x => x.DrawnQuestionsIds, builder =>
+        {
+            builder.ToJson();
         });
 
         builder.Entity<TestLog>(e =>
