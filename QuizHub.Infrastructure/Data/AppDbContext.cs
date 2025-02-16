@@ -91,11 +91,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         builder.Entity<TestSolving>(e =>
         {
             e.HasKey(x => x.Id);
-        });
 
-        builder.Entity<TestSolving>().OwnsMany(x => x.DrawnQuestionsIds, builder =>
-        {
-            builder.ToJson();
+            e.Property(x => x.DrawnQuestionsIds)
+                .HasConversion(
+                    x => JsonConvert.SerializeObject(x),
+                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
+                );
         });
 
         builder.Entity<TestLog>(e =>
@@ -115,7 +116,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
 
-            e.OwnsOne(x => x.SelectedAnswerIds, builder => builder.ToJson());
+            e.Property(x => x.SelectedAnswerIds)
+                .HasConversion(
+                    x => JsonConvert.SerializeObject(x),
+                    x => JsonConvert.DeserializeObject<List<Guid>>(x)!
+                );
         });
     }
 }
