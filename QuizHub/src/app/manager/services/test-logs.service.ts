@@ -14,6 +14,7 @@ export class TestLogsService {
         earnedPoints: 5,
         maxPoints: 10,
         solveDate: new Date(),
+        testId: 'agawgwa',
       },
       {
         id: 'awdhthhdtae',
@@ -22,6 +23,7 @@ export class TestLogsService {
         earnedPoints: 6,
         maxPoints: 11,
         solveDate: new Date(),
+        testId: 'agawgawggwa',
       },
       {
         id: 'awdaw5dagae',
@@ -30,11 +32,13 @@ export class TestLogsService {
         earnedPoints: 4,
         maxPoints: 10,
         solveDate: new Date(),
+        testId: 'adrhhrgawgwa',
       },
       {
         id: 'awdh1thhdtae',
         durationInSeconds: 150,
         username: 'tdgawgjg',
+        testId: 'agawdrhdhgwa',
         earnedPoints: 6,
         maxPoints: 11,
         solveDate: new Date(),
@@ -46,14 +50,7 @@ export class TestLogsService {
         earnedPoints: 1,
         maxPoints: 10,
         solveDate: new Date(),
-      },
-      {
-        id: 'aw23dhthhdtae',
-        durationInSeconds: 150,
-        username: 'tdjasegg',
-        earnedPoints: 2,
-        maxPoints: 11,
-        solveDate: new Date(),
+        testId: 'agadrthdhdrhwgwa',
       },
     ];
   }
