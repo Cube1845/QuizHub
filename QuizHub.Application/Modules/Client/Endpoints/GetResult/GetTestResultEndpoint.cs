@@ -23,13 +23,12 @@ public class GetTestResultEndpoint(IAppDbContext context) : Endpoint<GetTestResu
 
         if (testLogDb == null)
         {
-            await SendOkAsync(Result<GetTestResultResponse>.Error("Błąd id"), ct);
+            await SendOkAsync(Result<GetTestResultResponse>.Error("Nie ma takiego rozwiązania testu"), ct);
             return;
         }
 
         var earnedPoints = testLogDb.SelectedAnswers
-            .Select(sa => sa.ScoredPoints)
-            .Sum();
+            .Count;
 
         var maxPoints = testLogDb.SelectedAnswers.Count;
 

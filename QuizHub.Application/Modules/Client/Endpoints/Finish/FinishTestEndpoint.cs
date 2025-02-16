@@ -71,20 +71,20 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
 
             if (currentDto == null)
             {
-                selectedAnswersDb.Add(new(testLogId, questionDb.Id, [], 0));
+                selectedAnswersDb.Add(new(testLogId, questionDb.Id, [], false));
 
                 continue;
             }
 
-            var scoredPoints = IsSelectedAnswerScored(questionDb, currentDto);
+            var scored = IsSelectedAnswerScored(questionDb, currentDto);
 
-            selectedAnswersDb.Add(new(testLogId, questionDb.Id, currentDto.SelectedAnswerIds, scoredPoints));
+            selectedAnswersDb.Add(new(testLogId, questionDb.Id, currentDto.SelectedAnswerIds, scored));
         }
 
         return selectedAnswersDb;
     }
 
-    private int IsSelectedAnswerScored(Domain.Entities.Question questionDb, QuestionInDto questionDto)
+    private bool IsSelectedAnswerScored(Domain.Entities.Question questionDb, QuestionInDto questionDto)
     {
         var correctAnswersIds = questionDb.Answers
             .Where(answer => answer.IsCorrect)
@@ -95,14 +95,14 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
         {
             if (questionDto.SelectedAnswerIds.Count != 1)
             {
-                return 0;
+                return false;
             }
 
             var selectedAnswerId = questionDto.SelectedAnswerIds[0];
 
             if (correctAnswersIds.Contains(selectedAnswerId))
             {
-                return 1;
+                return true;
             }
         }
         else if (questionDb.QuestionType == QuestionType.MultiAnswer)
@@ -113,10 +113,10 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
 
             if (answersCorrect)
             {
-                return 1;
+                return true;
             }
         }
 
-        return 0;
+        return false;
     }
 }
