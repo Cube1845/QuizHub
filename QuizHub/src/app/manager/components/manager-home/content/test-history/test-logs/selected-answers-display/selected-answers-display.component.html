@@ -1,0 +1,33 @@
+<!-- change -->
+@if (true) {
+    <div class="container m-0">
+        <div class="user-name-bar m-0 p-0 pt-3">
+            <!-- change -->
+            @if (true) {
+                <h2 class="m-0 py-1 pl-3 text-4xl font-light primary-color">Ktoś tam</h2>
+                <h2 class="m-0 py-1 pl-3 text-4xl font-light text-center">Wynik: 4 / 10 (40.00%)</h2>
+                <div style="flex: 1"></div>
+            } @else {
+                <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="28.335" class="mt-2"/> -->
+            }
+        </div>
+        <div class="top-bar m-0 p-3">
+            <p-button [outlined]="true" [style]="{width: 'max-content'}" label="Rozwiązania" severity="secondary" icon="pi pi-arrow-left" />
+            <h3 class="m-0 py-1 pl-3 text-2xl font-light text-center">Data: 18.02.2025 20:55</h3>
+            <h3 class="m-0 py-1 pl-5 text-2xl font-light">Czas rozwiązania: 00:05:23</h3>
+        </div>
+
+        <div class="used-questions-container m-0 p-0 pt-3">
+            @for (usedQuestion of [0]; track $index) {
+                <div class="used-question-panel m-3 mt-0 p-3">
+                    <h1 class="m-0 p-0 text-3xl line-height-1">Cos tam raz dwa raz dwa</h1>
+                    <h2 class="m-0 p-0 pt-3 text-xl line-height-1">Odpowiedź A:</h2>
+                    <p class="m-0 p-0">awdawd</p>
+                </div>
+            }
+        </div>
+    </div>
+} @else {
+    <!-- spinner -->
+}
+    

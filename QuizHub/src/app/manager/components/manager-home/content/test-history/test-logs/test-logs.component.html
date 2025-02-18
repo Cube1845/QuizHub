@@ -1,7 +1,7 @@
 @if (testLogs) {
     <div class="container m-0">
         <div class="test-name-bar m-0 p-0 py-2">
-            @if (true) {
+            @if (testName) {
                 <div style="display: flex; align-items: center; justify-content: center;">
                     <p-button icon="pi pi-arrow-left" label="Historia testów" class="ml-3" [outlined]="true" severity="secondary" (click)="goBack()"/>
                     <h2 class="m-0 py-1 px-3 text-4xl font-light">{{ testName }}</h2>

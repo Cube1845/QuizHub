@@ -5,6 +5,8 @@ import { TestLog } from '../models/testLog';
   providedIn: 'root',
 })
 export class TestLogsService {
+  getSelectedAnswersData(): void {}
+
   getTestLogs(): TestLog[] {
     return [
       {

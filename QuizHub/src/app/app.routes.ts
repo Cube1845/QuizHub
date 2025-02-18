@@ -13,6 +13,7 @@ import { ClientTestSolveComponent } from './client/components/client-test-solve/
 import { ClientTestFinishComponent } from './client/components/client-test-finish/client-test-finish.component';
 import { TestHistoryComponent } from './manager/components/manager-home/content/test-history/test-history.component';
 import { TestLogsComponent } from './manager/components/manager-home/content/test-history/test-logs/test-logs.component';
+import { SelectedAnswersDisplayComponent } from './manager/components/manager-home/content/test-history/test-logs/selected-answers-display/selected-answers-display.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,10 @@ export const routes: Routes = [
       { path: 'test-edit/:id', component: TestEditComponent },
       { path: 'test-history', component: TestHistoryComponent },
       { path: 'test-logs/:id', component: TestLogsComponent },
+      {
+        path: 'selected-answers-display/:id',
+        component: SelectedAnswersDisplayComponent,
+      },
     ],
     canActivate: [userMustBeLoggedInGuard],
   },

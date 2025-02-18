@@ -1,10 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { QuestionOutDto } from '../models/questionOutDto';
 import { Router } from '@angular/router';
 import { TestResult } from '../models/testResult';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { AnswerOutDto } from '../models/answerOutDto';
 import { ImageService } from '../../common/services/image.service';
 import { Observable, switchMap } from 'rxjs';
 import {
@@ -13,6 +11,8 @@ import {
 } from '../../common/models/result';
 import { ToastService } from '../../common/services/toast.service';
 import { QuestionInDto } from '../models/questionInDto';
+import { QuestionOutDto } from '../../common/models/questionOutDto';
+import { AnswerOutDto } from '../../common/models/answerOutDto';
 
 type QuestionOutDtoWithImageId = Omit<
   Omit<QuestionOutDto, 'image'>,

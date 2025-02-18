@@ -38,7 +38,10 @@ export class ManagerHomeComponent {
       icon: 'pi pi-address-book',
       route: 'manager/test-history',
       color: null,
-      alternativeRoutes: ['manager/test-logs'],
+      alternativeRoutes: [
+        'manager/test-logs',
+        'manager/selected-answers-display',
+      ],
     },
   ];
 }

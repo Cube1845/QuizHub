@@ -5,7 +5,7 @@ import { TestClientService } from '../../services/test-client.service';
 import { QuestionType } from '../../../common/enums/questionType';
 import { GlobalDialogService } from '../../../common/services/global-dialog.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionOutDto } from '../../models/questionOutDto';
+import { QuestionOutDto } from '../../../common/models/questionOutDto';
 
 @Component({
   selector: 'app-client-test-solve',
