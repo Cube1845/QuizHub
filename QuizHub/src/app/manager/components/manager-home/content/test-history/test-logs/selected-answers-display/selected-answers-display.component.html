@@ -20,37 +20,52 @@
                     <h1 [class]="'m-0 p-0 text-3xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">{{ usedQuestion.content }}</h1>
                     <div class="used-question-answer-row">
                         <div style="flex: 1">
-                            <h2 class="m-0 p-0 pt-3 text-xl line-height-1">Odpowiedź A:</h2>
-                            <p class="m-0 p-0">{{ usedQuestion.answers[0].content }}</p>
+                            <h2 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[0])">Odpowiedź A:</h2>
+                            <p [class]="'m-0 p-0' + getAnswerClass(usedQuestion.answers[0])">
+                                <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[0]) + (usedQuestion.answers[0].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                {{ usedQuestion.answers[0].content }}
+                            </p>
                         </div>
                         <div style="flex: 1">
-                            <h2 class="m-0 p-0 pt-3 text-xl line-height-1">Odpowiedź B:</h2>
-                            <p class="m-0 p-0">{{ usedQuestion.answers[1].content }}</p>
+                            <h2 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[1])">Odpowiedź A:</h2>
+                            <p [class]="'m-0 p-0' + getAnswerClass(usedQuestion.answers[1])">
+                                <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[1]) + (usedQuestion.answers[1].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                {{ usedQuestion.answers[1].content }}
+                            </p>
                         </div>
                     </div>
                     @if (usedQuestion.answers.length > 2) {
                         <div class="used-question-answer-row">
                             <div style="flex: 1">
-                                <h2 class="m-0 p-0 pt-3 text-xl line-height-1">Odpowiedź C:</h2>
-                                <p class="m-0 p-0">{{ usedQuestion.answers[2].content }}</p>
+                                <h2 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[2])">Odpowiedź A:</h2>
+                                <p [class]="'m-0 p-0' + getAnswerClass(usedQuestion.answers[2])">
+                                    <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[2]) + (usedQuestion.answers[2].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                    {{ usedQuestion.answers[2].content }}
+                                </p>
                             </div>
                             @if (usedQuestion.answers.length > 3) {
                                 <div style="flex: 1">
-                                    <h2 class="m-0 p-0 pt-3 text-xl line-height-1">Odpowiedź D:</h2>
-                                    <p class="m-0 p-0">{{ usedQuestion.answers[3].content }}</p>
+                                    <h2 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[3])">Odpowiedź A:</h2>
+                                    <p [class]="'m-0 p-0' + getAnswerClass(usedQuestion.answers[3])">
+                                        <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[3]) + (usedQuestion.answers[3].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                        {{ usedQuestion.answers[3].content }}
+                                    </p>
                                 </div>
                             }
                         </div>
                     }
 
+                    <h4 class="m-0 p-0 pt-3 text-xl line-height-1">
+                        <i class="pi pi-info-circle pr-1"></i>
+                        {{ usedQuestion.questionType == 1 ? 'Pojedyncza odpowiedź' : 'Wielokrotna odpowiedź' }}
+                    </h4>
+
                     <div class="action-info">
-                        <h3 class="m-0 p-0 pt-3 text-xl line-height-1">
-                            {{ usedQuestion.questionType == 1 ? 'Zaznaczona odpowiedź:' : 'Zaznaczone odpowiedzi:'}}
+                        <h3 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">
                             {{ getSpecifiedAnswerChars(usedQuestion, 'isSelected') }}
                         </h3>
 
-                        <h3 class="m-0 p-0 pt-3 pl-5 text-xl line-height-1">
-                            {{ usedQuestion.questionType == 1 ? 'Poprawna odpowiedź:' : 'Poprawne odpowiedzi:'}}
+                        <h3 [class]="'m-0 p-0 pt-3 pl-5 text-xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">
                             {{ getSpecifiedAnswerChars(usedQuestion, 'isCorrect') }}
                         </h3>
                     </div>

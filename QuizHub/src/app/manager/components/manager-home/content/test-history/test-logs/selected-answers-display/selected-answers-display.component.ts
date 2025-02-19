@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TestLogsService } from '../../../../../../services/test-logs.service';
 import {
+  SelectedAnswer,
   SelectedAnswersData,
   UsedQuestion,
 } from '../../../../../../models/selectedAnswersData';
@@ -49,6 +50,22 @@ export class SelectedAnswersDisplayComponent {
     return convertTimeInSecondsToTimeString(seconds);
   }
 
+  getAnswerClass(selectedAnswer: SelectedAnswer): string {
+    if (selectedAnswer.isCorrect && selectedAnswer.isSelected) {
+      return ' selected-correct';
+    }
+
+    if (selectedAnswer.isSelected && !selectedAnswer.isCorrect) {
+      return ' selected-incorrect';
+    }
+
+    if (!selectedAnswer.isSelected && selectedAnswer.isCorrect) {
+      return ' correct';
+    }
+
+    return '';
+  }
+
   getSpecifiedAnswerChars(
     usedQuestion: UsedQuestion,
     key: 'isCorrect' | 'isSelected'
@@ -65,6 +82,28 @@ export class SelectedAnswersDisplayComponent {
       (answer) => answer != null
     );
 
-    return selectedAnswerChars.join(', ');
+    var stringBeginning;
+
+    if (key == 'isCorrect') {
+      if (selectedAnswerChars.length > 1) {
+        stringBeginning = 'Poprawne odpowiedzi: ';
+      } else {
+        stringBeginning = 'Poprawna odpowiedź: ';
+      }
+    } else {
+      if (selectedAnswerChars.length > 1) {
+        stringBeginning = 'Zaznaczone odpowiedzi: ';
+      } else {
+        stringBeginning = 'Zaznaczona odpowiedź: ';
+      }
+    }
+
+    const finalString =
+      stringBeginning +
+      (selectedAnswerChars.length > 0
+        ? selectedAnswerChars.join(', ')
+        : 'Brak');
+
+    return finalString;
   }
 }
