@@ -1,6 +1,11 @@
+export type TestLogData = {
+  testLogs: TestLog[];
+  testName: string;
+  testId: string;
+};
+
 export type TestLog = {
   id: string;
-  testId: string;
   durationInSeconds: number;
   solveDate: Date;
   username: string;

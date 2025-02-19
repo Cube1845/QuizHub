@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TestLogsService } from '../../../../../services/test-logs.service';
@@ -19,6 +19,7 @@ import { PaginatorModule } from 'primeng/paginator';
 export class TestLogsComponent {
   private readonly router = inject(Router);
   private readonly testLogsService = inject(TestLogsService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   private readonly paginatorItemsPerPage = [60, 90, 120];
 
@@ -26,9 +27,9 @@ export class TestLogsComponent {
 
   testName!: string | null;
 
-  $rowIndex = 0;
-
   testLogs!: TestLog[] | null;
+
+  testId!: string | null;
 
   paginatorOptions: PaginatorOptions = new PaginatorOptions(
     1,
@@ -39,17 +40,31 @@ export class TestLogsComponent {
   );
 
   constructor() {
-    this.getTestLogsAndSetThem(1);
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
+      if (paramMap.get('id') == null) {
+        return;
+      }
+
+      this.testId = paramMap.get('id');
+
+      this.getTestLogsAndSetThem(1);
+    });
+  }
+
+  openSelectedAnswersDisplay(index: number): void {
+    this.router.navigateByUrl(
+      'manager/selected-answers-display/' + this.testLogs![index].id
+    );
   }
 
   getTestLogsAndSetThem(pageNumber: number): void {
-    const testLogs = this.testLogsService.getTestLogs();
+    const testLogData = this.testLogsService.getTestLogData(this.testId!);
 
     this.logsGetType = 'regular';
 
-    this.testLogs = testLogs;
-    this.paginatorOptions.totalItems = testLogs.length;
-    this.testName = 'Test';
+    this.testLogs = testLogData.testLogs;
+    this.paginatorOptions.totalItems = testLogData.testLogs.length;
+    this.testName = testLogData.testName;
   }
 
   goBack(): void {

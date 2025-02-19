@@ -38,10 +38,36 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+        overflow-y: auto;
     }
 
     .used-question-panel {
         background: var(--p-zinc-900);
         border-radius: var(--p-border-radius-lg);
+
+        h2, p, i {
+            color: var(--p-zinc-500);
+        }
+
+        h1 {
+            color: var(--p-zinc-200);
+        }
+    }
+
+    .used-question-answer-row {
+        display: flex;
+        width: 100%;
+    }
+
+    h3 {
+        color: var(--p-zinc-200);
+    }
+
+    .action-info {
+        display: flex;
+    }
+
+    .primary-color {
+        color: var(--p-primary-color) !important;
     }
 }
