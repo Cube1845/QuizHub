@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { QuestionOutDto } from '../models/questionOutDto';
 import { Router } from '@angular/router';
 import { TestResult } from '../models/testResult';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { AnswerOutDto } from '../models/answerOutDto';
 import { ImageService } from '../../common/services/image.service';
@@ -13,6 +13,7 @@ import {
 } from '../../common/models/result';
 import { ToastService } from '../../common/services/toast.service';
 import { QuestionInDto } from '../models/questionInDto';
+import { SKIP_AUTH } from '../../auth/models/httpContextTokens';
 
 type QuestionOutDtoWithImageId = Omit<
   Omit<QuestionOutDto, 'image'>,
@@ -38,7 +39,6 @@ type FinishTestResponse = {
   providedIn: 'root',
 })
 export class TestClientService {
-  private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
   private readonly imageService = inject(ImageService);
   private readonly toastService = inject(ToastService);
@@ -57,7 +57,7 @@ export class TestClientService {
 
     return this.http
       .post<Result<BeginTestResponse>>(this.apiUrl + '/client/test', body, {
-        headers: { skipAuth: 'true' },
+        context: new HttpContext().set(SKIP_AUTH, true),
       })
       .pipe(
         handleResultPatternResponse<BeginTestResponse, string>(
@@ -78,7 +78,7 @@ export class TestClientService {
 
     return this.http
       .post<Result<FinishTestResponse>>(this.apiUrl + '/client/finish', body, {
-        headers: { skipAuth: 'true' },
+        context: new HttpContext().set(SKIP_AUTH, true),
       })
       .pipe(
         handleResultPatternResponse<FinishTestResponse, string>(
@@ -91,7 +91,7 @@ export class TestClientService {
   getTestResult(testLogId: string): Observable<TestResult> {
     return this.http
       .get<Result<TestResult>>(this.apiUrl + '/client/finish/' + testLogId, {
-        headers: { skipAuth: 'true' },
+        context: new HttpContext().set(SKIP_AUTH, true),
       })
       .pipe(
         handleResultPatternResponse<TestResult, TestResult>(
@@ -101,12 +101,12 @@ export class TestClientService {
       );
   }
 
-  getTestQuestions(testSolvingId: string): Observable<QuestionOutDto[]> {
+  getTestQuestions(testSolvingId: string): Observable<QuestionOutDto[] | null> {
     return this.http
       .get<Result<QuestionOutDtoWithImageId[]>>(
         this.apiUrl + '/client/test/' + testSolvingId,
         {
-          headers: { skipAuth: 'true' },
+          context: new HttpContext().set(SKIP_AUTH, true),
         }
       )
       .pipe(this.handleQuestionOutDtoResultPatternResponse());
@@ -115,12 +115,12 @@ export class TestClientService {
   private handleQuestionOutDtoResultPatternResponse() {
     return (
       source: Observable<Result<QuestionOutDtoWithImageId[]>>
-    ): Observable<QuestionOutDto[]> =>
+    ): Observable<QuestionOutDto[] | null> =>
       source.pipe(
         switchMap(async (result: Result<QuestionOutDtoWithImageId[]>) => {
           if (!result.isSuccess) {
             this.displayErrorToast(result.message || 'Wystąpił błąd');
-            return null!;
+            return null;
           }
 
           const question = result.value;
