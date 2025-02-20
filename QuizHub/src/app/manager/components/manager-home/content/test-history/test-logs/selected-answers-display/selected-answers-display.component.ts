@@ -9,11 +9,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { convertTimeInSecondsToTimeString } from '../../../../../../../common/globalFunctions';
+import { ImageModule } from 'primeng/image';
 
 @Component({
   selector: 'app-selected-answers-display',
   standalone: true,
-  imports: [ButtonModule, DatePipe],
+  imports: [ButtonModule, DatePipe, ImageModule],
   templateUrl: './selected-answers-display.component.html',
   styleUrl: './selected-answers-display.component.scss',
 })
