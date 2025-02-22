@@ -75,13 +75,9 @@ export class ImagePanelComponent implements ControlValueAccessor {
       defaultHeight
     );
 
-    this.selectedImage = new File([resizedBlob], file.name, {
+    this.selectedImage = new DisplayableImage([resizedBlob], file.name, {
       type: file.type,
     });
-
-    this.selectedImage.displayUrl = this.imageService.getImageUrl(
-      this.selectedImage
-    );
 
     this.selectedImage.wasChangedSinceAssigning = true;
 

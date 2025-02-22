@@ -128,27 +128,27 @@ public class BeginTestEndpoint(IAppDbContext context) : Endpoint<BeginTestReques
         return indexes;
     }
 
-    private async Task<List<QuestionBaseInfoDto>> GetQuestionBasesQuestionCounts(List<QuestionBaseWithQuestionCount> questionBasesDb, CancellationToken ct)
+    private async Task<List<QuestionBaseInfoDto>> GetQuestionBasesQuestionCounts(List<QuestionBaseWithQuestionCount> questionBasesWithCountsDb, CancellationToken ct)
     {
-        var questionBasesIds = questionBasesDb.Select(qb => qb.QuestionBaseId);
+        var questionBasesIds = questionBasesWithCountsDb.Select(qb => qb.QuestionBaseId);
 
-        var wantedQuestionBasesDb = await _context.QuestionBases
+        var questionBasesDb = await _context.QuestionBases
             .Include(qb => qb.Questions)
             .Where(qb => questionBasesIds.Contains(qb.Id))
             .ToListAsync(ct);
 
-        var result = wantedQuestionBasesDb.Select(qb => new QuestionBaseInfoDto
+        var result = questionBasesDb.Select(qb => new QuestionBaseInfoDto
         {
             QuestionBaseId = qb.Id,
             QuestionIds = qb.Questions.Select(qb => qb.Id).ToList(),
             SpecifiedMinimalCount =
-                questionBasesDb.First(qbdb => qbdb.QuestionBaseId == qb.Id).MinimalQuestionCount
+                questionBasesWithCountsDb.First(qbdb => qbdb.QuestionBaseId == qb.Id).MinimalQuestionCount
         }).ToList();
 
         return result;
     }
 
-    private async Task<Domain.Entities.Test?> GetTestDb(string testCode, CancellationToken ct)
+    private async Task<Test?> GetTestDb(string testCode, CancellationToken ct)
     {
         var testDb = await _context.Tests
             .Include(test => test.Options)

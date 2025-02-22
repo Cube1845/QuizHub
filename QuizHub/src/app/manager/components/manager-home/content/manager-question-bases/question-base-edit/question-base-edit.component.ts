@@ -92,12 +92,14 @@ export class QuestionBaseEditComponent {
         this.paginatorItemsPerPage[0]
       )
       .subscribe((response) => {
-        this.searchFormControl.reset();
-        this.questionGetType = 'regular';
+        if (!!response) {
+          this.searchFormControl.reset();
+          this.questionGetType = 'regular';
 
-        this.questions = response.data.data;
-        this.paginatorOptions.totalItems = response.data.totalItems;
-        this.questionBaseName = response.questionBaseName;
+          this.questions = response.data.data;
+          this.paginatorOptions.totalItems = response.data.totalItems;
+          this.questionBaseName = response.questionBaseName;
+        }
       });
   }
 
@@ -122,10 +124,11 @@ export class QuestionBaseEditComponent {
         this.paginatorOptions.rows
       )
       .subscribe((response) => {
-        this.questionGetType = 'searched';
-
-        this.questions = response.data;
-        this.paginatorOptions.totalItems = response.totalItems;
+        if (!!response) {
+          this.questionGetType = 'searched';
+          this.questions = response.data;
+          this.paginatorOptions.totalItems = response.totalItems;
+        }
       });
   }
 
@@ -272,16 +275,18 @@ export class QuestionBaseEditComponent {
               this.paginatorOptions!.rows
             )
             .subscribe((response) => {
-              this.questions = response.data.data;
+              if (!!response) {
+                this.questions = response.data.data;
 
-              this.paginatorOptions!.totalItems = response.data.totalItems;
-              this.paginatorOptions!.setPage(lastPageNumber);
+                this.paginatorOptions!.totalItems = response.data.totalItems;
+                this.paginatorOptions!.setPage(lastPageNumber);
 
-              this.toastService.displayToast(
-                'success',
-                'Sukces',
-                'Dodano pytanie'
-              );
+                this.toastService.displayToast(
+                  'success',
+                  'Sukces',
+                  'Dodano pytanie'
+                );
+              }
             });
         }
       });
