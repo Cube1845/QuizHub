@@ -6,7 +6,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { AnswerOutDto } from '../models/answerOutDto';
 import { ImageService } from '../../common/services/image.service';
-import { Observable, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import {
   handleResultPatternResponse,
   Result,
@@ -117,57 +117,55 @@ export class TestClientService {
       source: Observable<Result<QuestionOutDtoWithImageId[]>>
     ): Observable<QuestionOutDto[] | null> =>
       source.pipe(
-        switchMap(async (result: Result<QuestionOutDtoWithImageId[]>) => {
+        switchMap((result: Result<QuestionOutDtoWithImageId[]>) => {
           if (!result.isSuccess) {
             this.displayErrorToast(result.message || 'Wystąpił błąd');
-            return null;
+            return of(null);
           }
 
-          const question = result.value;
-
-          const questions: QuestionOutDto[] = await this.mapQuestionOutDto(
-            question
-          );
-
-          return questions;
+          return this.mapQuestionOutDto(result.value);
         })
       );
   }
 
-  private async mapQuestionOutDto(
+  private mapQuestionOutDto(
     questionDtoList: QuestionOutDtoWithImageId[]
-  ): Promise<QuestionOutDto[]> {
-    const mappedQuestions: QuestionOutDto[] = await Promise.all(
-      questionDtoList.map(async (dto) => {
-        const questionImage = dto.imageId
-          ? await this.imageService.getImageFromApi(dto.imageId)
-          : null;
+  ): Observable<QuestionOutDto[]> {
+    const mappedQuestions$ = questionDtoList.map((dto) => {
+      const questionImage$ = dto.imageId
+        ? this.imageService.getImageFromApi(dto.imageId)
+        : of(null);
 
-        const answers: AnswerOutDto[] = await Promise.all(
-          dto.answers.map(async (answerDto) => {
-            const answerImage = answerDto.imageId
-              ? await this.imageService.getImageFromApi(answerDto.imageId)
-              : null;
+      const answers$ = this.buildAnswersForQuestionOutDtoList(dto);
 
-            return {
-              id: answerDto.id,
-              content: answerDto.content,
-              image: answerImage,
-              isSelected: false,
-            };
-          })
-        );
-
-        return {
+      return forkJoin([questionImage$, forkJoin(answers$)]).pipe(
+        map(([questionImage, answers]) => ({
           id: dto.id,
           content: dto.content,
           questionType: dto.questionType,
           image: questionImage,
           answers,
-        };
-      })
-    );
+        }))
+      );
+    });
 
-    return mappedQuestions;
+    return forkJoin(mappedQuestions$);
+  }
+
+  private buildAnswersForQuestionOutDtoList(dto: QuestionOutDtoWithImageId) {
+    return dto.answers.map((answerDto) => {
+      const answerImage$ = answerDto.imageId
+        ? this.imageService.getImageFromApi(answerDto.imageId)
+        : of(null);
+
+      return answerImage$.pipe(
+        map((answerImage) => ({
+          id: answerDto.id,
+          content: answerDto.content,
+          image: answerImage,
+          isSelected: false,
+        }))
+      );
+    });
   }
 }
