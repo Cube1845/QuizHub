@@ -88,4 +88,8 @@ export class LoginComponent {
         }
       );
   }
+
+  goToSolvingTestsPage(): void {
+    this.router.navigateByUrl('');
+  }
 }

@@ -14,5 +14,9 @@
         <p-button label="Zaloguj się" [outlined]="true" [disabled]="loginFormGroup.invalid" [loading]="loginButttonLoading" (click)="login()" class="my-4" />
 
         <a routerLink="../register" class="mt-4">Nie masz konta? Zarejestruj się</a>
+
+        <div class="main-page-button-box">
+            <p-button icon="pi pi-home" [outlined]="true" label="Rozwiązywanie testów" (click)="goToSolvingTestsPage()"/>
+        </div>
     </div>
 </div>
