@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Question } from '../models/question';
-import { catchError, Observable, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ToastService } from '../../common/services/toast.service';
 import { HttpClient } from '@angular/common/http';
@@ -10,11 +10,11 @@ import {
 } from '../../common/models/result';
 import { PaginatedData } from '../../common/models/paginatedData';
 import { UnidentifiedQuestionWithNoImage } from '../models/unidentifiedQuestionWithNoImage';
-import { ImageService } from './image.service';
 import { GetQuestionDTO } from '../models/getQuestionDto';
 import { Answer } from '../models/answer';
 import { DisplayableImage } from '../../common/models/displayableImage';
 import { QuestionUpdateDTO } from '../models/questionUpdateDTO';
+import { ImageService } from '../../common/services/image.service';
 
 type GetPaginatedQuestionsResponse = {
   data: PaginatedData<GetQuestionDTO>;
@@ -43,7 +43,7 @@ export class QuestionService {
     questionBaseId: string,
     pageNumber: number,
     pageSize: number
-  ): Observable<GetPaginatedQuestionsMappedResponse> {
+  ): Observable<GetPaginatedQuestionsMappedResponse | null> {
     return this.http
       .get<Result<GetPaginatedQuestionsResponse>>(
         this.apiUrl +
@@ -149,7 +149,7 @@ export class QuestionService {
     key: string,
     pageNumber: number,
     pageSize: number
-  ): Observable<PaginatedData<Question>> {
+  ): Observable<PaginatedData<Question> | null> {
     return this.http
       .get<Result<PaginatedData<GetQuestionDTO>>>(
         this.apiUrl +
@@ -169,25 +169,24 @@ export class QuestionService {
   private handleGetFoundPaginatedResultPatternResponse() {
     return (
       source: Observable<Result<PaginatedData<GetQuestionDTO>>>
-    ): Observable<PaginatedData<Question>> =>
+    ): Observable<PaginatedData<Question> | null> =>
       source.pipe(
-        switchMap(async (result: Result<PaginatedData<GetQuestionDTO>>) => {
+        switchMap((result: Result<PaginatedData<GetQuestionDTO>>) => {
           if (!result.isSuccess) {
             this.displayErrorToast(result.message || 'Wystąpił błąd');
-            return null!;
+            return of(null!);
           }
 
           const dtoPaginatedData = result.value;
 
-          const questions: Question[] =
-            await this.mapGetQuestionDtoListToQuestionList(
-              dtoPaginatedData.data
-            );
-
-          return {
-            data: questions,
-            totalItems: dtoPaginatedData.totalItems,
-          };
+          return this.mapGetQuestionDtoListToQuestionList(
+            dtoPaginatedData.data
+          ).pipe(
+            map((questions: Question[]) => ({
+              data: questions,
+              totalItems: dtoPaginatedData.totalItems,
+            }))
+          );
         })
       );
   }
@@ -195,96 +194,69 @@ export class QuestionService {
   private handleGetPaginatedResultPatternResponse() {
     return (
       source: Observable<Result<GetPaginatedQuestionsResponse>>
-    ): Observable<GetPaginatedQuestionsMappedResponse> =>
+    ): Observable<GetPaginatedQuestionsMappedResponse | null> =>
       source.pipe(
-        switchMap(async (result: Result<GetPaginatedQuestionsResponse>) => {
+        switchMap((result: Result<GetPaginatedQuestionsResponse>) => {
           if (!result.isSuccess) {
             this.displayErrorToast(result.message || 'Wystąpił błąd');
-            return null!;
+            return of(null);
           }
 
           const dtoPaginatedData = result.value.data;
 
-          const questions: Question[] =
-            await this.mapGetQuestionDtoListToQuestionList(
-              dtoPaginatedData.data
-            );
-
-          const response: GetPaginatedQuestionsMappedResponse = {
-            data: {
-              data: questions,
-              totalItems: dtoPaginatedData.totalItems,
-            },
-            questionBaseName: result.value.questionBaseName,
-          };
-
-          return response;
+          return this.mapGetQuestionDtoListToQuestionList(
+            dtoPaginatedData.data
+          ).pipe(
+            map((questions: Question[]) => ({
+              data: {
+                data: questions,
+                totalItems: dtoPaginatedData.totalItems,
+              },
+              questionBaseName: result.value.questionBaseName,
+            }))
+          );
         })
       );
   }
 
-  private async mapGetQuestionDtoListToQuestionList(
+  private mapGetQuestionDtoListToQuestionList(
     questionDtoList: GetQuestionDTO[]
-  ): Promise<Question[]> {
-    const mappedQuestions: Question[] = await Promise.all(
-      questionDtoList.map(async (dto) => {
-        const questionImage = dto.imageId
-          ? await this.getImageFromApi(dto.imageId)
-          : null;
+  ): Observable<Question[]> {
+    const mappedQuestions$ = questionDtoList.map((dto) => {
+      const questionImage$ = dto.imageId
+        ? this.imageService.getImageFromApi(dto.imageId)
+        : of(null);
 
-        const answers: Answer[] = await Promise.all(
-          dto.answers.map(async (answerDto) => {
-            const answerImage = answerDto.imageId
-              ? await this.getImageFromApi(answerDto.imageId)
-              : null;
+      const answers$ = this.buildAnswersForQuestionDtoList(dto);
 
-            return {
-              id: answerDto.id,
-              content: answerDto.content,
-              isCorrect: answerDto.isCorrect,
-              image: answerImage,
-            };
-          })
-        );
-
-        return {
+      return forkJoin([questionImage$, forkJoin(answers$)]).pipe(
+        map(([questionImage, answers]) => ({
           id: dto.id,
           content: dto.content,
           questionType: dto.questionType,
           image: questionImage,
           answers,
-        };
-      })
-    );
+        }))
+      );
+    });
 
-    return mappedQuestions;
+    return forkJoin(mappedQuestions$);
   }
 
-  private async getImageFromApi(
-    imageId: string
-  ): Promise<DisplayableImage | null> {
-    return this.http
-      .get(`${this.apiUrl}/image/${imageId}`, {
-        responseType: 'blob',
-      })
-      .toPromise()
-      .then((blob) => {
-        if (blob) {
-          const displayableImage: DisplayableImage | null = new File(
-            [blob],
-            'Obraz',
-            {
-              type: blob.type,
-            }
-          );
+  private buildAnswersForQuestionDtoList(dto: GetQuestionDTO) {
+    return dto.answers.map((answerDto) => {
+      const answerImage$ = answerDto.imageId
+        ? this.imageService.getImageFromApi(answerDto.imageId)
+        : of(null);
 
-          displayableImage.displayUrl =
-            this.imageService.getImageUrl(displayableImage);
-
-          return displayableImage;
-        } else {
-          return null;
-        }
-      });
+      return answerImage$.pipe(
+        map((answerImage) => ({
+          id: answerDto.id,
+          content: answerDto.content,
+          isCorrect: answerDto.isCorrect,
+          image: answerImage,
+        }))
+      );
+    });
   }
 }

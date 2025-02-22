@@ -15,11 +15,7 @@ import {
 import { enforceSequentialAnswersValidator } from '../../../../../../validators/enforce-sequential-answers-validator';
 import { requireOneSelectedAnswerValidator } from '../../../../../../validators/require-one-selected-answer-validator';
 import { correctAnswerSelectionValidator } from '../../../../../../validators/correct-answer-selection-validator';
-import {
-  DialogService,
-  DynamicDialogConfig,
-  DynamicDialogRef,
-} from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ImagePreviewComponent } from './image-preview/image-preview.component';
 import { requireFirstTwoAnswersValidator } from '../../../../../../validators/require-first-two-answers-validator';
 import { Question } from '../../../../../../models/question';
@@ -27,7 +23,6 @@ import {
   DisplayableImage,
   DisplayableImageWithChangeTracker,
 } from '../../../../../../../common/models/displayableImage';
-import { Answer } from '../../../../../../models/answer';
 import { QuestionType } from '../../../../../../../common/enums/questionType';
 import { SelectButton } from 'primeng/selectbutton';
 import { UnidentifiedQuestion } from '../../../../../../models/unidentifiedQuestion';

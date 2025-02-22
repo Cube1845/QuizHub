@@ -2,10 +2,10 @@ import { Component, inject } from '@angular/core';
 import { AnswerTileComponent } from './answer-tile/answer-tile.component';
 import { ButtonModule } from 'primeng/button';
 import { TestClientService } from '../../services/test-client.service';
-import { QuestionInterface } from '../../models/questionInterface';
 import { QuestionType } from '../../../common/enums/questionType';
 import { GlobalDialogService } from '../../../common/services/global-dialog.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { QuestionOutDto } from '../../models/questionOutDto';
 
 @Component({
   selector: 'app-client-test-solve',
@@ -18,10 +18,13 @@ export class ClientTestSolveComponent {
   private readonly testClientService = inject(TestClientService);
   private readonly globalDialogService = inject(GlobalDialogService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
-  questions!: QuestionInterface[] | null;
+  questions!: QuestionOutDto[] | null;
 
   currentQuestionIndex: number = 0;
+
+  testSolvingId!: string | null;
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -29,8 +32,15 @@ export class ClientTestSolveComponent {
         return;
       }
 
-      const testSolvingId = paramMap.get('id');
-      this.questions = this.testClientService.getTestQuestions(testSolvingId!);
+      this.testSolvingId = paramMap.get('id');
+
+      this.testClientService
+        .getTestQuestions(this.testSolvingId!)
+        .subscribe((value) => {
+          if (value) {
+            this.questions = value;
+          }
+        });
     });
   }
 
@@ -48,7 +58,22 @@ export class ClientTestSolveComponent {
   }
 
   finishTest(): void {
-    this.testClientService.finishTest(this.questions!);
+    const questionInDtos = this.questions!.map((question) => {
+      return {
+        id: question.id,
+        selectedAnswerIds: question.answers
+          .filter((answer) => answer.isSelected)
+          .map((answer) => answer.id),
+      };
+    });
+
+    this.testClientService
+      .finishTest(questionInDtos, this.testSolvingId!)
+      .subscribe((value) => {
+        if (value) {
+          this.router.navigateByUrl('test-finish/' + value);
+        }
+      });
   }
 
   everyQuestionHasSelectedAnswers(): boolean {

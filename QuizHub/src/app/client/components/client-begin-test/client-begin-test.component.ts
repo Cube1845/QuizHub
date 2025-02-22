@@ -40,12 +40,15 @@ export class ClientBeginTestComponent {
   });
 
   beginTest(): void {
-    var testSolvingId = this.testClientService.beginTest(
-      this.dataFormGroup.value.code!,
-      this.dataFormGroup.value.username!
-    );
-
-    // to subscribe
-    this.router.navigateByUrl('test-solve/' + testSolvingId);
+    this.testClientService
+      .beginTest(
+        this.dataFormGroup.value.code!,
+        this.dataFormGroup.value.username!
+      )
+      .subscribe((value) => {
+        if (value) {
+          this.router.navigateByUrl('test-solve/' + value);
+        }
+      });
   }
 }

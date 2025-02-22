@@ -1,23 +1,21 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   forwardRef,
   inject,
   Input,
-  OnInit,
   Output,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgStyle } from '@angular/common';
 import { environment } from '../../../../../../../../../environments/environment.development';
-import { ImageService } from '../../../../../../../services/image.service';
 import { v4 as uuidv4 } from 'uuid';
 import {
   DisplayableImage,
   DisplayableImageWithChangeTracker,
 } from '../../../../../../../../common/models/displayableImage';
+import { ImageService } from '../../../../../../../../common/services/image.service';
 
 @Component({
   selector: 'app-image-panel',
@@ -77,13 +75,9 @@ export class ImagePanelComponent implements ControlValueAccessor {
       defaultHeight
     );
 
-    this.selectedImage = new File([resizedBlob], file.name, {
+    this.selectedImage = new DisplayableImage([resizedBlob], file.name, {
       type: file.type,
     });
-
-    this.selectedImage.displayUrl = this.imageService.getImageUrl(
-      this.selectedImage
-    );
 
     this.selectedImage.wasChangedSinceAssigning = true;
 

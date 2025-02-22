@@ -5,9 +5,10 @@ using QuizHub.Application.Modules.Client.Models;
 
 namespace QuizHub.Application.Modules.Client.Endpoints.GetQuestions;
 
-public class GetTestSolvingQuestionsEndpoint(IAppDbContext context) : Endpoint<GetTestSolvingQuestionsRequest, Result<GetTestSolvingQuestionsResponse>>
+public class GetTestSolvingQuestionsEndpoint(IAppDbContext context, TimeProvider timeProvider) : Endpoint<GetTestSolvingQuestionsRequest, Result<GetTestSolvingQuestionsResponse>>
 {
     private readonly IAppDbContext _context = context;
+    private readonly TimeProvider _timeProvider = timeProvider;
 
     public override void Configure()
     {
@@ -42,6 +43,7 @@ public class GetTestSolvingQuestionsEndpoint(IAppDbContext context) : Endpoint<G
         var questionDtos = questionsDb.Select(questionDb => new QuestionOutDto(questionDb)).ToList();
 
         testSolvingDb.QuestionsDownloaded = true;
+        testSolvingDb.StartedAt = _timeProvider.GetUtcNow().DateTime;
         await _context.SaveChangesAsync(ct);
 
         await SendOkAsync(Result<GetTestSolvingQuestionsResponse>.Success(new(questionDtos)), ct);

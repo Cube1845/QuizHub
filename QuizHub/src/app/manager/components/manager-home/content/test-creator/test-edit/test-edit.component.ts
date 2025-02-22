@@ -106,7 +106,9 @@ export class TestEditComponent {
       usedQuestionBases: this.testOptions!.usedQuestionBases.map(
         (questionBase, i) => {
           questionBase.minimalQuestionCount =
-            this.testOptionsFormGroup.value.minimalQuestionCounts![i];
+            this.testOptionsFormGroup.controls.minimalQuestionCounts.controls[
+              i
+            ].value;
 
           return questionBase;
         }

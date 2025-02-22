@@ -25,7 +25,11 @@ export class ClientTestFinishComponent {
       }
 
       const testLogId = paramMap.get('id');
-      this.result = this.testClientService.getTestResult(testLogId!);
+      this.testClientService.getTestResult(testLogId!).subscribe((value) => {
+        if (value) {
+          this.result = value;
+        }
+      });
     });
   }
 

@@ -15,6 +15,8 @@ type CodeResponse = {
   code: string;
 };
 
+type QuestionBaseWithMinialQuestionCountOutDto = {};
+
 @Injectable({
   providedIn: 'root',
 })

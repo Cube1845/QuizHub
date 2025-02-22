@@ -1,15 +1,19 @@
-import { HttpClient, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpContext,
+  HttpEvent,
+  HttpInterceptorFn,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthDataService } from '../../common/services/auth-data.service';
 import { AuthData } from '../models/authData';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { SKIP_AUTH } from '../models/httpContextTokens';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.headers.has('skipAuth')) {
-    const headers = req.headers.delete('skipAuth');
-    const modReq = req.clone({ headers });
-    return next(modReq);
+  if (req.context.get(SKIP_AUTH)) {
+    return next(req);
   }
 
   const authDataService = inject(AuthDataService);
@@ -35,7 +39,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return http
     .post<AuthData>(environment.apiUrl + '/auth/refresh', refreshTokenPayload, {
-      headers: { skipAuth: 'true' },
+      context: new HttpContext().set(SKIP_AUTH, true),
     })
     .pipe(
       switchMap((newAuthData) => {

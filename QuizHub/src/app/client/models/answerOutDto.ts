@@ -1,6 +1,6 @@
 import { DisplayableImage } from '../../common/models/displayableImage';
 
-export type AnswerInterface = {
+export type AnswerOutDto = {
   content: string;
   id: string;
   image: DisplayableImage | null;

@@ -41,6 +41,7 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
             TestId = testSolvingDb.TestId,
             Duration = testDuration!.Value,
             Username = testSolvingDb.Username,
+            SolvedDate = _timeProvider.GetUtcNow().DateTime,
         };
 
         await _context.TestLogs.AddAsync(testLog, ct);
@@ -53,6 +54,8 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
         var selectedAnswersDb = ConvertDtoToSelectedAnswersDb(drawnQuestionsDb, req.UserQuestions, testLog.Id);
 
         await _context.SelectedAnswers.AddRangeAsync(selectedAnswersDb, ct);
+
+        _context.TestSolvings.Remove(testSolvingDb);
 
         await _context.SaveChangesAsync(ct);
 

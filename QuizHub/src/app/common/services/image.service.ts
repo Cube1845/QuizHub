@@ -1,10 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { GetQuestionDTO } from '../models/getQuestionDto';
 import { HttpClient } from '@angular/common/http';
-import { Question } from '../models/question';
 import { DisplayableImage } from '../../common/models/displayableImage';
 import { environment } from '../../../environments/environment.development';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -55,10 +53,6 @@ export class ImageService {
     });
   }
 
-  getImageUrl(image: File): string {
-    return URL.createObjectURL(image as File);
-  }
-
   private readonly getImageBlob = (
     resolve: (value: Blob | PromiseLike<Blob>) => void,
     reject: (reason?: any) => void,
@@ -82,4 +76,25 @@ export class ImageService {
       );
     });
   };
+
+  public getImageFromApi(imageId: string): Observable<DisplayableImage | null> {
+    return this.http
+      .get(`${this.apiUrl}/image/${imageId}`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        map((blob) => {
+          if (blob) {
+            const displayableImage: DisplayableImage | null =
+              new DisplayableImage([blob], 'Obraz', {
+                type: blob.type,
+              });
+
+            return displayableImage;
+          } else {
+            return null;
+          }
+        })
+      );
+  }
 }

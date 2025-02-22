@@ -32,7 +32,7 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
 
         if (!areUsedQuestionBaseMinimalCountsCorrect)
         {
-            await SendOkAsync(Result.Error("Minimalna ilość pytań w bazie pytań przekracza liczbe dostępnych pytań"), ct);
+            await SendOkAsync(Result.Error("Minimalna ilość pytań w bazie pytań przekracza liczbę dostępnych pytań"), ct);
             return;
         }
 
@@ -56,12 +56,20 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
         var userQuestionBases = await _context.QuestionBases
             .Include(qb => qb.Questions)
             .Where(qb => qb.OwnerId == User.GetId())
-            .ToDictionaryAsync(qb => qb.Id, ct);
+            .ToListAsync(ct);
 
-        return usedQuestionBases.All(usedQuestionBase =>
-            userQuestionBases.TryGetValue(usedQuestionBase.QuestionBaseId, out var currentQuestionBaseDb) &&
-            currentQuestionBaseDb.Questions.Count >= usedQuestionBase.MinimalQuestionCount
-        );
+        foreach (var usedQuestionBase in usedQuestionBases)
+        {
+            var currentQuestionBaseDb = userQuestionBases
+                .FirstOrDefault(qb => qb.Id == usedQuestionBase.QuestionBaseId);
+
+            if (currentQuestionBaseDb == null || currentQuestionBaseDb.Questions.Count < usedQuestionBase.MinimalQuestionCount)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private async Task HandleUsedQuestionBases(Domain.Entities.TestOptions testOptionsDb, List<QuestionBaseWithQuestionCountDto> reqUsedQuestionBases, CancellationToken ct)
@@ -95,13 +103,13 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
             return;
         }
 
-        var questionBaseWithCountList = reqHandledQuestionBaseIds
+        var questionBaseWithCountList = reqQuestionBaseIds
             .Select(questionBaseId =>
             {
                 QuestionBaseWithQuestionCount questionBaseWithQuestionCount = new()
                 {
                     MinimalQuestionCount = reqUsedQuestionBases
-                    .First(qb => qb.QuestionBaseId == questionBaseId).MinimalQuestionCount,
+                        .First(qb => qb.QuestionBaseId == questionBaseId).MinimalQuestionCount,
                     TestOptionsId = testOptionsDb.Id,
                     QuestionBaseId = questionBaseId
                 };
