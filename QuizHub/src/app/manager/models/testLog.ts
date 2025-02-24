@@ -1,7 +1,6 @@
 export type TestLogData = {
   testLogs: TestLog[];
   testName: string;
-  testId: string;
 };
 
 export type TestLog = {

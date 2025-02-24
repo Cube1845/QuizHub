@@ -2,7 +2,6 @@ import { AnswerOutDto } from '../../common/models/answerOutDto';
 import { QuestionOutDto } from '../../common/models/questionOutDto';
 
 export type SelectedAnswersData = {
-  testLogId: string;
   testId: string;
   solveDate: Date;
   durationInSeconds: number;

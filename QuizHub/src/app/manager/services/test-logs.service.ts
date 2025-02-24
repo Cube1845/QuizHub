@@ -10,7 +10,6 @@ export class TestLogsService {
   getSelectedAnswersData(testLogId: string): SelectedAnswersData {
     return {
       testId: 'hahahethrththr',
-      testLogId: 'awdawdaw',
       durationInSeconds: 125,
       username: 'Ktoś tam',
       earnedPoints: 3,
@@ -97,7 +96,6 @@ export class TestLogsService {
 
   getTestLogData(testId: string): TestLogData {
     return {
-      testId: 'awdawdawdaw',
       testName: 'Test',
       testLogs: [
         {
