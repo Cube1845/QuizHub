@@ -74,11 +74,13 @@ export class QuestionBaseEditComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      this.questionBaseId = paramMap.get('id');
+      this.questionBaseId = id;
 
       this.getQuestionsAndSetThem(1);
     });

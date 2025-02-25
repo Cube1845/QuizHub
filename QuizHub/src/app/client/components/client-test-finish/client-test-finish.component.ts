@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TestClientService } from '../../services/test-client.service';
 import { TestResult } from '../../models/testResult';
 import { ButtonModule } from 'primeng/button';
-import { convertTimeInSecondsToTimeString } from '../../../common/globalFunctions';
+import { convertTimeInSecondsToTimeString } from '../../../common/global-functions';
 
 @Component({
   selector: 'app-client-test-finish',
@@ -21,11 +21,13 @@ export class ClientTestFinishComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      const testLogId = paramMap.get('id');
+      const testLogId = id;
       this.testClientService.getTestResult(testLogId!).subscribe((value) => {
         if (value) {
           this.result = value;

@@ -8,7 +8,7 @@ import {
 } from '../../../../../../models/selectedAnswersData';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { convertTimeInSecondsToTimeString } from '../../../../../../../common/globalFunctions';
+import { convertTimeInSecondsToTimeString } from '../../../../../../../common/global-functions';
 import { ImageModule } from 'primeng/image';
 
 @Component({
@@ -29,11 +29,13 @@ export class SelectedAnswersDisplayComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      const testLogId = paramMap.get('id');
+      const testLogId = id;
 
       this.selectedAnswersData = this.testLogsService.getSelectedAnswersData(
         testLogId!

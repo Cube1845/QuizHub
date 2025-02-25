@@ -28,11 +28,13 @@ export class ClientTestSolveComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      this.testSolvingId = paramMap.get('id');
+      this.testSolvingId = id;
 
       this.testClientService
         .getTestQuestions(this.testSolvingId!)
