@@ -1,0 +1,97 @@
+:host {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+    .test-options-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .test-name-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--p-zinc-850);
+        color: var(--p-zinc-200);
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        width: 50%;
+
+        input {
+            width: 100%;
+        }
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+    }
+
+    .logs-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+
+    .test-log-panel {
+        flex: 1;
+        min-width: 32%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: var(--p-zinc-900);
+        border-radius: var(--p-border-radius-lg);
+        color: var(--p-zinc-300);
+        transition: 0.2s;
+
+        &:hover {
+            background: var(--p-zinc-800);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        p {
+            align-self: start;
+        }
+    }
+
+    .empty {
+        flex: 1;
+    }
+
+    .align-self-start {
+        align-self: start;
+    }
+
+    .primary-color {
+        color: var(--p-primary-color);
+    }
+
+    .logs {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .paginator-box {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    p-paginator {
+        width: 100%;
+    }
+}

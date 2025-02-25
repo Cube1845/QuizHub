@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TestClientService } from '../../services/test-client.service';
 import { TestResult } from '../../models/testResult';
 import { ButtonModule } from 'primeng/button';
+import { convertTimeInSecondsToTimeString } from '../../../common/global-functions';
 
 @Component({
   selector: 'app-client-test-finish',
@@ -20,11 +21,13 @@ export class ClientTestFinishComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      const testLogId = paramMap.get('id');
+      const testLogId = id;
       this.testClientService.getTestResult(testLogId!).subscribe((value) => {
         if (value) {
           this.result = value;
@@ -42,22 +45,6 @@ export class ClientTestFinishComponent {
   }
 
   convertTimeInSecondsToTimeString(totalSeconds: number): string {
-    const seconds = totalSeconds % 60;
-    const minutes = Math.floor(totalSeconds / 60) % 60;
-    const hours = Math.floor(totalSeconds / 3600);
-
-    return (
-      (hours.toString().length == 1
-        ? '0' + hours.toString()
-        : hours.toString()) +
-      ':' +
-      (minutes.toString().length == 1
-        ? '0' + minutes.toString()
-        : minutes.toString()) +
-      ':' +
-      (seconds.toString().length == 1
-        ? '0' + seconds.toString()
-        : seconds.toString())
-    );
+    return convertTimeInSecondsToTimeString(totalSeconds);
   }
 }

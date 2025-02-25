@@ -73,11 +73,13 @@ export class TestEditComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      this.testId = paramMap.get('id');
+      this.testId = id;
 
       this.testEditService
         .getTestOptionsAndData(this.testId!)

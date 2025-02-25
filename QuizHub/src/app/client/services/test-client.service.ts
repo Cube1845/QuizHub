@@ -1,10 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { QuestionOutDto } from '../models/questionOutDto';
 import { Router } from '@angular/router';
 import { TestResult } from '../models/testResult';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { AnswerOutDto } from '../models/answerOutDto';
 import { ImageService } from '../../common/services/image.service';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import {
@@ -14,6 +12,8 @@ import {
 import { ToastService } from '../../common/services/toast.service';
 import { QuestionInDto } from '../models/questionInDto';
 import { SKIP_AUTH } from '../../auth/models/httpContextTokens';
+import { QuestionOutDto } from '../../common/models/questionOutDto';
+import { AnswerOutDto } from '../../common/models/answerOutDto';
 
 type QuestionOutDtoWithImageId = Omit<
   Omit<QuestionOutDto, 'image'>,

@@ -28,6 +28,8 @@ public class GetTestResultEndpoint(IAppDbContext context) : Endpoint<GetTestResu
         }
 
         var earnedPoints = testLogDb.SelectedAnswers
+            .Where(sa => sa.Scored)
+            .ToList()
             .Count;
 
         var maxPoints = testLogDb.SelectedAnswers.Count;

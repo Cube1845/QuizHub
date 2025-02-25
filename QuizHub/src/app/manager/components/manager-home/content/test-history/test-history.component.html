@@ -1,0 +1,17 @@
+@if (testHistoryDatas) {
+    @if (testHistoryDatas.length > 0) {
+        <div class="container m-2 p-0">
+            @for (testHistory of testHistoryDatas; track $index) {
+                <div class="test-panel m-2" (click)="goToTestLogs($index)">
+                    <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ testHistory.testName }}</h1>
+                    <p class="m-0 p-0">{{ testHistory.solveCount }} {{ getSolveWordVariation(testHistory.solveCount) }}</p>
+                </div>
+            }
+        </div>
+    } @else {
+        <p>Brak danych o rozwiązaniach Twoich testów</p>
+    }
+        
+} @else {
+    <!-- spinner -->
+}

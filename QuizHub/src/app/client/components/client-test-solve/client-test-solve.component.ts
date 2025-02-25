@@ -5,7 +5,7 @@ import { TestClientService } from '../../services/test-client.service';
 import { QuestionType } from '../../../common/enums/questionType';
 import { GlobalDialogService } from '../../../common/services/global-dialog.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionOutDto } from '../../models/questionOutDto';
+import { QuestionOutDto } from '../../../common/models/questionOutDto';
 
 @Component({
   selector: 'app-client-test-solve',
@@ -28,11 +28,13 @@ export class ClientTestSolveComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      this.testSolvingId = paramMap.get('id');
+      this.testSolvingId = id;
 
       this.testClientService
         .getTestQuestions(this.testSolvingId!)

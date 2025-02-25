@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AnswerOutDto } from '../../../models/answerOutDto';
+import { AnswerOutDto } from '../../../../common/models/answerOutDto';
 
 @Component({
   selector: 'app-answer-tile',
