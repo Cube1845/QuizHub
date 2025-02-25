@@ -12,8 +12,8 @@ import { NgStyle } from '@angular/common';
   styleUrl: './nav-bar.component.scss',
 })
 export class NavBarComponent implements OnInit {
-  router = inject(Router);
-  activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   @Input({ required: true }) navBarItems: NavBarItem[] = [];
 

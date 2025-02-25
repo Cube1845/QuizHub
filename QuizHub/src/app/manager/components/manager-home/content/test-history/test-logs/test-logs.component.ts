@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TestLogsService } from '../../../../../services/test-logs.service';
 import { TestLog } from '../../../../../models/testLog';
-import { convertTimeInSecondsToTimeString } from '../../../../../../common/globalFunctions';
+import { convertTimeInSecondsToTimeString } from '../../../../../../common/global-functions';
 import { DatePipe } from '@angular/common';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { PaginatorModule } from 'primeng/paginator';
@@ -41,11 +41,13 @@ export class TestLogsComponent {
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      if (paramMap.get('id') == null) {
+      const id = paramMap.get('id');
+
+      if (id == null) {
         return;
       }
 
-      this.testId = paramMap.get('id');
+      this.testId = id;
 
       this.getTestLogsAndSetThem(1);
     });
