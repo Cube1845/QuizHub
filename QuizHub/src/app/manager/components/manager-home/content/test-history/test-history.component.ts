@@ -19,7 +19,11 @@ export class TestHistoryComponent {
   testHistoryDatas!: TestHistoryData[] | null;
 
   constructor() {
-    this.testHistoryDatas = this.testHistoryService.getTestHistoriesNames();
+    this.testHistoryService.getTestHistoriesNames().subscribe((response) => {
+      if (!!response) {
+        this.testHistoryDatas = response;
+      }
+    });
   }
 
   getSolveWordVariation(solveCount: number): string {

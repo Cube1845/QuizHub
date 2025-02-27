@@ -1,12 +1,29 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TestLogData } from '../models/testLog';
 import { SelectedAnswersData } from '../models/selectedAnswersData';
 import { QuestionType } from '../../common/enums/questionType';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
+import { ToastService } from '../../common/services/toast.service';
+import {
+  handleResultPatternResponse,
+  Result,
+} from '../../common/models/result';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TestLogsService {
+  private readonly http = inject(HttpClient);
+  private readonly toastService = inject(ToastService);
+
+  private readonly apiUrl = environment.apiUrl;
+
+  displayErrorToast(detail: string): void {
+    this.toastService.displayToast('error', 'Błąd', detail);
+  }
+
   getSelectedAnswersData(testLogId: string): SelectedAnswersData {
     return {
       testId: 'hahahethrththr',
@@ -16,6 +33,7 @@ export class TestLogsService {
       maxPoints: 10,
       solveDate: new Date(),
       usedQuestions: [
+        null,
         {
           isScored: false,
           content: 'awdawdawd',
@@ -84,51 +102,14 @@ export class TestLogsService {
     };
   }
 
-  getTestLogData(testId: string): TestLogData {
-    return {
-      testName: 'Test',
-      testLogs: [
-        {
-          id: 'awdawdagae',
-          durationInSeconds: 200,
-          username: 'awaseggawg',
-          earnedPoints: 5,
-          maxPoints: 10,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awdhthhdtae',
-          durationInSeconds: 150,
-          username: 'tasergdjg',
-          earnedPoints: 6,
-          maxPoints: 11,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awdaw5dagae',
-          durationInSeconds: 200,
-          username: 'awgawgawg',
-          earnedPoints: 4,
-          maxPoints: 10,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awdh1thhdtae',
-          durationInSeconds: 150,
-          username: 'tdgawgjg',
-          earnedPoints: 6,
-          maxPoints: 11,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awda2wdagae',
-          durationInSeconds: 200,
-          username: 'awgasegasegawg',
-          earnedPoints: 1,
-          maxPoints: 10,
-          solveDate: new Date(),
-        },
-      ],
-    };
+  getTestLogData(testId: string): Observable<TestLogData> {
+    return this.http
+      .get<Result<TestLogData>>(this.apiUrl + '/test-logs/' + testId)
+      .pipe(
+        handleResultPatternResponse<TestLogData, TestLogData>(
+          (value) => value,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
   }
 }

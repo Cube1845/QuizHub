@@ -60,13 +60,13 @@ export class TestLogsComponent {
   }
 
   getTestLogsAndSetThem(pageNumber: number): void {
-    const testLogData = this.testLogsService.getTestLogData(this.testId!);
+    this.testLogsService.getTestLogData(this.testId!).subscribe((response) => {
+      this.logsGetType = 'regular';
 
-    this.logsGetType = 'regular';
-
-    this.testLogs = testLogData.testLogs;
-    this.paginatorOptions.totalItems = testLogData.testLogs.length;
-    this.testName = testLogData.testName;
+      this.testLogs = response.testLogs;
+      this.paginatorOptions.totalItems = response.testLogs.length;
+      this.testName = response.testName;
+    });
   }
 
   goBack(): void {

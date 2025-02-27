@@ -204,6 +204,18 @@ export class QuestionService {
 
           const dtoPaginatedData = result.value.data;
 
+          if (dtoPaginatedData.data.length == 0) {
+            const emptyData: GetPaginatedQuestionsMappedResponse = {
+              data: {
+                data: [],
+                totalItems: dtoPaginatedData.totalItems,
+              },
+              questionBaseName: result.value.questionBaseName,
+            };
+
+            return of(emptyData);
+          }
+
           return this.mapGetQuestionDtoListToQuestionList(
             dtoPaginatedData.data
           ).pipe(
