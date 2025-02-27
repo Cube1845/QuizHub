@@ -32,10 +32,13 @@ public class GetTestLogsEndpoint(IAppDbContext context) : Endpoint<GetTestLogsRe
         }
 
         List<TestLogDto> testLogs = testDb.TestLogs
+            .GetPage(req.PageNumber, req.PageSize)
             .Select(BuildTestLogDto)
             .ToList();
 
-        await SendOkAsync(Result<GetTestLogsResponse>.Success(new(testLogs, testDb.Name)), ct);
+        PaginatedData<TestLogDto> data = new(testLogs, testDb.TestLogs.Count);
+
+        await SendOkAsync(Result<GetTestLogsResponse>.Success(new(data, testDb.Name)), ct);
     }
 
     private TestLogDto BuildTestLogDto(TestLog testLogDb)

@@ -9,5 +9,13 @@ public class GetTestLogsValidator : Validator<GetTestLogsRequest>
         RuleFor(x => x.TestId)
             .NotEmpty()
             .MustBeCorrectGuid();
+
+        RuleFor(x => x.PageNumber)
+            .NotNull()
+            .GreaterThanOrEqualTo(1);
+
+        RuleFor(x => x.PageSize)
+            .NotNull()
+            .GreaterThanOrEqualTo(1);
     }
 }
