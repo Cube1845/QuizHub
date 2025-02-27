@@ -17,35 +17,30 @@ export class TestLogsService {
       solveDate: new Date(),
       usedQuestions: [
         {
-          id: 'awdawdagae',
           isScored: false,
           content: 'awdawdawd',
           image: null,
           questionType: QuestionType.MultiAnswer,
           answers: [
             {
-              id: 'awdawd',
               content: 'awgawg1awgtjh',
               image: null,
               isSelected: false,
               isCorrect: true,
             },
             {
-              id: 'a16wdawd',
               content: 'a641wgawgawgtjh',
               image: null,
               isSelected: true,
               isCorrect: true,
             },
             {
-              id: 'aw16awd',
               content: 'awgawg162awgtjh',
               image: null,
               isSelected: true,
               isCorrect: false,
             },
             {
-              id: 'awd1awd',
               content: 'awgawgawg16tjh',
               image: null,
               isSelected: true,
@@ -54,35 +49,30 @@ export class TestLogsService {
           ],
         },
         {
-          id: 'awda3465346wdagae',
           isScored: true,
           content: 'awd34634634634634awdawd',
           image: null,
           questionType: QuestionType.SingleAnswer,
           answers: [
             {
-              id: 'aw5125',
               content: 'awgawgrthrrthrth1awgtjh',
               image: null,
               isSelected: false,
               isCorrect: false,
             },
             {
-              id: 'a16w126513613dawd',
               content: 'a641hrthrthtrhrhrwgawgawgtjh',
               image: null,
               isSelected: true,
               isCorrect: true,
             },
             {
-              id: 'aw1613616awd',
               content: 'awgawthrtg162awgtjh',
               image: null,
               isSelected: false,
               isCorrect: false,
             },
             {
-              id: 'awd16136awd',
               content: 'awgawgdheh',
               image: null,
               isSelected: false,
