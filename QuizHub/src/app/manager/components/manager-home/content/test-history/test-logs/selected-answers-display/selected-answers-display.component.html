@@ -19,8 +19,7 @@
                 <div class="used-question-panel m-3 mt-0 p-3">
                     @if (usedQuestion) {
                         @if (usedQuestion.image) {
-                            <!-- change -->
-                            <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="200"/>
+                            <p-image [src]="usedQuestion.image.displayUrl" [preview]="true" height="200"/>
                         }
 
                         <h1 [class]="'m-0 p-0 text-3xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">{{ usedQuestion.content }}</h1>
@@ -29,8 +28,7 @@
                                 <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[0])">Odpowiedź A:</h2>
 
                                 @if (usedQuestion.answers[0].image) {
-                                    <!-- change -->
-                                    <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
+                                    <p-image [src]="usedQuestion.answers[0].image.displayUrl" [preview]="true" height="160"/>
                                 }
 
                                 <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[0])">
@@ -42,8 +40,7 @@
                                 <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[1])">Odpowiedź B:</h2>
 
                                 @if (usedQuestion.answers[1].image) {
-                                    <!-- change -->
-                                    <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
+                                    <p-image [src]="usedQuestion.answers[1].image.displayUrl" [preview]="true" height="160"/>
                                 }
 
                                 <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[1])">
@@ -58,8 +55,7 @@
                                     <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[2])">Odpowiedź C:</h2>
 
                                     @if (usedQuestion.answers[2].image) {
-                                        <!-- change -->
-                                        <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
+                                        <p-image [src]="usedQuestion.answers[2].image.displayUrl" [preview]="true" height="160"/>
                                     }
 
                                     <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[2])">
@@ -72,8 +68,7 @@
                                         <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[3])">Odpowiedź D:</h2>
 
                                         @if (usedQuestion.answers[3].image) {
-                                            <!-- change -->
-                                            <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
+                                            <p-image [src]="usedQuestion.answers[3].image.displayUrl" [preview]="true" height="160"/>
                                         }
 
                                         <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[3])">
