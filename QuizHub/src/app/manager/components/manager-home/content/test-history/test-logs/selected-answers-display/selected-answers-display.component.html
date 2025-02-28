@@ -17,87 +17,91 @@
         <div class="used-questions-container m-0 p-0 pt-3">
             @for (usedQuestion of this.selectedAnswersData.usedQuestions; track $index) {
                 <div class="used-question-panel m-3 mt-0 p-3">
-                    @if (usedQuestion.image) {
-                        <!-- change -->
-                        <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="200"/>
-                    }
+                    @if (usedQuestion) {
+                        @if (usedQuestion.image) {
+                            <!-- change -->
+                            <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="200"/>
+                        }
 
-                    <h1 [class]="'m-0 p-0 text-3xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">{{ usedQuestion.content }}</h1>
-                    <div class="used-question-answer-row">
-                        <div style="flex: 1">
-                            <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[0])">Odpowiedź A:</h2>
-
-                            @if (usedQuestion.answers[0].image) {
-                                <!-- change -->
-                                <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
-                            }
-
-                            <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[0])">
-                                <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[0]) + (usedQuestion.answers[0].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
-                                {{ usedQuestion.answers[0].content }}
-                            </p>
-                        </div>
-                        <div style="flex: 1">
-                            <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[1])">Odpowiedź B:</h2>
-
-                            @if (usedQuestion.answers[1].image) {
-                                <!-- change -->
-                                <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
-                            }
-
-                            <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[1])">
-                                <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[1]) + (usedQuestion.answers[1].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
-                                {{ usedQuestion.answers[1].content }}
-                            </p>
-                        </div>
-                    </div>
-                    @if (usedQuestion.answers.length > 2) {
+                        <h1 [class]="'m-0 p-0 text-3xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">{{ usedQuestion.content }}</h1>
                         <div class="used-question-answer-row">
                             <div style="flex: 1">
-                                <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[2])">Odpowiedź C:</h2>
+                                <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[0])">Odpowiedź A:</h2>
 
-                                @if (usedQuestion.answers[2].image) {
+                                @if (usedQuestion.answers[0].image) {
                                     <!-- change -->
                                     <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
                                 }
 
-                                <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[2])">
-                                    <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[2]) + (usedQuestion.answers[2].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
-                                    {{ usedQuestion.answers[2].content }}
+                                <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[0])">
+                                    <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[0]) + (usedQuestion.answers[0].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                    {{ usedQuestion.answers[0].content }}
                                 </p>
                             </div>
-                            @if (usedQuestion.answers.length > 3) {
-                                <div style="flex: 1">
-                                    <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[3])">Odpowiedź D:</h2>
+                            <div style="flex: 1">
+                                <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[1])">Odpowiedź B:</h2>
 
-                                    @if (usedQuestion.answers[3].image) {
+                                @if (usedQuestion.answers[1].image) {
+                                    <!-- change -->
+                                    <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
+                                }
+
+                                <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[1])">
+                                    <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[1]) + (usedQuestion.answers[1].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                    {{ usedQuestion.answers[1].content }}
+                                </p>
+                            </div>
+                        </div>
+                        @if (usedQuestion.answers.length > 2) {
+                            <div class="used-question-answer-row">
+                                <div style="flex: 1">
+                                    <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[2])">Odpowiedź C:</h2>
+
+                                    @if (usedQuestion.answers[2].image) {
                                         <!-- change -->
                                         <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
                                     }
 
-                                    <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[3])">
-                                        <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[3]) + (usedQuestion.answers[3].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
-                                        {{ usedQuestion.answers[3].content }}
+                                    <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[2])">
+                                        <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[2]) + (usedQuestion.answers[2].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                        {{ usedQuestion.answers[2].content }}
                                     </p>
                                 </div>
-                            }
+                                @if (usedQuestion.answers.length > 3) {
+                                    <div style="flex: 1">
+                                        <h2 [class]="'m-0 p-0 pt-3 pb-1 text-xl line-height-1' + getAnswerClass(usedQuestion.answers[3])">Odpowiedź D:</h2>
+
+                                        @if (usedQuestion.answers[3].image) {
+                                            <!-- change -->
+                                            <p-image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" [preview]="true" height="160"/>
+                                        }
+
+                                        <p [class]="'m-0 p-0 line-height-1' + getAnswerClass(usedQuestion.answers[3])">
+                                            <i [class]="'pi text-xs pr-1' + getAnswerClass(usedQuestion.answers[3]) + (usedQuestion.answers[3].isCorrect ? ' pi-check-circle' : ' pi-times-circle')"></i>
+                                            {{ usedQuestion.answers[3].content }}
+                                        </p>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <h4 class="m-0 p-0 pt-3 text-xl line-height-1">
+                            <i class="pi pi-info-circle pr-1"></i>
+                            {{ usedQuestion.questionType == 1 ? 'Pojedyncza odpowiedź' : 'Wielokrotna odpowiedź' }}
+                        </h4>
+
+                        <div class="action-info">
+                            <h3 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">
+                                {{ getSpecifiedAnswerChars(usedQuestion, 'isSelected') }}
+                            </h3>
+
+                            <h3 [class]="'m-0 p-0 pt-3 pl-5 text-xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">
+                                {{ getSpecifiedAnswerChars(usedQuestion, 'isCorrect') }}
+                            </h3>
                         </div>
+                    } @else {
+                        <!-- handle nullability here -->
                     }
-
-                    <h4 class="m-0 p-0 pt-3 text-xl line-height-1">
-                        <i class="pi pi-info-circle pr-1"></i>
-                        {{ usedQuestion.questionType == 1 ? 'Pojedyncza odpowiedź' : 'Wielokrotna odpowiedź' }}
-                    </h4>
-
-                    <div class="action-info">
-                        <h3 [class]="'m-0 p-0 pt-3 text-xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">
-                            {{ getSpecifiedAnswerChars(usedQuestion, 'isSelected') }}
-                        </h3>
-
-                        <h3 [class]="'m-0 p-0 pt-3 pl-5 text-xl line-height-1' + (usedQuestion.isScored ? ' primary-color' : '')">
-                            {{ getSpecifiedAnswerChars(usedQuestion, 'isCorrect') }}
-                        </h3>
-                    </div>
                 </div>
             }
         </div>

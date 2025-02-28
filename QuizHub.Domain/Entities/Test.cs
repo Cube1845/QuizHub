@@ -8,6 +8,7 @@ public class Test
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public TestOptions? Options { get; set; }
+    public ICollection<TestLog> TestLogs { get; set; } = [];
 
     public void ToggleActiveState()
     {
