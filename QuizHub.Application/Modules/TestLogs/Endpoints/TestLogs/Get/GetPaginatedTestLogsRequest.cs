@@ -1,4 +1,4 @@
-﻿namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetLogs;
+﻿namespace QuizHub.Application.Modules.TestLogs.Endpoints.Logs.Get;
 
 public class GetPaginatedTestLogsRequest
 {
