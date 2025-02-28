@@ -8,11 +8,18 @@ import { convertTimeInSecondsToTimeString } from '../../../../../../common/globa
 import { DatePipe } from '@angular/common';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { PaginatorModule } from 'primeng/paginator';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-test-logs',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, DatePipe, PaginatorModule],
+  imports: [
+    ButtonModule,
+    InputTextModule,
+    DatePipe,
+    PaginatorModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './test-logs.component.html',
   styleUrl: './test-logs.component.scss',
 })
@@ -39,6 +46,8 @@ export class TestLogsComponent {
     () => this.getTestLogsAndSetThem(1)
   );
 
+  searchFormControl = new FormControl<string>('');
+
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       const id = paramMap.get('id');
@@ -60,13 +69,18 @@ export class TestLogsComponent {
   }
 
   getTestLogsAndSetThem(pageNumber: number): void {
-    this.testLogsService.getTestLogData(this.testId!).subscribe((response) => {
-      this.logsGetType = 'regular';
+    this.testLogsService
+      .getTestLogData(this.testId!, pageNumber, this.paginatorOptions.rows)
+      .subscribe((response) => {
+        if (!!response) {
+          this.searchFormControl.reset();
+          this.logsGetType = 'regular';
 
-      this.testLogs = response.testLogs;
-      this.paginatorOptions.totalItems = response.testLogs.length;
-      this.testName = response.testName;
-    });
+          this.testLogs = response.testLogs.data;
+          this.paginatorOptions.totalItems = response.testLogs.totalItems;
+          this.testName = response.testName;
+        }
+      });
   }
 
   goBack(): void {
@@ -77,7 +91,34 @@ export class TestLogsComponent {
     return convertTimeInSecondsToTimeString(totalSeconds);
   }
 
-  searchForTestLogs(pageNumber: number = 1): void {}
+  searchForTestLogs(pageNumber: number = 1): void {
+    const key = this.searchFormControl.value;
+
+    if (key == null || key!.trim() == '') {
+      this.paginatorOptions.setPage(1);
+      this.getTestLogsAndSetThem(1);
+      return;
+    }
+
+    this.testLogsService
+      .searchForTestLogs(
+        this.testId!,
+        key!,
+        pageNumber,
+        this.paginatorOptions.rows
+      )
+      .subscribe((response) => {
+        if (!!response) {
+          this.logsGetType = 'searched';
+          this.testLogs = response.data;
+          this.paginatorOptions.totalItems = response.totalItems;
+        }
+      });
+  }
+
+  goToTestSettings(): void {
+    this.router.navigateByUrl('manager/test-edit/' + this.testId);
+  }
 
   onPageChange(event: any): void {
     const pageNumber = event.page + 1;

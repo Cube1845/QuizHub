@@ -1,5 +1,7 @@
+import { PaginatedData } from "../../common/models/paginatedData";
+
 export type TestLogData = {
-  testLogs: TestLog[];
+  testLogs: PaginatedData<TestLog>;
   testName: string;
 };
 

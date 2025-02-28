@@ -8,13 +8,13 @@
                 </div>
 
                 <div class="search-box">
-                    <input type="text" pInputText placeholder="Wyszukaj rozwiązanie po nazwie użytkownika"/>
-                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" />
+                    <input type="text" pInputText placeholder="Wyszukaj rozwiązanie po nazwie użytkownika" [formControl]="searchFormControl"/>
+                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForTestLogs()"/>
                 </div>
 
                 <div>
                     <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px'}" label="Wyczyść" icon="pi pi-trash" />
-                    <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px 0 0'}" label="Ustawienia testu" icon="pi pi-cog" />
+                    <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px 0 0'}" label="Ustawienia testu" icon="pi pi-cog" (click)="goToTestSettings()"/>
                 </div>
             } @else {
                 <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/> -->
