@@ -1,4 +1,4 @@
-﻿namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetSearchedLogs;
+﻿namespace QuizHub.Application.Modules.TestLogs.Endpoints.Logs.GetSearched;
 
 public class GetFoundPaginatedTestLogsRequest
 {

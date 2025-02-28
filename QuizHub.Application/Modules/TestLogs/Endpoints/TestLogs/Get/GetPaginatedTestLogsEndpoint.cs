@@ -3,9 +3,8 @@ using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
 using QuizHub.Application.Modules.TestLogs.Models;
-using QuizHub.Domain.Entities;
 
-namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetLogs;
+namespace QuizHub.Application.Modules.TestLogs.Endpoints.Logs.Get;
 
 public class GetPaginatedTestLogsEndpoint(IAppDbContext context) : Endpoint<GetPaginatedTestLogsRequest, Result<GetPaginatedTestLogsResponse>>
 {

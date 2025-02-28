@@ -2,10 +2,9 @@
 using QuizHub.Application.Common.Extensions;
 using QuizHub.Application.Common.Interfaces;
 using QuizHub.Application.Common.Models;
-using QuizHub.Application.Modules.TestLogs.Endpoints.GetLogs;
 using QuizHub.Application.Modules.TestLogs.Models;
 
-namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetSearchedLogs;
+namespace QuizHub.Application.Modules.TestLogs.Endpoints.Logs.GetSearched;
 
 public class GetFoundPaginatedTestLogsEndpoint(IAppDbContext context) : Endpoint<GetFoundPaginatedTestLogsRequest, Result<GetFoundPaginatedTestLogsResponse>>
 {
