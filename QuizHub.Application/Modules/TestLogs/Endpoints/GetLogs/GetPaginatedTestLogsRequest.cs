@@ -1,6 +1,6 @@
 ﻿namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetLogs;
 
-public class GetTestLogsRequest
+public class GetPaginatedTestLogsRequest
 {
     [QueryParam]
     public Guid TestId { get; set; }

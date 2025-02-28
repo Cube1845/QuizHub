@@ -1,14 +1,17 @@
 ﻿using QuizHub.Application.Common.Extensions;
 
-namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetLogs;
+namespace QuizHub.Application.Modules.TestLogs.Endpoints.GetSearchedLogs;
 
-public class GetTestLogsValidator : Validator<GetTestLogsRequest>
+public class GetFoundPaginatedTestLogsValidator : Validator<GetFoundPaginatedTestLogsRequest>
 {
-    public GetTestLogsValidator()
+    public GetFoundPaginatedTestLogsValidator()
     {
         RuleFor(x => x.TestId)
             .NotEmpty()
             .MustBeCorrectGuid();
+
+        RuleFor(x => x.Key)
+            .NotEmpty();
 
         RuleFor(x => x.PageNumber)
             .NotNull()
