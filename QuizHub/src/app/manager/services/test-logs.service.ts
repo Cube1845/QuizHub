@@ -47,6 +47,33 @@ export class TestLogsService {
     this.toastService.displayToast('error', 'Błąd', detail);
   }
 
+  clearTestLogs(testId: string): Observable<boolean> {
+    return this.http
+      .delete<Result>(this.apiUrl + '/test-logs/all/' + testId)
+      .pipe(
+        handleResultPatternResponse<null, boolean>(
+          () => true,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
+
+  deleteTestLog(testId: string, testLogId: string): Observable<boolean> {
+    return this.http
+      .delete<Result>(
+        this.apiUrl +
+          '/test-logs' +
+          `?testId=${testId}` +
+          `&testLogId=${testLogId}`
+      )
+      .pipe(
+        handleResultPatternResponse<null, boolean>(
+          () => true,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
+
   getSelectedAnswersData(
     testLogId: string
   ): Observable<SelectedAnswersData | null> {

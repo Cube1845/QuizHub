@@ -13,7 +13,7 @@
                 </div>
 
                 <div>
-                    <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px'}" label="Wyczyść" icon="pi pi-trash" />
+                    <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px'}" label="Wyczyść" icon="pi pi-trash" (click)="displayClearLogsConfirmation()"/>
                     <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px 0 0'}" label="Ustawienia testu" icon="pi pi-cog" (click)="goToTestSettings()"/>
                 </div>
             } @else {
@@ -31,6 +31,8 @@
                             <h1 class="text-lg m-0 p-0 line-height-1">Czas: {{ convertTimeInSecondsToTimeString(testLog.durationInSeconds) }}</h1>
 
                             <p class="line-height-1 m-0 p-0 text-xs pt-3">Kliknij, aby zobaczyć zaznaczone odpowiedzi</p>
+
+                            <i class="pi pi-trash icon" (click)="displayDeleteLogConfirmation($event, $index)"></i>
                         </div>
                     }
                     @if (testLogs.length % 3 == 2) {

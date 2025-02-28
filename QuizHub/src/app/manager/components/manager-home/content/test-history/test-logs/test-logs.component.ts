@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { PaginatorModule } from 'primeng/paginator';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 
 @Component({
   selector: 'app-test-logs',
@@ -27,6 +28,7 @@ export class TestLogsComponent {
   private readonly router = inject(Router);
   private readonly testLogsService = inject(TestLogsService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly globalDialogService = inject(GlobalDialogService);
 
   private readonly paginatorItemsPerPage = [60, 90, 120];
 
@@ -118,6 +120,41 @@ export class TestLogsComponent {
 
   goToTestSettings(): void {
     this.router.navigateByUrl('manager/test-edit/' + this.testId);
+  }
+
+  displayClearLogsConfirmation(): void {
+    this.globalDialogService.displayConfirmationDialog(
+      'Czy na pewno chcesz wyczyścić wszystkie rozwiązania tego testu?',
+      () => this.clearTestLogs()
+    );
+  }
+
+  clearTestLogs(): void {
+    this.testLogsService.clearTestLogs(this.testId!).subscribe((isSuccess) => {
+      if (isSuccess) {
+        this.router.navigateByUrl('manager/test-history');
+      }
+    });
+  }
+
+  displayDeleteLogConfirmation(event: Event, index: number): void {
+    event.stopPropagation();
+
+    this.globalDialogService.displayConfirmationDialog(
+      'Czy na pewno chcesz usunąć to rozwiązanie testu z historii?',
+      () => this.deleteTestLog(index)
+    );
+  }
+
+  deleteTestLog(index: number): void {
+    this.testLogsService
+      .deleteTestLog(this.testId!, this.testLogs![index].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.testLogs!.splice(index, 1);
+          this.paginatorOptions!.totalItems--;
+        }
+      });
   }
 
   onPageChange(event: any): void {
