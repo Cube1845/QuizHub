@@ -10,6 +10,7 @@ import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { PaginatorModule } from 'primeng/paginator';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
+import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-test-logs',
@@ -20,6 +21,7 @@ import { GlobalDialogService } from '../../../../../../common/services/global-di
     DatePipe,
     PaginatorModule,
     ReactiveFormsModule,
+    SpinnerComponent,
   ],
   templateUrl: './test-logs.component.html',
   styleUrl: './test-logs.component.scss',

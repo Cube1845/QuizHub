@@ -16,8 +16,6 @@
                     <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px'}" label="Wyczyść" icon="pi pi-trash" (click)="displayClearLogsConfirmation()"/>
                     <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px 0 0'}" label="Ustawienia testu" icon="pi pi-cog" (click)="goToTestSettings()"/>
                 </div>
-            } @else {
-                <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/> -->
             }
         </div>
         <div class="m-0 p-0 logs-container">
@@ -62,6 +60,6 @@
         </div>
     </div>
 } @else {
-    <!-- spinner -->
+    <app-spinner/>
 }
     

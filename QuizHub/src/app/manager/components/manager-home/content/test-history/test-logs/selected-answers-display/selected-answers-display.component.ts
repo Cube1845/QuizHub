@@ -10,11 +10,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { convertTimeInSecondsToTimeString } from '../../../../../../../common/global-functions';
 import { ImageModule } from 'primeng/image';
+import { SpinnerComponent } from '../../../../../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-selected-answers-display',
   standalone: true,
-  imports: [ButtonModule, DatePipe, ImageModule],
+  imports: [ButtonModule, DatePipe, ImageModule, SpinnerComponent],
   templateUrl: './selected-answers-display.component.html',
   styleUrl: './selected-answers-display.component.scss',
 })

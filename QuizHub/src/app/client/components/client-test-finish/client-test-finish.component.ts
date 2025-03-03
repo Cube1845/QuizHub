@@ -4,11 +4,12 @@ import { TestClientService } from '../../services/test-client.service';
 import { TestResult } from '../../models/testResult';
 import { ButtonModule } from 'primeng/button';
 import { convertTimeInSecondsToTimeString } from '../../../common/global-functions';
+import { SpinnerComponent } from '../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-client-test-finish',
   standalone: true,
-  imports: [ButtonModule],
+  imports: [ButtonModule, SpinnerComponent],
   templateUrl: './client-test-finish.component.html',
   styleUrl: './client-test-finish.component.scss',
 })
