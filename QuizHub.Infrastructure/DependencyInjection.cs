@@ -24,7 +24,6 @@ public static class DependencyInjection
 
         services.AddScoped<IAppDbContext, AppDbContext>();
 
-        services.AddScoped<AuthRepository>();
         services.AddScoped<PasswordHashService>();
         services.AddScoped<TokenService>();
         services.AddScoped<TokenConfiguration>();
