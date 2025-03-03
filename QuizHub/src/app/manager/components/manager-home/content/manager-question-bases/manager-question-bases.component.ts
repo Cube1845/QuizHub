@@ -13,11 +13,18 @@ import { GlobalDialogService } from '../../../../../common/services/global-dialo
 import { SpinnerComponent } from '../../../../../common/components/spinner/spinner.component';
 import { saveAs } from 'file-saver';
 import { NameEditDialogComponent } from '../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-manager-question-bases',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, FloatLabelModule, SpinnerComponent],
+  imports: [
+    ButtonModule,
+    InputTextModule,
+    FloatLabelModule,
+    SpinnerComponent,
+    TooltipModule,
+  ],
   templateUrl: './manager-question-bases.component.html',
   styleUrl: './manager-question-bases.component.scss',
 })
