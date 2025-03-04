@@ -6,22 +6,22 @@ import { AuthData } from '../../auth/models/authData';
 })
 export class AuthDataService {
   setAuthData(data: AuthData): void {
-    localStorage.setItem('userId', data.userId!);
-    localStorage.setItem('accessToken', data.accessToken!);
-    localStorage.setItem('accessExpiryDateTime', data.accessExpiryDateTime!);
-    localStorage.setItem('refreshToken', data.refreshToken!);
+    sessionStorage.setItem('userId', data.userId!);
+    sessionStorage.setItem('accessToken', data.accessToken!);
+    sessionStorage.setItem('accessExpiryDateTime', data.accessExpiryDateTime!);
+    sessionStorage.setItem('refreshToken', data.refreshToken!);
   }
 
   clearAuthData(): void {
-    localStorage.clear();
+    sessionStorage.clear();
   }
 
   getAuthData(): AuthData {
     const data: AuthData = {
-      userId: localStorage.getItem('userId'),
-      accessToken: localStorage.getItem('accessToken'),
-      accessExpiryDateTime: localStorage.getItem('accessExpiryDateTime'),
-      refreshToken: localStorage.getItem('refreshToken'),
+      userId: sessionStorage.getItem('userId'),
+      accessToken: sessionStorage.getItem('accessToken'),
+      accessExpiryDateTime: sessionStorage.getItem('accessExpiryDateTime'),
+      refreshToken: sessionStorage.getItem('refreshToken'),
     };
 
     return data;
@@ -29,10 +29,10 @@ export class AuthDataService {
 
   isAuthDataSet(): boolean {
     return (
-      localStorage.getItem('userId') != null &&
-      localStorage.getItem('accessToken') != null &&
-      localStorage.getItem('accessExpiryDateTime') != null &&
-      localStorage.getItem('refreshToken') != null
+      sessionStorage.getItem('userId') != null &&
+      sessionStorage.getItem('accessToken') != null &&
+      sessionStorage.getItem('accessExpiryDateTime') != null &&
+      sessionStorage.getItem('refreshToken') != null
     );
   }
 }

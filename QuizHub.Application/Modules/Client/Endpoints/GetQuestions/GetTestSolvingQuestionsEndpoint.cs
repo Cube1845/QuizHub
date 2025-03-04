@@ -43,7 +43,7 @@ public class GetTestSolvingQuestionsEndpoint(IAppDbContext context, TimeProvider
         var questionDtos = questionsDb.Select(questionDb => new QuestionOutDto(questionDb)).ToList();
 
         testSolvingDb.QuestionsDownloaded = true;
-        testSolvingDb.StartedAt = _timeProvider.GetUtcNow().DateTime;
+        testSolvingDb.StartedAt = _timeProvider.GetLocalNow().DateTime;
         await _context.SaveChangesAsync(ct);
 
         await SendOkAsync(Result<GetTestSolvingQuestionsResponse>.Success(new(questionDtos)), ct);

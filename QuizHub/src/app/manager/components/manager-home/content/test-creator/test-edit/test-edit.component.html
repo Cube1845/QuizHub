@@ -12,7 +12,9 @@
                     [label]="isTestActive ? 'Dezaktywuj' : 'Aktywuj'" 
                     [outlined]="true" 
                     class="mr-3"
-                    (click)="displayTestActivationDialog()"/>
+                    (click)="displayTestActivationDialog()"
+                    [pTooltip]="isTestActive ? 'Dezaktywacja testu sprawi, że nie będzie można go rozwiązać' : 'Aktywacja testu uniemożliwi jego edycję'" 
+                    tooltipPosition="bottom" [showDelay]="300"/>
 
                 <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
                 <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal()"/>

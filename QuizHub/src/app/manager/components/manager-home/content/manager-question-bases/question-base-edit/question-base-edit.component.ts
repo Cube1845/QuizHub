@@ -66,8 +66,7 @@ export class QuestionBaseEditComponent {
     1,
     this.paginatorItemsPerPage[0],
     0,
-    this.paginatorItemsPerPage,
-    () => this.getQuestionsAndSetThem(1)
+    this.paginatorItemsPerPage
   );
 
   questionGetType: 'regular' | 'searched' = 'regular';
@@ -364,6 +363,7 @@ export class QuestionBaseEditComponent {
   }
 
   onPageChange(event: any): void {
+    this.paginatorOptions.rows = event.rows;
     const pageNumber = event.page + 1;
 
     this.questionGetType == 'regular'

@@ -46,8 +46,7 @@ export class TestLogsComponent {
     1,
     this.paginatorItemsPerPage[0],
     0,
-    this.paginatorItemsPerPage,
-    () => this.getTestLogsAndSetThem(1)
+    this.paginatorItemsPerPage
   );
 
   searchFormControl = new FormControl<string>('');
@@ -160,6 +159,7 @@ export class TestLogsComponent {
   }
 
   onPageChange(event: any): void {
+    this.paginatorOptions.rows = event.rows;
     const pageNumber = event.page + 1;
 
     this.logsGetType == 'regular'

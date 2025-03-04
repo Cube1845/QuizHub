@@ -34,14 +34,14 @@ public class FinishTestEndpoint(IAppDbContext context, TimeProvider timeProvider
             return;
         }
 
-        var testDuration = _timeProvider.GetUtcNow().DateTime - testSolvingDb.StartedAt;
+        var testDuration = _timeProvider.GetLocalNow().DateTime - testSolvingDb.StartedAt;
 
         TestLog testLog = new()
         {
             TestId = testSolvingDb.TestId,
             Duration = testDuration!.Value,
             Username = testSolvingDb.Username,
-            SolvedDate = _timeProvider.GetUtcNow().DateTime,
+            SolvedDate = _timeProvider.GetLocalNow().DateTime,
         };
 
         await _context.TestLogs.AddAsync(testLog, ct);

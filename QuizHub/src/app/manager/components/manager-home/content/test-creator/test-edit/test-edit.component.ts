@@ -25,6 +25,7 @@ import { questionSumValidator } from '../../../../../validators/question-sum-val
 import { NameEditDialogComponent } from '../../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
 import { TestCreatorService } from '../../../../../services/test-creator.service';
 import { ToastService } from '../../../../../../common/services/toast.service';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-test-edit',
@@ -37,6 +38,7 @@ import { ToastService } from '../../../../../../common/services/toast.service';
     ReactiveFormsModule,
     IftaLabelModule,
     TableModule,
+    TooltipModule,
   ],
   templateUrl: './test-edit.component.html',
   styleUrl: './test-edit.component.scss',

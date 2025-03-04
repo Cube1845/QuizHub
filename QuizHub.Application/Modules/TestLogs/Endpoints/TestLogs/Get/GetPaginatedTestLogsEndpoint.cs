@@ -31,6 +31,7 @@ public class GetPaginatedTestLogsEndpoint(IAppDbContext context) : Endpoint<GetP
         }
 
         List<TestLogDto> testLogs = testDb.TestLogs
+            .OrderByDescending(tl => tl.SolvedDate)
             .GetPage(req.PageNumber, req.PageSize)
             .Select(TestLogDto.FromTestLogDb)
             .ToList();

@@ -42,6 +42,8 @@ export class ClientTestSolveComponent {
         .subscribe((value) => {
           if (value) {
             this.questions = value;
+          } else {
+            this.router.navigateByUrl('');
           }
         });
     });
