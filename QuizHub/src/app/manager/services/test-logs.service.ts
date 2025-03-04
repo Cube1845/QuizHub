@@ -1,134 +1,208 @@
-import { Injectable } from '@angular/core';
-import { TestLogData } from '../models/testLog';
-import { SelectedAnswersData } from '../models/selectedAnswersData';
+import { inject, Injectable } from '@angular/core';
+import { TestLog, TestLogData } from '../models/testLog';
+import {
+  SelectedAnswer,
+  SelectedAnswersData,
+  UsedQuestion,
+} from '../models/selectedAnswersData';
 import { QuestionType } from '../../common/enums/questionType';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
+import { ToastService } from '../../common/services/toast.service';
+import {
+  handleResultPatternResponse,
+  Result,
+} from '../../common/models/result';
+import { PaginatedData } from '../../common/models/paginatedData';
+import { ImageService } from '../../common/services/image.service';
+
+type SelectedAnswerWithImageId = Omit<SelectedAnswer, 'image'> & {
+  imageId: string | null;
+};
+
+type UsedQuestionWithImageId = Omit<Omit<UsedQuestion, 'image'>, 'answers'> & {
+  imageId: string | null;
+  answers: SelectedAnswerWithImageId[];
+};
+
+type GetSelectedAnswersDataResponse = Omit<
+  SelectedAnswersData,
+  'usedQuestions'
+> & {
+  usedQuestions: (UsedQuestionWithImageId | null)[];
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class TestLogsService {
-  getSelectedAnswersData(testLogId: string): SelectedAnswersData {
-    return {
-      testId: 'hahahethrththr',
-      durationInSeconds: 125,
-      username: 'Ktoś tam',
-      earnedPoints: 3,
-      maxPoints: 10,
-      solveDate: new Date(),
-      usedQuestions: [
-        {
-          isScored: false,
-          content: 'awdawdawd',
-          image: null,
-          questionType: QuestionType.MultiAnswer,
-          answers: [
-            {
-              content: 'awgawg1awgtjh',
-              image: null,
-              isSelected: false,
-              isCorrect: true,
-            },
-            {
-              content: 'a641wgawgawgtjh',
-              image: null,
-              isSelected: true,
-              isCorrect: true,
-            },
-            {
-              content: 'awgawg162awgtjh',
-              image: null,
-              isSelected: true,
-              isCorrect: false,
-            },
-            {
-              content: 'awgawgawg16tjh',
-              image: null,
-              isSelected: true,
-              isCorrect: false,
-            },
-          ],
-        },
-        {
-          isScored: true,
-          content: 'awd34634634634634awdawd',
-          image: null,
-          questionType: QuestionType.SingleAnswer,
-          answers: [
-            {
-              content: 'awgawgrthrrthrth1awgtjh',
-              image: null,
-              isSelected: false,
-              isCorrect: false,
-            },
-            {
-              content: 'a641hrthrthtrhrhrwgawgawgtjh',
-              image: null,
-              isSelected: true,
-              isCorrect: true,
-            },
-            {
-              content: 'awgawthrtg162awgtjh',
-              image: null,
-              isSelected: false,
-              isCorrect: false,
-            },
-            {
-              content: 'awgawgdheh',
-              image: null,
-              isSelected: false,
-              isCorrect: false,
-            },
-          ],
-        },
-      ],
-    };
+  private readonly http = inject(HttpClient);
+  private readonly toastService = inject(ToastService);
+  private readonly imageService = inject(ImageService);
+
+  private readonly apiUrl = environment.apiUrl;
+
+  displayErrorToast(detail: string): void {
+    this.toastService.displayToast('error', 'Błąd', detail);
   }
 
-  getTestLogData(testId: string): TestLogData {
-    return {
-      testName: 'Test',
-      testLogs: [
-        {
-          id: 'awdawdagae',
-          durationInSeconds: 200,
-          username: 'awaseggawg',
-          earnedPoints: 5,
-          maxPoints: 10,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awdhthhdtae',
-          durationInSeconds: 150,
-          username: 'tasergdjg',
-          earnedPoints: 6,
-          maxPoints: 11,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awdaw5dagae',
-          durationInSeconds: 200,
-          username: 'awgawgawg',
-          earnedPoints: 4,
-          maxPoints: 10,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awdh1thhdtae',
-          durationInSeconds: 150,
-          username: 'tdgawgjg',
-          earnedPoints: 6,
-          maxPoints: 11,
-          solveDate: new Date(),
-        },
-        {
-          id: 'awda2wdagae',
-          durationInSeconds: 200,
-          username: 'awgasegasegawg',
-          earnedPoints: 1,
-          maxPoints: 10,
-          solveDate: new Date(),
-        },
-      ],
-    };
+  clearTestLogs(testId: string): Observable<boolean> {
+    return this.http
+      .delete<Result>(this.apiUrl + '/test-logs/all/' + testId)
+      .pipe(
+        handleResultPatternResponse<null, boolean>(
+          () => true,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
+
+  deleteTestLog(testId: string, testLogId: string): Observable<boolean> {
+    return this.http
+      .delete<Result>(
+        this.apiUrl +
+          '/test-logs' +
+          `?testId=${testId}` +
+          `&testLogId=${testLogId}`
+      )
+      .pipe(
+        handleResultPatternResponse<null, boolean>(
+          () => true,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
+
+  getSelectedAnswersData(
+    testLogId: string
+  ): Observable<SelectedAnswersData | null> {
+    return this.http
+      .get<Result<GetSelectedAnswersDataResponse>>(
+        this.apiUrl + '/selected-answers/' + testLogId
+      )
+      .pipe(this.handleSelectedAnswersResultPatternResponse());
+  }
+
+  getTestLogData(
+    testId: string,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<TestLogData> {
+    return this.http
+      .get<Result<TestLogData>>(
+        this.apiUrl +
+          '/test-logs' +
+          `?testId=${testId}` +
+          `&pageNumber=${pageNumber}` +
+          `&pageSize=${pageSize}`
+      )
+      .pipe(
+        handleResultPatternResponse<TestLogData, TestLogData>(
+          (value) => value,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
+
+  searchForTestLogs(
+    testId: string,
+    key: string,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedData<TestLog>> {
+    return this.http
+      .get<Result<PaginatedData<TestLog>>>(
+        this.apiUrl +
+          '/test-logs/search' +
+          `?testId=${testId}` +
+          `&key=${key}` +
+          `&pageNumber=${pageNumber}` +
+          `&pageSize=${pageSize}`
+      )
+      .pipe(
+        handleResultPatternResponse<
+          PaginatedData<TestLog>,
+          PaginatedData<TestLog>
+        >(
+          (value) => value,
+          (detail) => this.displayErrorToast(detail)
+        )
+      );
+  }
+
+  private handleSelectedAnswersResultPatternResponse() {
+    return (
+      source: Observable<Result<GetSelectedAnswersDataResponse>>
+    ): Observable<SelectedAnswersData | null> =>
+      source.pipe(
+        switchMap((result: Result<GetSelectedAnswersDataResponse>) => {
+          if (!result.isSuccess) {
+            this.displayErrorToast(result.message || 'Wystąpił błąd');
+            return of(null);
+          }
+
+          const data = result.value;
+
+          return this.mapGetSelectedAnswersResponseToData(
+            data.usedQuestions
+          ).pipe(
+            map((questions: (UsedQuestion | null)[]) => ({
+              usedQuestions: questions,
+              testId: data.testId,
+              solveDate: data.solveDate,
+              durationInSeconds: data.durationInSeconds,
+              username: data.username,
+              earnedPoints: data.earnedPoints,
+              maxPoints: data.maxPoints,
+            }))
+          );
+        })
+      );
+  }
+
+  private mapGetSelectedAnswersResponseToData(
+    usedQuestionList: (UsedQuestionWithImageId | null)[]
+  ): Observable<(UsedQuestion | null)[]> {
+    const mappedQuestions$ = usedQuestionList.map((uq) => {
+      if (uq == null) {
+        return of(null);
+      }
+
+      const questionImage$ = uq.imageId
+        ? this.imageService.getImageFromApi(uq.imageId)
+        : of(null);
+
+      const answers$ = this.buildAnswersForUsedQuestions(uq);
+
+      return forkJoin([questionImage$, forkJoin(answers$)]).pipe(
+        map(([questionImage, answers]) => ({
+          content: uq.content,
+          questionType: uq.questionType,
+          image: questionImage,
+          isScored: uq.isScored,
+          answers,
+        }))
+      );
+    });
+
+    return forkJoin(mappedQuestions$);
+  }
+
+  private buildAnswersForUsedQuestions(uq: UsedQuestionWithImageId) {
+    return uq.answers.map((answer) => {
+      const answerImage$ = answer.imageId
+        ? this.imageService.getImageFromApi(answer.imageId)
+        : of(null);
+
+      return answerImage$.pipe(
+        map((answerImage) => ({
+          content: answer.content,
+          isCorrect: answer.isCorrect,
+          image: answerImage,
+          isSelected: answer.isSelected,
+        }))
+      );
+    });
   }
 }

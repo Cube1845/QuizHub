@@ -8,11 +8,19 @@ import { convertTimeInSecondsToTimeString } from '../../../../../../common/globa
 import { DatePipe } from '@angular/common';
 import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { PaginatorModule } from 'primeng/paginator';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 
 @Component({
   selector: 'app-test-logs',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, DatePipe, PaginatorModule],
+  imports: [
+    ButtonModule,
+    InputTextModule,
+    DatePipe,
+    PaginatorModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './test-logs.component.html',
   styleUrl: './test-logs.component.scss',
 })
@@ -20,6 +28,7 @@ export class TestLogsComponent {
   private readonly router = inject(Router);
   private readonly testLogsService = inject(TestLogsService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly globalDialogService = inject(GlobalDialogService);
 
   private readonly paginatorItemsPerPage = [60, 90, 120];
 
@@ -38,6 +47,8 @@ export class TestLogsComponent {
     this.paginatorItemsPerPage,
     () => this.getTestLogsAndSetThem(1)
   );
+
+  searchFormControl = new FormControl<string>('');
 
   constructor() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
@@ -60,13 +71,18 @@ export class TestLogsComponent {
   }
 
   getTestLogsAndSetThem(pageNumber: number): void {
-    const testLogData = this.testLogsService.getTestLogData(this.testId!);
+    this.testLogsService
+      .getTestLogData(this.testId!, pageNumber, this.paginatorOptions.rows)
+      .subscribe((response) => {
+        if (!!response) {
+          this.searchFormControl.reset();
+          this.logsGetType = 'regular';
 
-    this.logsGetType = 'regular';
-
-    this.testLogs = testLogData.testLogs;
-    this.paginatorOptions.totalItems = testLogData.testLogs.length;
-    this.testName = testLogData.testName;
+          this.testLogs = response.testLogs.data;
+          this.paginatorOptions.totalItems = response.testLogs.totalItems;
+          this.testName = response.testName;
+        }
+      });
   }
 
   goBack(): void {
@@ -77,7 +93,69 @@ export class TestLogsComponent {
     return convertTimeInSecondsToTimeString(totalSeconds);
   }
 
-  searchForTestLogs(pageNumber: number = 1): void {}
+  searchForTestLogs(pageNumber: number = 1): void {
+    const key = this.searchFormControl.value;
+
+    if (key == null || key!.trim() == '') {
+      this.paginatorOptions.setPage(1);
+      this.getTestLogsAndSetThem(1);
+      return;
+    }
+
+    this.testLogsService
+      .searchForTestLogs(
+        this.testId!,
+        key!,
+        pageNumber,
+        this.paginatorOptions.rows
+      )
+      .subscribe((response) => {
+        if (!!response) {
+          this.logsGetType = 'searched';
+          this.testLogs = response.data;
+          this.paginatorOptions.totalItems = response.totalItems;
+        }
+      });
+  }
+
+  goToTestSettings(): void {
+    this.router.navigateByUrl('manager/test-edit/' + this.testId);
+  }
+
+  displayClearLogsConfirmation(): void {
+    this.globalDialogService.displayConfirmationDialog(
+      'Czy na pewno chcesz wyczyścić wszystkie rozwiązania tego testu?',
+      () => this.clearTestLogs()
+    );
+  }
+
+  clearTestLogs(): void {
+    this.testLogsService.clearTestLogs(this.testId!).subscribe((isSuccess) => {
+      if (isSuccess) {
+        this.router.navigateByUrl('manager/test-history');
+      }
+    });
+  }
+
+  displayDeleteLogConfirmation(event: Event, index: number): void {
+    event.stopPropagation();
+
+    this.globalDialogService.displayConfirmationDialog(
+      'Czy na pewno chcesz usunąć to rozwiązanie testu z historii?',
+      () => this.deleteTestLog(index)
+    );
+  }
+
+  deleteTestLog(index: number): void {
+    this.testLogsService
+      .deleteTestLog(this.testId!, this.testLogs![index].id)
+      .subscribe((isSuccess) => {
+        if (isSuccess) {
+          this.testLogs!.splice(index, 1);
+          this.paginatorOptions!.totalItems--;
+        }
+      });
+  }
 
   onPageChange(event: any): void {
     const pageNumber = event.page + 1;

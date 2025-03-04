@@ -91,7 +91,7 @@ export class QuestionBaseEditComponent {
       .getQuestionsFromUserQuestionBase(
         this.questionBaseId!,
         pageNumber,
-        this.paginatorItemsPerPage[0]
+        this.paginatorOptions.rows
       )
       .subscribe((response) => {
         if (!!response) {

@@ -54,6 +54,7 @@
         border-radius: var(--p-border-radius-lg);
         color: var(--p-zinc-300);
         transition: 0.2s;
+        position: relative;
 
         &:hover {
             background: var(--p-zinc-800);
@@ -93,5 +94,18 @@
 
     p-paginator {
         width: 100%;
+    }
+
+    .icon {
+        position: absolute;
+        bottom: 0.6rem;
+        right: 0.6rem;
+        color: var(--p-zinc-400);
+        transition: 0.2s;
+
+        &:hover {
+            color: var(--p-primary-color);
+            transition: 0.2s;
+        }
     }
 }

@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { TestOptions } from '../models/testOptions';
-import { QuestionBaseData } from '../models/questionBaseData';
 import { Observable } from 'rxjs';
 import { ToastService } from '../../common/services/toast.service';
 import { HttpClient } from '@angular/common/http';
@@ -14,8 +13,6 @@ import { TestOptionsAndData } from '../models/testOptionsAndData';
 type CodeResponse = {
   code: string;
 };
-
-type QuestionBaseWithMinialQuestionCountOutDto = {};
 
 @Injectable({
   providedIn: 'root',

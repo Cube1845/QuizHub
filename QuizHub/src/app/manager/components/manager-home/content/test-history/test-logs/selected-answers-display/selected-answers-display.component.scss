@@ -90,4 +90,9 @@
     .correct {
         color: var(--p-primary-800) !important;
     }
+
+    .deleted-info {
+        justify-self: center;
+        color: var(--p-zinc-300) !important;
+    }
 }

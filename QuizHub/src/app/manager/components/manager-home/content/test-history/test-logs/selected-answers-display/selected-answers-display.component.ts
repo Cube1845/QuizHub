@@ -37,9 +37,13 @@ export class SelectedAnswersDisplayComponent {
 
       const testLogId = id;
 
-      this.selectedAnswersData = this.testLogsService.getSelectedAnswersData(
-        testLogId!
-      );
+      this.testLogsService
+        .getSelectedAnswersData(testLogId!)
+        .subscribe((response) => {
+          if (!!response) {
+            this.selectedAnswersData = response;
+          }
+        });
     });
   }
 
