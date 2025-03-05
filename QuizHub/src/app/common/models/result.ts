@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 
 export class Result<T = null> {
@@ -16,7 +17,7 @@ export function handleResultPatternResponse<T, U>(
 ) {
   return (source: Observable<Result<T>>): Observable<U> =>
     source.pipe(
-      catchError((err) => of(err)),
+      catchError((err) => of(err.error)),
       map((result: Result<T>) => {
         if (result.isSuccess) {
           return successMappingFunction(result.value);

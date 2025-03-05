@@ -12,6 +12,11 @@ public class AddQuestionValidator : Validator<AddQuestionRequest>
 
         RuleFor(x => x.Question)
             .NotNull();
+
+        RuleFor(x => x.Question.Content)
+            .NotEmpty()
+            .MinimumLength(3);
+
         RuleFor(x => x.Question.Answers)
             .NotNull()
             .Must(x => x.Count >= 2 && x.Count <= 4)
