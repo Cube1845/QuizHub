@@ -11,6 +11,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
+import { ToastService } from '../../../../../../common/services/toast.service';
 
 @Component({
   selector: 'app-test-logs',
@@ -31,6 +32,7 @@ export class TestLogsComponent {
   private readonly testLogsService = inject(TestLogsService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly toastService = inject(ToastService);
 
   private readonly paginatorItemsPerPage = [60, 90, 120];
 
@@ -134,6 +136,11 @@ export class TestLogsComponent {
     this.testLogsService.clearTestLogs(this.testId!).subscribe((isSuccess) => {
       if (isSuccess) {
         this.router.navigateByUrl('manager/test-history');
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Wyczyszczono historię rozwiązań testu'
+        );
       }
     });
   }
@@ -154,6 +161,12 @@ export class TestLogsComponent {
         if (isSuccess) {
           this.testLogs!.splice(index, 1);
           this.paginatorOptions!.totalItems--;
+
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto rozwiązanie testu z historii'
+          );
         }
       });
   }

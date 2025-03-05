@@ -168,6 +168,20 @@ export class TestEditComponent {
       .subscribe((isSuccess) => {
         if (isSuccess) {
           this.isTestActive = !this.isTestActive;
+
+          if (this.isTestActive) {
+            this.toastService.displayToast(
+              'success',
+              'Sukces',
+              'Aktywowano test'
+            );
+          } else {
+            this.toastService.displayToast(
+              'success',
+              'Sukces',
+              'Dezktywowano test'
+            );
+          }
         }
       });
   }
@@ -267,6 +281,12 @@ export class TestEditComponent {
     this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.splice(
       index,
       1
+    );
+
+    this.toastService.displayToast(
+      'success',
+      'Sukces',
+      'Odznaczono tę bazę pytań'
     );
   }
 

@@ -1,7 +1,7 @@
 <div class="container m-0">
     <div class="nav-bar-items m-0 p-0 mt-3">
         @for (navBarItem of navBarItems; track $index) {
-            <div class="nav-bar-item m-0 p-3 line-height-1" (click)="navigateTo(navBarItem.route, $index)" [ngStyle]="{'background': navBarItem.color}">
+            <div class="nav-bar-item m-0 p-3 line-height-1" (click)="navigateTo(navBarItem.route)" [ngStyle]="{'background': navBarItem.color}">
                 <i [class]="navBarItem.icon" class="mr-3 text-sm"></i>{{ navBarItem.text }}
             </div>
         }
