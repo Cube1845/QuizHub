@@ -1,11 +1,9 @@
-﻿using QuizHub.Domain.Entities;
+﻿namespace QuizHub.Infrastructure.Auth.Entities;
 
-namespace QuizHub.Infrastructure.Auth.Entities;
-
-public class AppUser(string email = "", string passwordHash = "")
+public class AppUser(string username = "", string passwordHash = "")
 {
     public Guid Id { get; set; }
-    public string Email { get; set; } = email;
+    public string Username { get; set; } = username;
     public string PasswordHash { get; set; } = passwordHash;
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
 }

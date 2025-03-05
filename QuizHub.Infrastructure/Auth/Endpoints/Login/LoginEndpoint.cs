@@ -20,14 +20,14 @@ public class LoginEndpoint(AppDbContext context, PasswordHashService passwordHas
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        var user = await _context.AppUsers.FindAsync([req.Email], ct) ??
-            throw new DomainException("Niepoprawny email lub hasło");
+        var user = await _context.AppUsers.FirstOrDefaultAsync(user => user.Username == req.Username, ct) ??
+            throw new DomainException("Niepoprawna nazwa użytkownika lub hasło");
 
         var passwordCorrect = _passwordHashService.VerifyPassword(req.Password, user!.PasswordHash);
 
         if (!passwordCorrect)
         {
-            throw new DomainException("Niepoprawny email lub hasło");
+            throw new DomainException("Niepoprawna nazwa użytkownika lub hasło");
         }
 
         Response = await CreateTokenWith<TokenService>(user.Id.ToString(), u =>

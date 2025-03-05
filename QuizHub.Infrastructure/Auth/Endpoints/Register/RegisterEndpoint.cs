@@ -20,16 +20,16 @@ public class RegisterEndpoint(AppDbContext context, PasswordHashService password
 
     public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)
     {
-        if (await _context.AppUsers.AnyAsync(user => user.Email == req.Email, ct))
+        if (await _context.AppUsers.AnyAsync(user => user.Username == req.Username, ct))
         {
-            await SendOkAsync(Result.Error("Konto z takim adresem email już istnieje"), ct);
+            await SendOkAsync(Result.Error("Konto z taką nazwą użytkownika już istnieje"), ct);
             return;
         }
 
         var passwordHash = _passwordHashService.HashPaswordWithSalt(req.Password);
 
 
-        AppUser appUser = new(req.Email, passwordHash);
+        AppUser appUser = new(req.Username, passwordHash);
         await _context.AppUsers.AddAsync(appUser, ct);
 
         await _context.SaveChangesAsync(ct);

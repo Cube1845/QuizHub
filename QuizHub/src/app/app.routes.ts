@@ -14,6 +14,7 @@ import { ClientTestFinishComponent } from './client/components/client-test-finis
 import { TestHistoryComponent } from './manager/components/manager-home/content/test-history/test-history.component';
 import { TestLogsComponent } from './manager/components/manager-home/content/test-history/test-logs/test-logs.component';
 import { SelectedAnswersDisplayComponent } from './manager/components/manager-home/content/test-history/test-logs/selected-answers-display/selected-answers-display.component';
+import { ChangePasswordComponent } from './manager/components/manager-home/content/change-password/change-password.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,7 @@ export const routes: Routes = [
     path: 'manager',
     component: ManagerHomeComponent,
     children: [
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: 'question-bases', component: ManagerQuestionBasesComponent },
       { path: 'question-base-edit/:id', component: QuestionBaseEditComponent },
       { path: 'tests', component: TestCreatorComponent },
