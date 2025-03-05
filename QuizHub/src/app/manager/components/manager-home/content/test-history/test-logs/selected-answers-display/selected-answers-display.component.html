@@ -10,7 +10,7 @@
         </div>
         <div class="top-bar m-0 p-3">
             <p-button [outlined]="true" [style]="{width: 'max-content'}" label="Rozwiązania" severity="secondary" icon="pi pi-arrow-left" (click)="goBack()"/>
-            <h3 class="m-0 py-1 pl-3 text-2xl font-light text-center">Data: {{ this.selectedAnswersData.solveDate | date: 'dd/MM/yyyy HH:mm' }}</h3>
+            <h3 class="m-0 py-1 pl-3 text-2xl font-light text-center">Data: {{ this.selectedAnswersData.solveDate | date: 'dd.MM.yyyy HH:mm' }}</h3>
             <h3 class="m-0 py-1 pl-5 text-2xl font-light">Czas rozwiązania: {{ convertTimeInSecondsToTimeString(this.selectedAnswersData.durationInSeconds) }}</h3>
         </div>
 

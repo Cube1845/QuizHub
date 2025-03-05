@@ -25,7 +25,7 @@
                         <div class="test-log-panel m-0 p-3 py-3" (click)="openSelectedAnswersDisplay($index)">
                             <h1 class="text-xl m-0 p-0 line-height-1 align-self-start primary-color">{{ testLog.username }}</h1> 
                             <h1 class="text-lg m-0 p-0 line-height-1">Wynik: {{ testLog.earnedPoints }}/{{ testLog.maxPoints }} ({{ (testLog.earnedPoints / testLog.maxPoints * 100).toFixed(2) }}%)</h1>
-                            <h1 class="text-lg m-0 p-0 line-height-1">Data wykonania: {{ testLog.solveDate | date: 'dd/MM/yyyy HH:mm' }}</h1>
+                            <h1 class="text-lg m-0 p-0 line-height-1">Data wykonania: {{ testLog.solveDate | date: 'dd.MM.yyyy HH:mm' }}</h1>
                             <h1 class="text-lg m-0 p-0 line-height-1">Czas: {{ convertTimeInSecondsToTimeString(testLog.durationInSeconds) }}</h1>
 
                             <p class="line-height-1 m-0 p-0 text-xs pt-3">Kliknij, aby zobaczyć zaznaczone odpowiedzi</p>
