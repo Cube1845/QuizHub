@@ -18,7 +18,7 @@
                 </div>
             }
         </div>
-        <div class="m-0 p-0 logs-container">
+        <div class="m-0 p-0 logs-container" #logsContainer>
             <div class="logs m-0 p-0 px-3 py-3 gap-3">
                 @if (testLogs.length > 0) {
                     @for (testLog of testLogs; track $index) {

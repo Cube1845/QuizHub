@@ -36,6 +36,12 @@ public class ChangePasswordEndpoint(AppDbContext context, PasswordHashService pa
             return;
         }
 
+        if (req.NewPassword == req.OldPassword)
+        {
+            await SendOkAsync(Result.Error("Nowe hasło nie może być takie samo jak obecne"), ct);
+            return;
+        }
+
         userDb.PasswordHash = _passwordHashService.HashPaswordWithSalt(req.NewPassword);
 
         await _context.SaveChangesAsync(ct);

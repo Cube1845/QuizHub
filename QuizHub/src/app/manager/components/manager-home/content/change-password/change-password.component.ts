@@ -1,5 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,7 +16,13 @@ import { ToastService } from '../../../../../common/services/toast.service';
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [InputTextModule, ButtonModule, FloatLabelModule, PasswordModule],
+  imports: [
+    InputTextModule,
+    ButtonModule,
+    FloatLabelModule,
+    PasswordModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
 })
@@ -21,9 +32,18 @@ export class ChangePasswordComponent {
 
   passwordFormGroup = new FormGroup(
     {
-      oldPassword: new FormControl<string>('', Validators.minLength(6)),
-      password: new FormControl<string>('', Validators.minLength(6)),
-      confirmPassword: new FormControl<string>('', Validators.minLength(6)),
+      oldPassword: new FormControl<string>('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      password: new FormControl<string>('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      confirmPassword: new FormControl<string>('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
     },
     passwordsMatchValidator
   );
@@ -41,6 +61,8 @@ export class ChangePasswordComponent {
             'Sukces',
             'Zmieniono hasło'
           );
+
+          this.passwordFormGroup.reset();
         }
       });
   }

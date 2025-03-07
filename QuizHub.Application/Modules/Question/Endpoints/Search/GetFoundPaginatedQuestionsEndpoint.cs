@@ -64,6 +64,7 @@ public class GetFoundPaginatedQuestionsEndpoint(IAppDbContext context) : Endpoin
                 questionBase.OwnerId == userId
             )
             .SelectMany(questionBase => questionBase.Questions)
+            .Where(question => question.Content.Contains(key))
             .CountAsync(ct);
 
         var identifiedQuestions = questionsDb.ToIdentifiedQuestionList();

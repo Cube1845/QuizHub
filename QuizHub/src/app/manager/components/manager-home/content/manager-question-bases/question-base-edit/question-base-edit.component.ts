@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -25,6 +25,7 @@ import { Answer } from '../../../../../models/answer';
 import { QuestionBaseService } from '../../../../../services/question-base.service';
 import saveAs from 'file-saver';
 import { NameEditDialogComponent } from '../../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-question-base-edit',
@@ -54,6 +55,8 @@ export class QuestionBaseEditComponent {
   private readonly questionBaseService = inject(QuestionBaseService);
 
   private readonly paginatorItemsPerPage = [10, 20, 30];
+
+  @ViewChild('questionContainer') questionContainer!: ElementRef;
 
   questionBaseId!: string | null;
   questionBaseName!: string | null;
@@ -100,6 +103,10 @@ export class QuestionBaseEditComponent {
           this.questions = response.data.data;
           this.paginatorOptions.totalItems = response.data.totalItems;
           this.questionBaseName = response.questionBaseName;
+
+          if (this.questionContainer) {
+            this.questionContainer.nativeElement.scrollTop = 0;
+          }
         }
       });
   }
@@ -107,6 +114,8 @@ export class QuestionBaseEditComponent {
   goBack(): void {
     this.router.navigateByUrl('manager/question-bases');
   }
+
+  searchButtonLoading = false;
 
   searchForQuestions(pageNumber: number = 1): void {
     const key = this.searchFormControl.value;
@@ -117,6 +126,14 @@ export class QuestionBaseEditComponent {
       return;
     }
 
+    let apiResponsed = false;
+
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.searchButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.questionService
       .searchForQuestions(
         this.questionBaseId!,
@@ -125,10 +142,17 @@ export class QuestionBaseEditComponent {
         this.paginatorOptions.rows
       )
       .subscribe((response) => {
-        if (!!response) {
+        apiResponsed = true;
+        this.searchButtonLoading = false;
+
+        if (response != null) {
           this.questionGetType = 'searched';
           this.questions = response.data;
           this.paginatorOptions.totalItems = response.totalItems;
+
+          if (this.questionContainer) {
+            this.questionContainer.nativeElement.scrollTop = 0;
+          }
         }
       });
   }

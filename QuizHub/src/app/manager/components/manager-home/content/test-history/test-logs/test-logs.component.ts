@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -35,6 +35,8 @@ export class TestLogsComponent {
   private readonly toastService = inject(ToastService);
 
   private readonly paginatorItemsPerPage = [60, 90, 120];
+
+  @ViewChild('logsContainer') logsContainer!: ElementRef;
 
   logsGetType: 'regular' | 'searched' = 'regular';
 
@@ -84,6 +86,10 @@ export class TestLogsComponent {
           this.testLogs = response.testLogs.data;
           this.paginatorOptions.totalItems = response.testLogs.totalItems;
           this.testName = response.testName;
+
+          if (this.logsContainer) {
+            this.logsContainer.nativeElement.scrollTop = 0;
+          }
         }
       });
   }
@@ -117,6 +123,10 @@ export class TestLogsComponent {
           this.logsGetType = 'searched';
           this.testLogs = response.data;
           this.paginatorOptions.totalItems = response.totalItems;
+
+          if (this.logsContainer) {
+            this.logsContainer.nativeElement.scrollTop = 0;
+          }
         }
       });
   }
