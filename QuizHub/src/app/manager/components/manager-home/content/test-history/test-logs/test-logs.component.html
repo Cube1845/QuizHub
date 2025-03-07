@@ -9,7 +9,7 @@
 
                 <div class="search-box">
                     <input type="text" pInputText placeholder="Wyszukaj rozwiązanie po nazwie użytkownika" [formControl]="searchFormControl"/>
-                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForTestLogs()"/>
+                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForTestLogs()" [loading]="searchButtonLoading"/>
                 </div>
 
                 <div>

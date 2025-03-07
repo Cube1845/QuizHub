@@ -25,14 +25,14 @@ export class ManagerHeaderComponent implements OnInit {
         iconClass: 'text-color-icon',
         items: [
           {
-            label: 'Wyloguj się',
-            icon: 'pi pi-sign-out',
-            command: () => this.authService.signOut(),
-          },
-          {
             label: 'Zmień hasło',
             icon: 'pi pi-wrench',
             command: () => this.router.navigateByUrl('manager/change-password'),
+          },
+          {
+            label: 'Wyloguj się',
+            icon: 'pi pi-sign-out',
+            command: () => this.authService.signOut(),
           },
         ],
       },

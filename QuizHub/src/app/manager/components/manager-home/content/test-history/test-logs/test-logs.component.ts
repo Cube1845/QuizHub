@@ -12,6 +12,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
 import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
 import { ToastService } from '../../../../../../common/services/toast.service';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-test-logs',
@@ -102,6 +103,8 @@ export class TestLogsComponent {
     return convertTimeInSecondsToTimeString(totalSeconds);
   }
 
+  searchButtonLoading = false;
+
   searchForTestLogs(pageNumber: number = 1): void {
     const key = this.searchFormControl.value;
 
@@ -111,6 +114,14 @@ export class TestLogsComponent {
       return;
     }
 
+    let apiResponsed = false;
+
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.searchButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.testLogsService
       .searchForTestLogs(
         this.testId!,
@@ -119,6 +130,9 @@ export class TestLogsComponent {
         this.paginatorOptions.rows
       )
       .subscribe((response) => {
+        apiResponsed = true;
+        this.searchButtonLoading = false;
+
         if (!!response) {
           this.logsGetType = 'searched';
           this.testLogs = response.data;

@@ -23,7 +23,7 @@ export class NavBarComponent implements OnInit {
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event) => {
+      .subscribe(() => {
         this.assignColors();
       });
   }
