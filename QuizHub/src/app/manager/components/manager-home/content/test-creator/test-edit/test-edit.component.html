@@ -110,6 +110,7 @@
                     icon="pi pi-pencil"
                     [disabled]="testOptionsFormGroup.invalid || isTestActive"
                     (click)="saveTestOptions()"
+                    [loading]="saveButtonLoading"
                 />
 
                 <div class="code-box mt-4">
@@ -118,7 +119,7 @@
                     </div>
                     <div>
                         <input pInputText style="width: min-content" maxlength="8" readonly [formControl]="codeFormControl"/>
-                        <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-3" [disabled]="isTestActive" (click)="changeTestCode()"/>
+                        <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-3" [disabled]="isTestActive" (click)="changeTestCode()" [loading]="newCodeButtonLoading"/>
                     </div>
                 </div>
             </div>

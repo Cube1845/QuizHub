@@ -26,6 +26,7 @@ import { NameEditDialogComponent } from '../../../../../../common/components/nam
 import { TestCreatorService } from '../../../../../services/test-creator.service';
 import { ToastService } from '../../../../../../common/services/toast.service';
 import { TooltipModule } from 'primeng/tooltip';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-test-edit',
@@ -104,6 +105,8 @@ export class TestEditComponent {
     this.router.navigateByUrl('manager/tests');
   }
 
+  saveButtonLoading = false;
+
   saveTestOptions(): void {
     const newOptions: TestOptions = {
       questionCount: this.testOptionsFormGroup.controls.questionCount.value!,
@@ -119,9 +122,19 @@ export class TestEditComponent {
       ),
     };
 
+    let apiResponsed = false;
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.saveButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.testEditService
       .saveTestOptions(this.testId!, newOptions)
       .subscribe((isSuccess) => {
+        apiResponsed = true;
+        this.saveButtonLoading = false;
+
         if (isSuccess) {
           this.testOptions = newOptions;
           this.toastService.displayToast(
@@ -133,14 +146,28 @@ export class TestEditComponent {
       });
   }
 
+  newCodeButtonLoading = false;
+
   changeTestCode(): void {
+    let apiResponsed = false;
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.newCodeButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.testEditService.changeTestCode(this.testId!).subscribe((newCode) => {
-      this.codeFormControl.setValue(newCode);
-      this.toastService.displayToast(
-        'success',
-        'Sukces',
-        'Zmieniono kod testu'
-      );
+      apiResponsed = true;
+      this.newCodeButtonLoading = false;
+
+      if (!!newCode) {
+        this.codeFormControl.setValue(newCode);
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Zmieniono kod testu'
+        );
+      }
     });
   }
 
