@@ -6,11 +6,12 @@ import { QuestionType } from '../../../common/enums/questionType';
 import { GlobalDialogService } from '../../../common/services/global-dialog.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionOutDto } from '../../../common/models/questionOutDto';
+import { SpinnerComponent } from '../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-client-test-solve',
   standalone: true,
-  imports: [AnswerTileComponent, ButtonModule],
+  imports: [AnswerTileComponent, ButtonModule, SpinnerComponent],
   templateUrl: './client-test-solve.component.html',
   styleUrl: './client-test-solve.component.scss',
 })
@@ -41,6 +42,8 @@ export class ClientTestSolveComponent {
         .subscribe((value) => {
           if (value) {
             this.questions = value;
+          } else {
+            this.router.navigateByUrl('');
           }
         });
     });

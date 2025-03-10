@@ -174,10 +174,19 @@ export class QuestionService {
         switchMap((result: Result<PaginatedData<GetQuestionDTO>>) => {
           if (!result.isSuccess) {
             this.displayErrorToast(result.message || 'Wystąpił błąd');
-            return of(null!);
+            return of(null);
           }
 
           const dtoPaginatedData = result.value;
+
+          if (dtoPaginatedData.data.length == 0) {
+            const emptyData: PaginatedData<Question> = {
+              data: [],
+              totalItems: dtoPaginatedData.totalItems,
+            };
+
+            return of(emptyData);
+          }
 
           return this.mapGetQuestionDtoListToQuestionList(
             dtoPaginatedData.data

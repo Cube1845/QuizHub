@@ -8,3 +8,8 @@ html, body {
     height: 100%;
     font-family: "Baloo Paaji 2", Arial;
 }
+
+:root {
+    --p-tooltip-background: var(--p-zinc-800) !important;
+    --p-tooltip-color: var(--p-zinc-200) !important;
+}

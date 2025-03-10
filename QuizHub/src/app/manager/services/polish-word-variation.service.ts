@@ -9,6 +9,8 @@ export class PolishWordVariationService {
 
     if (questionCount == 1) {
       return 'Pytanie';
+    } else if (questionCount > 11 && questionCount < 20) {
+      return 'Pytań';
     } else if (lastDigit == 2 || lastDigit == 3 || lastDigit == 4) {
       return 'Pytania';
     } else {
@@ -21,6 +23,8 @@ export class PolishWordVariationService {
 
     if (solveCount == 1) {
       return 'Rozwiązanie';
+    } else if (solveCount > 11 && solveCount < 20) {
+      return 'Rozwiązań';
     } else if (lastDigit == 2 || lastDigit == 3 || lastDigit == 4) {
       return 'Rozwiązania';
     } else {

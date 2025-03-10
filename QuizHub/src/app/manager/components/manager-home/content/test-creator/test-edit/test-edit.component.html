@@ -12,7 +12,9 @@
                     [label]="isTestActive ? 'Dezaktywuj' : 'Aktywuj'" 
                     [outlined]="true" 
                     class="mr-3"
-                    (click)="displayTestActivationDialog()"/>
+                    (click)="displayTestActivationDialog()"
+                    [pTooltip]="isTestActive ? 'Dezaktywacja testu sprawi, że nie będzie można go rozwiązać' : 'Aktywacja testu uniemożliwi jego edycję'" 
+                    tooltipPosition="bottom" [showDelay]="300"/>
 
                 <p-button icon="pi pi-pencil" label="Zmień nazwę" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestNameEditDialog()"/>
                 <p-button icon="pi pi-trash" label="Usuń" [outlined]="true" severity="secondary" class="mr-3" (click)="displayTestRemovalModal()"/>
@@ -108,6 +110,7 @@
                     icon="pi pi-pencil"
                     [disabled]="testOptionsFormGroup.invalid || isTestActive"
                     (click)="saveTestOptions()"
+                    [loading]="saveButtonLoading"
                 />
 
                 <div class="code-box mt-4">
@@ -116,7 +119,7 @@
                     </div>
                     <div>
                         <input pInputText style="width: min-content" maxlength="8" readonly [formControl]="codeFormControl"/>
-                        <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-3" [disabled]="isTestActive" (click)="changeTestCode()"/>
+                        <p-button label="Wygeneruj nowy" [outlined]="true" class="ml-3" [disabled]="isTestActive" (click)="changeTestCode()" [loading]="newCodeButtonLoading"/>
                     </div>
                 </div>
             </div>

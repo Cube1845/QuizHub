@@ -3,11 +3,12 @@ import { TestHistoryService } from '../../../../services/test-history.service';
 import { TestHistoryData } from '../../../../models/testHistoryData';
 import { PolishWordVariationService } from '../../../../services/polish-word-variation.service';
 import { Router } from '@angular/router';
+import { SpinnerComponent } from '../../../../../common/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-test-history',
   standalone: true,
-  imports: [],
+  imports: [SpinnerComponent],
   templateUrl: './test-history.component.html',
   styleUrl: './test-history.component.scss',
 })

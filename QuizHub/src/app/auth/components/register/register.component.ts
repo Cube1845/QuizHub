@@ -39,9 +39,9 @@ export class RegisterComponent {
 
   registerFormGroup = new FormGroup(
     {
-      email: new FormControl<string>('', [
+      username: new FormControl<string>('', [
         Validators.required,
-        Validators.email,
+        Validators.minLength(3),
       ]),
       password: new FormControl<string>('', [
         Validators.required,
@@ -66,7 +66,7 @@ export class RegisterComponent {
 
     this.authService
       .register(
-        this.registerFormGroup.value.email!,
+        this.registerFormGroup.value.username!,
         this.registerFormGroup.value.password!
       )
       .subscribe(

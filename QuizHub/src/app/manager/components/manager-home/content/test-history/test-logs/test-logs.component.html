@@ -9,25 +9,23 @@
 
                 <div class="search-box">
                     <input type="text" pInputText placeholder="Wyszukaj rozwiązanie po nazwie użytkownika" [formControl]="searchFormControl"/>
-                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForTestLogs()"/>
+                    <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForTestLogs()" [loading]="searchButtonLoading"/>
                 </div>
 
                 <div>
                     <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px'}" label="Wyczyść" icon="pi pi-trash" (click)="displayClearLogsConfirmation()"/>
                     <p-button [outlined]="true" severity="secondary" [style]="{'margin': '0 15px 0 0'}" label="Ustawienia testu" icon="pi pi-cog" (click)="goToTestSettings()"/>
                 </div>
-            } @else {
-                <!-- <app-spinner [spinnerWidth]="2" [spinnerSize]="32.338" class="my-2 mt-3"/> -->
             }
         </div>
-        <div class="m-0 p-0 logs-container">
+        <div class="m-0 p-0 logs-container" #logsContainer>
             <div class="logs m-0 p-0 px-3 py-3 gap-3">
                 @if (testLogs.length > 0) {
                     @for (testLog of testLogs; track $index) {
                         <div class="test-log-panel m-0 p-3 py-3" (click)="openSelectedAnswersDisplay($index)">
                             <h1 class="text-xl m-0 p-0 line-height-1 align-self-start primary-color">{{ testLog.username }}</h1> 
                             <h1 class="text-lg m-0 p-0 line-height-1">Wynik: {{ testLog.earnedPoints }}/{{ testLog.maxPoints }} ({{ (testLog.earnedPoints / testLog.maxPoints * 100).toFixed(2) }}%)</h1>
-                            <h1 class="text-lg m-0 p-0 line-height-1">Data wykonania: {{ testLog.solveDate | date: 'dd/MM/yyyy HH:mm' }}</h1>
+                            <h1 class="text-lg m-0 p-0 line-height-1">Data wykonania: {{ testLog.solveDate | date: 'dd.MM.yyyy HH:mm' }}</h1>
                             <h1 class="text-lg m-0 p-0 line-height-1">Czas: {{ convertTimeInSecondsToTimeString(testLog.durationInSeconds) }}</h1>
 
                             <p class="line-height-1 m-0 p-0 text-xs pt-3">Kliknij, aby zobaczyć zaznaczone odpowiedzi</p>
@@ -62,6 +60,6 @@
         </div>
     </div>
 } @else {
-    <!-- spinner -->
+    <app-spinner/>
 }
     

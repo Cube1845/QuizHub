@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -10,6 +10,9 @@ import { PaginatorOptions } from '../../../../../models/paginatorOptions';
 import { PaginatorModule } from 'primeng/paginator';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { GlobalDialogService } from '../../../../../../common/services/global-dialog.service';
+import { SpinnerComponent } from '../../../../../../common/components/spinner/spinner.component';
+import { ToastService } from '../../../../../../common/services/toast.service';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-test-logs',
@@ -20,6 +23,7 @@ import { GlobalDialogService } from '../../../../../../common/services/global-di
     DatePipe,
     PaginatorModule,
     ReactiveFormsModule,
+    SpinnerComponent,
   ],
   templateUrl: './test-logs.component.html',
   styleUrl: './test-logs.component.scss',
@@ -29,8 +33,11 @@ export class TestLogsComponent {
   private readonly testLogsService = inject(TestLogsService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly globalDialogService = inject(GlobalDialogService);
+  private readonly toastService = inject(ToastService);
 
   private readonly paginatorItemsPerPage = [60, 90, 120];
+
+  @ViewChild('logsContainer') logsContainer!: ElementRef;
 
   logsGetType: 'regular' | 'searched' = 'regular';
 
@@ -44,8 +51,7 @@ export class TestLogsComponent {
     1,
     this.paginatorItemsPerPage[0],
     0,
-    this.paginatorItemsPerPage,
-    () => this.getTestLogsAndSetThem(1)
+    this.paginatorItemsPerPage
   );
 
   searchFormControl = new FormControl<string>('');
@@ -81,6 +87,10 @@ export class TestLogsComponent {
           this.testLogs = response.testLogs.data;
           this.paginatorOptions.totalItems = response.testLogs.totalItems;
           this.testName = response.testName;
+
+          if (this.logsContainer) {
+            this.logsContainer.nativeElement.scrollTop = 0;
+          }
         }
       });
   }
@@ -93,6 +103,8 @@ export class TestLogsComponent {
     return convertTimeInSecondsToTimeString(totalSeconds);
   }
 
+  searchButtonLoading = false;
+
   searchForTestLogs(pageNumber: number = 1): void {
     const key = this.searchFormControl.value;
 
@@ -102,6 +114,14 @@ export class TestLogsComponent {
       return;
     }
 
+    let apiResponsed = false;
+
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.searchButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.testLogsService
       .searchForTestLogs(
         this.testId!,
@@ -110,10 +130,17 @@ export class TestLogsComponent {
         this.paginatorOptions.rows
       )
       .subscribe((response) => {
+        apiResponsed = true;
+        this.searchButtonLoading = false;
+
         if (!!response) {
           this.logsGetType = 'searched';
           this.testLogs = response.data;
           this.paginatorOptions.totalItems = response.totalItems;
+
+          if (this.logsContainer) {
+            this.logsContainer.nativeElement.scrollTop = 0;
+          }
         }
       });
   }
@@ -133,6 +160,11 @@ export class TestLogsComponent {
     this.testLogsService.clearTestLogs(this.testId!).subscribe((isSuccess) => {
       if (isSuccess) {
         this.router.navigateByUrl('manager/test-history');
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Wyczyszczono historię rozwiązań testu'
+        );
       }
     });
   }
@@ -153,11 +185,18 @@ export class TestLogsComponent {
         if (isSuccess) {
           this.testLogs!.splice(index, 1);
           this.paginatorOptions!.totalItems--;
+
+          this.toastService.displayToast(
+            'success',
+            'Sukces',
+            'Usunięto rozwiązanie testu z historii'
+          );
         }
       });
   }
 
   onPageChange(event: any): void {
+    this.paginatorOptions.rows = event.rows;
     const pageNumber = event.page + 1;
 
     this.logsGetType == 'regular'

@@ -6,11 +6,12 @@ import { Router } from '@angular/router';
 import { GlobalDialogService } from '../../../../../common/services/global-dialog.service';
 import { ToastService } from '../../../../../common/services/toast.service';
 import { NameEditDialogComponent } from '../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-test-creator',
   standalone: true,
-  imports: [SpinnerComponent],
+  imports: [SpinnerComponent, TooltipModule],
   templateUrl: './test-creator.component.html',
   styleUrl: './test-creator.component.scss',
 })

@@ -1,12 +1,15 @@
 ﻿using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 using QuizHub.Application.Common.Models;
+using QuizHub.Infrastructure.Auth.Entities;
 using QuizHub.Infrastructure.Auth.Services;
+using QuizHub.Infrastructure.Data;
 
 namespace QuizHub.Infrastructure.Auth.Endpoints.Register;
 
-public class RegisterEndpoint(AuthRepository authRepository, PasswordHashService passwordHashService) : Endpoint<RegisterRequest>
+public class RegisterEndpoint(AppDbContext context, PasswordHashService passwordHashService) : Endpoint<RegisterRequest>
 {
-    private readonly AuthRepository _authRepository = authRepository;
+    private readonly AppDbContext _context = context;
     private readonly PasswordHashService _passwordHashService = passwordHashService;
 
     public override void Configure()
@@ -17,19 +20,19 @@ public class RegisterEndpoint(AuthRepository authRepository, PasswordHashService
 
     public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)
     {
-        if (await _authRepository.UserExists(req.Email, ct))
+        if (await _context.AppUsers.AnyAsync(user => user.Username == req.Username, ct))
         {
-            await SendOkAsync(
-                Result.Error("Konto z takim adresem email już istnieje"),
-                ct
-            );
-
+            await SendOkAsync(Result.Error("Konto z taką nazwą użytkownika już istnieje"), ct);
             return;
         }
 
         var passwordHash = _passwordHashService.HashPaswordWithSalt(req.Password);
 
-        await _authRepository.AddNewUser(req.Email, passwordHash, ct);
+
+        AppUser appUser = new(req.Username, passwordHash);
+        await _context.AppUsers.AddAsync(appUser, ct);
+
+        await _context.SaveChangesAsync(ct);
 
         await SendOkAsync(Result.Success(), ct);
     }

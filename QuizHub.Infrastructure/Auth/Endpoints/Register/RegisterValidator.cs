@@ -7,7 +7,7 @@ public class RegisterValidator : Validator<RegisterRequest>
 {
     public RegisterValidator()
     {
-        RuleFor(x => x.Email)
+        RuleFor(x => x.Username)
             .NotNull()
             .NotEmpty()
             .MinimumLength(3);

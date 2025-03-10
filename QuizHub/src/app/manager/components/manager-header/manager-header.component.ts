@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api/menuitem';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AuthService } from '../../../auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manager-header',
@@ -13,6 +14,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 })
 export class ManagerHeaderComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   items: MenuItem[] | undefined;
 
@@ -22,6 +24,11 @@ export class ManagerHeaderComponent implements OnInit {
         label: 'Konto',
         iconClass: 'text-color-icon',
         items: [
+          {
+            label: 'Zmień hasło',
+            icon: 'pi pi-wrench',
+            command: () => this.router.navigateByUrl('manager/change-password'),
+          },
           {
             label: 'Wyloguj się',
             icon: 'pi pi-sign-out',

@@ -39,7 +39,10 @@ export class LoginComponent {
   loginButttonLoading: boolean = false;
 
   loginFormGroup = new FormGroup({
-    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    username: new FormControl<string>('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
     password: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(environment.minPasswordLength),
@@ -57,7 +60,7 @@ export class LoginComponent {
 
     this.authService
       .login(
-        this.loginFormGroup.value.email!,
+        this.loginFormGroup.value.username!,
         this.loginFormGroup.value.password!
       )
       .subscribe(

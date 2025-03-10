@@ -1,14 +1,19 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpContext,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Result } from '../../common/models/result';
 import { AuthData } from '../models/authData';
 import { Router } from '@angular/router';
 import { AuthDataService } from '../../common/services/auth-data.service';
+import { SKIP_AUTH } from '../models/httpContextTokens';
 
 type AuthRequest = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -22,26 +27,40 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly authDataService = inject(AuthDataService);
 
-  register(email: string, password: string): Observable<Result> {
+  register(username: string, password: string): Observable<Result> {
     const body: AuthRequest = {
-      email: email,
+      username: username,
       password: password,
     };
 
     return this.http.post<Result>(this.apiUrl + '/auth/register', body, {
-      headers: { skipAuth: 'true' },
+      context: new HttpContext().set(SKIP_AUTH, true),
     });
   }
 
-  login(email: string, password: string): Observable<Result | AuthData> {
+  login(username: string, password: string): Observable<Result | AuthData> {
     const body: AuthRequest = {
-      email: email,
+      username: username,
       password: password,
     };
 
-    return this.http.post<Result>(this.apiUrl + '/auth/login', body, {
-      headers: { skipAuth: 'true' },
-    });
+    return this.http
+      .post<Result>(this.apiUrl + '/auth/login', body, {
+        context: new HttpContext().set(SKIP_AUTH, true),
+      })
+      .pipe(
+        catchError((err) => {
+          if (this.isHttpError(err)) {
+            return of(err.error);
+          }
+
+          return of(err);
+        })
+      );
+  }
+
+  isHttpError(obj: any): obj is HttpErrorResponse {
+    return obj.error != null;
   }
 
   signOut(): void {

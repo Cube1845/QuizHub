@@ -10,7 +10,7 @@
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Bazy pytań" severity="secondary" icon="pi pi-arrow-left" (click)="goBack()"></p-button>
 
         <input type="text" pInputText placeholder="Wyszukaj pytania po treści" [formControl]="searchFormControl"/>
-        <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()"></p-button> 
+        <p-button [outlined]="true" [style]="{'margin': '0 15px'}" label="Szukaj" icon="pi pi-search" (click)="searchForQuestions()" [loading]="searchButtonLoading"></p-button> 
 
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Eksportuj" icon="pi pi-download" severity="secondary" (click)="displayDownloadingQuestionBaseModal($event)"></p-button>
         <p-button [outlined]="true" [style]="{'margin-right': '15px', width: 'max-content'}" label="Usuń" icon="pi pi-trash" severity="secondary" (click)="displayQuestionBaseRemovalModal()"></p-button>
@@ -21,7 +21,7 @@
     @if (this.questions === null) {
         <div class="m-0 p-0 spinner-box"><app-spinner /></div>
     } @else {
-        <div class="question-box m-0 pt-3">
+        <div class="question-box m-0 pt-3" #questionContainer>
             <div class="content-box">
                 @if (!questions || questions.length == 0) {
                     <div style="display: flex; justify-content: center;  margin: 0px 25px;">

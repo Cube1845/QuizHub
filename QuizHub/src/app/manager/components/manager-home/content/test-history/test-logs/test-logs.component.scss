@@ -2,6 +2,8 @@
     width: 100%;
     height: 100%;
     margin: 0;
+    display: flex;
+    justify-content: center;
 
     .test-options-container {
         display: flex;
@@ -37,6 +39,7 @@
     .logs-container {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         flex-direction: column;
         width: 100%;
         height: 100%;
@@ -82,6 +85,7 @@
     .logs {
         display: flex;
         width: 100%;
+        justify-content: center;
         flex-wrap: wrap;
     }
 

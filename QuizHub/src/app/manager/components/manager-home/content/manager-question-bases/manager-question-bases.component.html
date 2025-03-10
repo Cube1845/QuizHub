@@ -7,9 +7,12 @@
                 <h1 class="text-3xl m-0 p-0 px-4 pb-1 line-height-2">{{ questionBase.name }}</h1>
                 <p class="m-0 p-0">{{ questionBase.questionCount }} {{ getQuestionWordVariation(questionBase.questionCount) }}</p>
 
-                <i class="pi pi-download clickable-icon download-icon text-lg" (click)="displayDownloadingQuestionBaseModal($event, $index)"></i>
-                <i class="pi pi-pencil clickable-icon edit-icon text-lg" (click)="displayQuestionBaseNameEditDialog($event, $index)"></i>
-                <i class="pi pi-trash clickable-icon delete-icon text-lg" (click)="displayQuestionBaseRemovalModal($event, $index)"></i>
+                <i class="pi pi-download clickable-icon download-icon text-lg" (click)="displayDownloadingQuestionBaseModal($event, $index)"
+                    pTooltip="Pobierz plik" tooltipPosition="bottom" [showDelay]="300"></i>
+                <i class="pi pi-pencil clickable-icon edit-icon text-lg" (click)="displayQuestionBaseNameEditDialog($event, $index)"
+                    pTooltip="Edytuj nazwę" tooltipPosition="bottom" [showDelay]="300"></i>
+                <i class="pi pi-trash clickable-icon delete-icon text-lg" (click)="displayQuestionBaseRemovalModal($event, $index)"
+                    pTooltip="Usuń" tooltipPosition="bottom" [showDelay]="300"></i>
             </div>
         }
 

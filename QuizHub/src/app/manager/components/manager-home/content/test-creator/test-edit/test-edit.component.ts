@@ -25,6 +25,8 @@ import { questionSumValidator } from '../../../../../validators/question-sum-val
 import { NameEditDialogComponent } from '../../../../../../common/components/name-edit-dialog/name-edit-dialog.component';
 import { TestCreatorService } from '../../../../../services/test-creator.service';
 import { ToastService } from '../../../../../../common/services/toast.service';
+import { TooltipModule } from 'primeng/tooltip';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-test-edit',
@@ -37,6 +39,7 @@ import { ToastService } from '../../../../../../common/services/toast.service';
     ReactiveFormsModule,
     IftaLabelModule,
     TableModule,
+    TooltipModule,
   ],
   templateUrl: './test-edit.component.html',
   styleUrl: './test-edit.component.scss',
@@ -102,6 +105,8 @@ export class TestEditComponent {
     this.router.navigateByUrl('manager/tests');
   }
 
+  saveButtonLoading = false;
+
   saveTestOptions(): void {
     const newOptions: TestOptions = {
       questionCount: this.testOptionsFormGroup.controls.questionCount.value!,
@@ -117,9 +122,19 @@ export class TestEditComponent {
       ),
     };
 
+    let apiResponsed = false;
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.saveButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.testEditService
       .saveTestOptions(this.testId!, newOptions)
       .subscribe((isSuccess) => {
+        apiResponsed = true;
+        this.saveButtonLoading = false;
+
         if (isSuccess) {
           this.testOptions = newOptions;
           this.toastService.displayToast(
@@ -131,14 +146,28 @@ export class TestEditComponent {
       });
   }
 
+  newCodeButtonLoading = false;
+
   changeTestCode(): void {
+    let apiResponsed = false;
+    setTimeout(() => {
+      if (!apiResponsed) {
+        this.newCodeButtonLoading = true;
+      }
+    }, environment.minimalLoadingTimeSpinner);
+
     this.testEditService.changeTestCode(this.testId!).subscribe((newCode) => {
-      this.codeFormControl.setValue(newCode);
-      this.toastService.displayToast(
-        'success',
-        'Sukces',
-        'Zmieniono kod testu'
-      );
+      apiResponsed = true;
+      this.newCodeButtonLoading = false;
+
+      if (!!newCode) {
+        this.codeFormControl.setValue(newCode);
+        this.toastService.displayToast(
+          'success',
+          'Sukces',
+          'Zmieniono kod testu'
+        );
+      }
     });
   }
 
@@ -166,6 +195,20 @@ export class TestEditComponent {
       .subscribe((isSuccess) => {
         if (isSuccess) {
           this.isTestActive = !this.isTestActive;
+
+          if (this.isTestActive) {
+            this.toastService.displayToast(
+              'success',
+              'Sukces',
+              'Aktywowano test'
+            );
+          } else {
+            this.toastService.displayToast(
+              'success',
+              'Sukces',
+              'Dezktywowano test'
+            );
+          }
         }
       });
   }
@@ -265,6 +308,12 @@ export class TestEditComponent {
     this.testOptionsFormGroup.controls.minimalQuestionCounts.controls.splice(
       index,
       1
+    );
+
+    this.toastService.displayToast(
+      'success',
+      'Sukces',
+      'Odznaczono tę bazę pytań'
     );
   }
 

@@ -28,7 +28,7 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
         }
 
         var areUsedQuestionBaseMinimalCountsCorrect = 
-            await CheckForMinimalQuestionsExceeding(req.UsedQuestionBases, ct);
+            await CheckForMinimalQuestionsExceeding(req.UsedQuestionBases, req.QuestionCount, ct);
 
         if (!areUsedQuestionBaseMinimalCountsCorrect)
         {
@@ -51,12 +51,21 @@ public class UpdateTestSettingsEndpoint(IAppDbContext context) : Endpoint<Update
         await SendOkAsync(Result.Success(), ct);
     }
 
-    private async Task<bool> CheckForMinimalQuestionsExceeding(List<QuestionBaseWithQuestionCountDto> usedQuestionBases, CancellationToken ct)
+    private async Task<bool> CheckForMinimalQuestionsExceeding(List<QuestionBaseWithQuestionCountDto> usedQuestionBases, int questionCount, CancellationToken ct)
     {
         var userQuestionBases = await _context.QuestionBases
             .Include(qb => qb.Questions)
             .Where(qb => qb.OwnerId == User.GetId())
             .ToListAsync(ct);
+
+        var totalUserQuestionCount = userQuestionBases
+            .Select(qb => qb.Questions.Count)
+            .Sum();
+
+        if (totalUserQuestionCount < questionCount)
+        {
+            return false;
+        }
 
         foreach (var usedQuestionBase in usedQuestionBases)
         {

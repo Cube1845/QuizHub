@@ -7,7 +7,7 @@ public class LoginValidator : Validator<LoginRequest>
 {
     public LoginValidator()
     {
-        RuleFor(x => x.Email)
+        RuleFor(x => x.Username)
             .NotNull()
             .NotEmpty()
             .MinimumLength(3);

@@ -1,8 +1,9 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { NavBarItem } from '../../models/navBarItem';
 import { DividerModule } from 'primeng/divider';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NgStyle } from '@angular/common';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-nav-bar',
@@ -18,7 +19,19 @@ export class NavBarComponent implements OnInit {
   @Input({ required: true }) navBarItems: NavBarItem[] = [];
 
   ngOnInit(): void {
+    this.assignColors();
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.assignColors();
+      });
+  }
+
+  private assignColors(): void {
     this.navBarItems.forEach((item) => {
+      item.color = null;
+
       var plainRoute = '/' + this.getUrlWithoutParams(this.activatedRoute.root);
 
       if (
@@ -44,13 +57,7 @@ export class NavBarComponent implements OnInit {
     return urlParts.join('/');
   }
 
-  navigateTo(route: string, index: number): void {
+  navigateTo(route: string): void {
     this.router.navigateByUrl(route);
-
-    this.navBarItems.forEach((item) => {
-      item.color = null;
-    });
-
-    this.navBarItems[index].color = 'var(--p-primary-800)';
   }
 }
