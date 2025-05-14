@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../../common/services/toast.service';
 import { isResult } from '../../../common/models/result';
 import { AuthDataService } from '../../../common/services/auth-data.service';
+import { AuthData } from '../../models/authData';
 
 @Component({
   selector: 'app-login',
@@ -68,7 +69,7 @@ export class LoginComponent {
           apiResponsed = true;
           this.loginButttonLoading = false;
 
-          if (!isResult(result)) {
+          if (!isResult(result) && this.isAuthData(result)) {
             this.authDataService.setAuthData(result);
             this.router.navigateByUrl('manager/question-bases');
             return;
@@ -90,6 +91,22 @@ export class LoginComponent {
           );
         }
       );
+  }
+
+  private isAuthData(obj: any): obj is AuthData {
+    return (
+      typeof obj === 'object' &&
+      obj !== null &&
+      'userId' in obj &&
+      'accessToken' in obj &&
+      'accessExpiryDateTime' in obj &&
+      'refreshToken' in obj &&
+      (typeof obj.userId === 'string' || obj.userId === null) &&
+      (typeof obj.accessToken === 'string' || obj.accessToken === null) &&
+      (typeof obj.accessExpiryDateTime === 'string' ||
+        obj.accessExpiryDateTime === null) &&
+      (typeof obj.refreshToken === 'string' || obj.refreshToken === null)
+    );
   }
 
   goToSolvingTestsPage(): void {

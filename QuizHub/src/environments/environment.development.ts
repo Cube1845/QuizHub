@@ -1,5 +1,5 @@
 export const environment = {
-  apiUrl: 'https://localhost:7294/api',
+  apiUrl: 'http://192.168.1.4:5235/api',
   minPasswordLength: 6,
   defaultContentImageHeight: 640,
   defaultAnswerImageHeight: 360,
