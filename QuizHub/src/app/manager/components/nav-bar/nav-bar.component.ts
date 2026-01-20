@@ -54,7 +54,7 @@ export class NavBarComponent implements OnInit {
 
     var urlParts = urlSegments.map((urlPart) => urlPart?.snapshot.url[0].path!);
 
-    return urlParts.join('/');
+    return '/' + urlParts.join('/');
   }
 
   navigateTo(route: string): void {
